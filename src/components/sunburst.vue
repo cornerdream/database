@@ -1,0 +1,507 @@
+<!-- -->
+<template>
+<div id="sunburst">
+    <div id="sequence"></div>
+      <!-- 定义光芒图的容器 -->
+      <div id="chart">
+        <!-- 定义鼠标悬停时，解释说明文字所在的容器 ,默认隐藏-->
+        <div id="explanation" style="visibility: hidden;">
+          <span id="percentage"></span><br/>
+          of visits begin with this sequence of pages
+        </div>
+      </div>
+     
+
+</div>
+</template>
+<script>
+import * as d3 from 'd3'
+export default {
+    name: 'sunburst',
+    data() {
+        return {
+        
+            data: [73,52,33,22,14,68],
+            sunData:{
+                "name": "flare",
+    "children": [
+    {
+        "name": "analytics",
+        "children": [
+        {
+        "name": "cluster",
+        "children": [
+        {"name": "AgglomerativeCluster", "size": 3938},
+        {"name": "CommunityStructure", "size": 3812},
+        {"name": "HierarchicalCluster", "size": 6714},
+        {"name": "MergeEdge", "size": 743}
+        ]
+        }
+        ]
+    }
+    ]
+            },
+            nodeData:{
+    "name": "Eve",
+    "children": [
+        {
+        "name": "Cain"
+        },
+        {
+        "name": "Seth",
+        "children": [
+            {
+            "name": "Enos"
+            },
+            {
+            "name": "Noam"
+            }
+        ]
+        },
+        {
+        "name": "Abel"
+        },
+        {
+        "name": "Awan",
+        "children": [
+            {
+            "name": "Enoch"
+            }
+        ]
+        },
+        {
+        "name": "Azura"
+        }
+    ]
+            }
+        }
+    },
+    created() {
+        
+    },
+    mounted() {
+        // this.draw();
+        this.load()
+    },
+    methods:{
+        draw(){
+      let margin = 30; // 上下左右边距
+
+      let svg = d3.select('svg');
+      let width = svg.attr('width');
+      let height = svg.attr('height');
+      
+      // 创建矩形分组
+      let g = svg.append('g')
+                 .attr("transform", 'translate('+ margin +','+ margin +')'); // 图表距离视口的左、上距离
+
+      // 定义 X 轴比例尺
+      let scaleX = d3.scaleBand()
+                     .domain(d3.range(this.data.length))
+                     .rangeRound([0,width - margin*2]);
+
+      // 定义 y 轴比例尺               
+      let scaleY = d3.scaleLinear()
+                     .domain([0,d3.max(this.data)])
+                     .range([height - margin * 2,0]); 
+                    // 上边距30；注意：range 后面跟的参数0，放在第二位 因为 y轴正方向向下
+                     
+      // 绘制 x y 轴
+      let axisX = d3.axisBottom(scaleX);
+      let axisY = d3.axisLeft(scaleY);
+      g.append('g').attr("transform", "translate(0, " + (height - margin * 2) + ")").call(axisX)
+      g.append('g').attr("transform", "translate(0,0)").call(axisY);
+
+      // 创建矩形分组
+      let gs = g.selectAll('rect')
+                .data(this.data)
+                .enter()
+                .append('g');
+
+      // 绘制矩形 + 过渡效果
+      let rectP = 40; // 柱状图间距
+      gs.append('rect')
+        .attr('x', function(d,i){
+          return scaleX(i) + rectP/2;
+        })
+        .attr('y',function(){
+          var min = scaleY.domain()[0]; // [0, 73]
+          return scaleY(min); 
+          // scaleY(0) y轴比例尺映射出来的是最大值；这个效果等同于 return height - 2*margin 的效果
+        })
+        .attr('width',function(){
+          return scaleX.step() - rectP;
+        })
+        .attr('height',function(){
+          return 0; // 动画初始状态为0
+        })
+        .attr('fill','pink')
+        .transition() 
+        .duration(1500)
+        .delay(function(d,i){
+          return i*200 // 每个柱子逐渐开始的效果
+        })
+        .attr('y',function(d){
+          return scaleY(d)
+        })
+        .attr('height',function(d){
+          return height - margin * 2 - scaleY(d)
+        })
+
+      // 添加鼠标划入划出事件
+      gs.on("mouseover",function () {
+        d3.select(this.firstChild) // 这里的this是包含：rect text 的节点
+          .transition()
+          .duration(1000)
+          .delay(200)
+          .attr('fill','#306ade');
+      })
+
+      gs.on("mouseout",function () {
+        d3.select(this.firstChild) 
+          .transition()
+          .duration(1000)
+          .delay(200)
+          .attr('fill','pink');
+      })
+
+       // 绘文字 + 过渡效果
+      gs.append('text')
+        .attr('x',function(d,i){
+          return scaleX(i) + rectP;
+        })
+        .attr('y',function(){
+          return height - 2 * margin;
+        })
+        .attr('dx',function(){
+          return -2;
+        })
+        .attr('dy',function(){
+          return 20;
+        })
+        .text(function(d){
+          return d;
+        })
+        .attr('fill','green')
+        .transition()
+        .duration(1500)
+        .delay(function(d,i){
+          return i*200;
+        })
+        .attr('y',function(d){
+          return scaleY(d)
+        })
+        },
+
+        load(){
+            
+            var width = 750;
+var height = 600;
+var radius = Math.min(width, height) / 2;
+
+// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
+var b = {
+  w: 75, h: 30, s: 3, t: 10
+};
+
+// Mapping of step names to colors.
+var colors = {
+  "home": "#5687d1",
+  "product": "#7b615c",
+  "search": "#de783b",
+  "account": "#6ab975",
+  "other": "#a173d1",
+  "end": "#bbbbbb"
+};
+
+// Total size of all segments; we set this later, after loading the data.
+var totalSize = 0; 
+
+var vis = d3.select("#chart").append("svg:svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("svg:g")
+    .attr("id", "container")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var partition = d3.partition()
+    .size([2 * Math.PI, radius * radius]);
+
+var arc = d3.arc()
+    .startAngle(function(d) { return d.x0; })
+    .endAngle(function(d) { return d.x1; })
+    .innerRadius(function(d) { return Math.sqrt(d.y0); })
+    .outerRadius(function(d) { return Math.sqrt(d.y1); });
+
+// Use d3.text and d3.csvParseRows so that we do not need to have a header
+// row, and can receive the csv as an array of arrays.
+d3.text("visit-sequences.csv", function(text) {
+    // console.log(text)
+  var csv = d3.csvParseRows(text);
+  var json = buildHierarchy(csv);
+  createVisualization(json);
+});
+
+// Main function to draw and set up the visualization, once we have the data.
+function createVisualization(json) {
+
+  // Basic setup of page elements.
+  initializeBreadcrumbTrail();
+  
+
+  // Bounding circle underneath the sunburst, to make it easier to detect
+  // when the mouse leaves the parent g.
+  vis.append("svg:circle")
+      .attr("r", radius)
+      .style("opacity", 0);
+
+  // Turn the data into a d3 hierarchy and calculate the sums.
+  var root = d3.hierarchy(json)
+      .sum(function(d) { return d.size; })
+      .sort(function(a, b) { return b.value - a.value; });
+  
+  // For efficiency, filter nodes to keep only those large enough to see.
+  var nodes = partition(root).descendants()
+      .filter(function(d) {
+          return (d.x1 - d.x0 > 0.005); // 0.005 radians = 0.29 degrees
+      });
+
+  var path = vis.data([json]).selectAll("path")
+      .data(nodes)
+      .enter().append("svg:path")
+      .attr("display", function(d) { return d.depth ? null : "none"; })
+      .attr("d", arc)
+      .attr("fill-rule", "evenodd")
+      .style("fill", function(d) { return colors[d.data.name]; })
+      .style("opacity", 1)
+      .on("mouseover", mouseover);
+
+  // Add the mouseleave handler to the bounding circle.
+  d3.select("#container").on("mouseleave", mouseleave);
+
+  // Get total size of the tree = value of root node from partition.
+  totalSize = path.datum().value;
+ }
+
+// Fade all but the current sequence, and show it in the breadcrumb trail.
+function mouseover(d) {
+
+  var percentage = (100 * d.value / totalSize).toPrecision(3);
+  var percentageString = percentage + "%";
+  if (percentage < 0.1) {
+    percentageString = "< 0.1%";
+  }
+
+  d3.select("#percentage")
+      .text(percentageString);
+
+  d3.select("#explanation")
+      .style("visibility", "");
+
+  var sequenceArray = d.ancestors().reverse();
+  sequenceArray.shift(); // remove root node from the array
+  updateBreadcrumbs(sequenceArray, percentageString);
+
+  // Fade all the segments.
+  d3.selectAll("path")
+      .style("opacity", 0.3);
+
+  // Then highlight only those that are an ancestor of the current segment.
+  vis.selectAll("path")
+      .filter(function(node) {
+                return (sequenceArray.indexOf(node) >= 0);
+              })
+      .style("opacity", 1);
+}
+
+// Restore everything to full opacity when moving off the visualization.
+function mouseleave() {
+
+  // Hide the breadcrumb trail
+  d3.select("#trail")
+      .style("visibility", "hidden");
+
+  // Deactivate all segments during transition.
+  d3.selectAll("path").on("mouseover", null);
+
+  // Transition each segment to full opacity and then reactivate it.
+  d3.selectAll("path")
+      .transition()
+      .duration(1000)
+      .style("opacity", 1)
+      .on("end", function() {
+              d3.select(this).on("mouseover", mouseover);
+            });
+
+  d3.select("#explanation")
+      .style("visibility", "hidden");
+}
+
+function initializeBreadcrumbTrail() {
+  // Add the svg area.
+  var trail = d3.select("#sequence").append("svg:svg")
+      .attr("width", width)
+      .attr("height", 50)
+      .attr("id", "trail");
+  // Add the label at the end, for the percentage.
+  trail.append("svg:text")
+    .attr("id", "endlabel")
+    .style("fill", "#000");
+}
+
+// Generate a string that describes the points of a breadcrumb polygon.
+function breadcrumbPoints(d, i) {
+  var points = [];
+  points.push("0,0");
+  points.push(b.w + ",0");
+  points.push(b.w + b.t + "," + (b.h / 2));
+  points.push(b.w + "," + b.h);
+  points.push("0," + b.h);
+  if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+    points.push(b.t + "," + (b.h / 2));
+  }
+  return points.join(" ");
+}
+
+// Update the breadcrumb trail to show the current sequence and percentage.
+function updateBreadcrumbs(nodeArray, percentageString) {
+
+  // Data join; key function combines name and depth (= position in sequence).
+  var trail = d3.select("#trail")
+      .selectAll("g")
+      .data(nodeArray, function(d) { return d.data.name + d.depth; });
+
+  // Remove exiting nodes.
+  trail.exit().remove();
+
+  // Add breadcrumb and label for entering nodes.
+  var entering = trail.enter().append("svg:g");
+
+  entering.append("svg:polygon")
+      .attr("points", breadcrumbPoints)
+      .style("fill", function(d) { return colors[d.data.name]; });
+
+  entering.append("svg:text")
+      .attr("x", (b.w + b.t) / 2)
+      .attr("y", b.h / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.data.name; });
+
+  // Merge enter and update selections; set position for all nodes.
+  entering.merge(trail).attr("transform", function(d, i) {
+    return "translate(" + i * (b.w + b.s) + ", 0)";
+  });
+
+  // Now move and update the percentage at the end.
+  d3.select("#trail").select("#endlabel")
+      .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+      .attr("y", b.h / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "middle")
+      .text(percentageString);
+
+  // Make the breadcrumb trail visible, if it's hidden.
+  d3.select("#trail")
+      .style("visibility", "");
+
+}
+
+
+
+
+// Take a 2-column CSV and transform it into a hierarchical structure suitable
+// for a partition layout. The first column is a sequence of step names, from
+// root to leaf, separated by hyphens. The second column is a count of how 
+// often that sequence occurred.
+function buildHierarchy(csv) {
+  var root = {"name": "root", "children": []};
+  for (var i = 0; i < csv.length; i++) {
+    var sequence = csv[i][0];
+    var size = +csv[i][1];
+    if (isNaN(size)) { // e.g. if this is a header row
+      continue;
+    }
+    var parts = sequence.split("-");
+    var currentNode = root;
+    for (var j = 0; j < parts.length; j++) {
+      var children = currentNode["children"];
+      var nodeName = parts[j];
+      var childNode;
+      if (j + 1 < parts.length) {
+   // Not yet at the end of the sequence; move down the tree.
+        var foundChild = false;
+        for (var k = 0; k < children.length; k++) {
+        if (children[k]["name"] == nodeName) {
+            childNode = children[k];
+            foundChild = true;
+            break;
+        }
+    }
+  // If we don't already have a child node for this branch, create it.
+        if (!foundChild) {
+        childNode = {"name": nodeName, "children": []};
+        children.push(childNode);
+        }
+        currentNode = childNode;
+        } else {
+        // Reached the end of the sequence; create a leaf node.
+        childNode = {"name": nodeName, "size": size};
+        children.push(childNode);
+        }
+        }
+  }
+  return root;
+}
+
+             
+           
+
+        }   
+    }
+}
+</script>
+<style scoped>
+
+#sidebar {
+  float: right;
+  width: 100px;
+}
+
+#sequence {
+  width: 600px;
+  height: 70px;
+}
+
+#legend {
+  padding: 10px 0 0 3px;
+}
+
+#sequence text, #legend text {
+  font-weight: 600;
+  fill: #fff;
+}
+
+#chart {
+  position: relative;
+}
+
+#chart path {
+  stroke: #fff;
+}
+
+#explanation {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 140px;
+  text-align: center;
+  color: #666;
+  z-index: 99;
+}
+
+#percentage {
+  font-size: 2.5em;
+}
+</style>
