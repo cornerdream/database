@@ -8,8 +8,7 @@ const Home = () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
 const Login = () => import(/* webpackChunkName: "home" */ '../components/login.vue')
 
 const Search = () => import(/* webpackChunkName: "about" */ '../views/search.vue')
-const Human = () => import(/* webpackChunkName: "human" */ '../views/human.vue')
-const Sequence = () => import(/* webpackChunkName: "sequence" */ '../views/sequence.vue')
+
 
 const Select = () => import(/* webpackChunkName: "selectabout" */ '../views/searchSelect.vue')
 const TableAbout = () => import(/* webpackChunkName: "tableabout" */ '../views/TableAbout.vue')
@@ -46,16 +45,6 @@ const routes = [
         name: 'Search',
         component: Search
       },       
-      {
-        path: '/human',
-        name: 'Human',
-        component: Human
-      },   
-      {
-        path: '/sequence',
-        name: 'Sequence',
-        component: Sequence
-      },   
     ]
   },
   {
