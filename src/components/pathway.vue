@@ -36,7 +36,7 @@ import * as d3 from 'd3'
 // import $ from 'jquery'
 export default {
 name: 'pathway',
-props:['data'],
+props:['data','id'],
 // computed: {
 //   ...mapGetters(['pathwaysData'])
 // },
@@ -131,13 +131,14 @@ return {
 }
 },
 created() {
-  
+ 
 },
 mounted() {
   this.load()
   this.legend()
 },
 methods:{
+    
     load(){
       var boxW = 892;
       var boxH = 709;

@@ -274,7 +274,7 @@ import { mapGetters } from 'vuex'
 // import $ from 'jquery'
 export default {
 name: 'tab',
-props:['data'],
+props:['data','id'],
 computed: {
   ...mapGetters(['pathwaysData']),
   numberOfPages () {
@@ -510,10 +510,11 @@ return {
 },
 watch:{
   data(){
-   this.load()
+    this.load()
   }
 },
 created() {
+  // this.id&&this.loadData()
   Object.keys(this.data).length!==0&&this.load()
 },
 mounted() {

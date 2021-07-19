@@ -30,7 +30,7 @@
 // import { mapGetters } from 'vuex'
 export default {
 name: 'simpleTable',
-props:['data'],
+props:['data','id'],
 // computed: {
 //   ...mapGetters(['tableData'])
 // },
@@ -40,20 +40,17 @@ return {
 }
 },
 watch:{
-    data(val){
-      for(var item in val){
-        let obj = {name:item,calories:val[item]}
-        this.desserts.push(obj)
-      }
+    data(){
+      this.load()
     }
 },
 created() {
-  // this.load()
+  this.load()
 },
 mounted() {},
 methods:{
   load(){
-    console.log('id')
+    // console.log('id')
       // fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+this.id).then((res)=>{
       //   return res.json()
       // }).then((data)=>{
@@ -68,8 +65,9 @@ methods:{
     //     this.desserts.push(obj)
     //   }
     // })
-    for(var item in this.tableData){
-      let obj = {name:item,calories:this.tableData[item]}
+    this.desserts = []
+    for(var item in this.data){
+      let obj = {name:item,calories:this.data[item]}
       this.desserts.push(obj)
     }
   }

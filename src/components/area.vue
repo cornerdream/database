@@ -13,7 +13,7 @@ import { Chart } from '@antv/g2';
 import $ from 'jquery'
 export default {
 name: 'areab',
-props:['data'],
+props:['data','id'],
 computed: {
   ...mapGetters(['scatterData'])
 },
@@ -216,12 +216,12 @@ watch:{
  }
 },
 created() {
+    // this.id&&this.loadData()
 },
 mounted() {
     this.antv()
 },
 methods:{
-    
     load(){
         var margin = {top: 10, right: 30, bottom: 30, left: 50},
             width = 460 - margin.left - margin.right,

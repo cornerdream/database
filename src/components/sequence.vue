@@ -29,13 +29,13 @@
                         dense                          
                     >  
                         <v-list-item-group
-                            v-model="model"                            
+                                                   
                             color="indigo"
                         >
                             <v-list-item                            
                             v-for="(l, i) in item.list"
                             :key="i"
-                            @mouseenter.native="liHover(i)"
+                            @mouseenter.native="liHover"
                             >
                             <v-list-item-content>
                                 <v-list-item-title>{{l.title}}</v-list-item-title>
@@ -79,9 +79,9 @@
                 align="center"
                 class="mx-0"
                 >
-                <v-col class="charNumbers"> 
+                <!-- <v-col class="charNumbers"> 
                     1<br>81<br>161<br>241<br>321<br>
-                </v-col>
+                </v-col> -->
                 <v-col class="charSeq" cols="11">       
                     <span style="color:black;">MEEPQS</span>
                     <span style="text-decoration:underline;color:#e31a1c;">DPSV EPPLSQETFS DLWKLLPENN V</span>
@@ -145,7 +145,7 @@
 </div>
 </template>
 <script>
-
+import $ from 'jquery'
 export default {
 name: 'sequence',
 data() {
@@ -188,8 +188,8 @@ methods:{
     load(){
         
     },
-    liHover(l){
-        console.log(l)
+    liHover(e){
+        $(e.target).addClass('liactiveClass').siblings().removeClass('liactiveClass')
     }
 }
 }
@@ -212,5 +212,12 @@ methods:{
 }
 .charSeq{
     flex: 1;
+}
+.liactiveClass{
+    background: #0079b5;
+    
+}
+.liactiveClass.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+    color: #fff !important;
 }
 </style>

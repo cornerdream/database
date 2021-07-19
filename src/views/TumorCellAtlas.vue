@@ -5,8 +5,8 @@
       <SimpleTable  :data="tableData" :id="cmp_id"></SimpleTable>
     </div>
     <div class="container" v-else-if="view=='Omics'">
-      <Scatter :data="scatterData" ref="scatter"></Scatter>
-      <Area :data="scatterData" ref="area" v-show="Omics.select3!=='Fusion'"></Area>
+      <Scatter :data="scatterData" ref="scatter" :id="cmp_id"></Scatter>
+      <Area :data="scatterData" ref="area" :id="cmp_id" v-show="Omics.select3!=='Fusion'"></Area>
       <!-- <div id="select"> -->
         <div class="select">
         <v-combobox
@@ -81,8 +81,8 @@
 
       
     
-      <Table :data="pathwaysData" ref="table" v-if="tab==0"></Table>
-      <Pathway :data="pathwaysData" v-else></Pathway>
+      <Table :data="pathwaysData" ref="table" :id="cmp_id" v-if="tab==0"></Table>
+      <Pathway :data="pathwaysData" :id="cmp_id" v-else></Pathway>
       <!-- <Scatter  :dataScater="scatterDataPathways" ref="scatter"></Scatter> -->
       <!-- <Area :dataArea="scatterDataPathways" ref="area"></Area> -->
       <!-- <div id="select"> -->
@@ -114,7 +114,7 @@
       <Sunburst ></Sunburst>
     </div>
     <div class="container" v-else-if="view=='Oncogenesis'">
-      <Pathway ></Pathway>
+      <Human ></Human>
     </div>
     <div class="container" v-else-if="view=='Regulation'">
       <Sequence ></Sequence>
@@ -146,6 +146,7 @@ import Sequence from '../components/sequence.vue'
 import Boxplot from '../components/boxplot.vue'
 import Network from '../components/network.vue'
 import Table from '../components/table.vue'
+import Human from '../components/human.vue'
 export default {
   name:'TumorCellAtlas',
   props:['view','tableData','cmp_id'],
@@ -159,7 +160,8 @@ export default {
     Sequence,
     Boxplot,
     Network ,
-    Table
+    Table,
+    Human
   },
   // computed: {
   //   ...mapGetters(['gene_class','scatterData','pathway_list','pathwaysData'])

@@ -11,7 +11,7 @@ import { Chart } from '@antv/g2';
 import $ from 'jquery'
 export default {
 name: 'scatter',
-props:['data'],
+props:['data','id'],
 computed: {
   ...mapGetters(['scatterData'])
 },
@@ -30,8 +30,10 @@ watch:{
   }
 },
 created() {
+   // this.id&&this.loadData()
 },
 mounted() {
+ 
   this.antv()
 },
 methods:{
