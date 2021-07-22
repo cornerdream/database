@@ -95,6 +95,7 @@
 </div>
 </template>
 <script>
+
 import G6 from '@antv/g6';
 import human from '../assets/human.png'
 import mouse from '../assets/mouse.png'
@@ -230,19 +231,23 @@ return {
 },
 created() {},
 mounted() {
-  this.antv();
+
+  this.antv()
+
+  
 },
 methods:{
     antv(){
-        const container = document.getElementById('homeImageNode');
-        if(!container) return;
-        container.innerHTML ='';
-        const tooltip = new G6.Tooltip({
+      console.log(111)
+      const container = document.getElementById('homeImageNode');
+      if(!container) return;
+      container.innerHTML ='';
+      const tooltip = new G6.Tooltip({
             offsetX: 10,
             offsetY: 10,
             // the types of items that allow the tooltip show up
             // 允许出现 tooltip 的 item 类型
-            itemTypes: ['node', 'edge'],
+            itemTypes: ['node'],
             // custom the tooltip's content
             // 自定义 tooltip 内容
             getContent: (e) => {
@@ -254,15 +259,17 @@ methods:{
                 `;
                 return outDiv;
             },
-        });
-        const menu = new G6.Menu({
+      });
+      const menu = new G6.Menu({
             offsetX: 6,
             offsetY: 10,
             itemTypes: ['node'],
-            // trigger:'click',
+            trigger:'click',
             getContent(e) {
                 var ulD= document.createElement('ul');
-                var nodeMenu = e.item._cfg.model;
+                console.log(e.item)
+                // var nodeMenu = e.item._cfg.model;
+                var nodeMenu = e.item.getModel();
                 ulD.className = nodeMenu.id
                 var li='';
                 nodeMenu.menus.forEach(el => {
@@ -274,12 +281,9 @@ methods:{
             handleMenuClick(target, item) {
                 console.log(target, item)
             },
-        });
-        // const ICON_MAP = {
-        //   a: 'https://gw.alipayobjects.com/mdn/rms_8fd2eb/afts/img/A*0HC-SawWYUoAAAAAAAAAAABkARQnAQ',
-        //   b: 'https://gw.alipayobjects.com/mdn/rms_8fd2eb/afts/img/A*sxK0RJ1UhNkAAAAAAAAAAABkARQnAQ',
-        // };
-        G6.registerNode(
+
+      });
+      G6.registerNode(
           'card-node',
           {
             drawShape: function drawShape(cfg, group) {
@@ -382,43 +386,167 @@ methods:{
           },
           'single-node',
         );
-
-        const width = container.scrollWidth;
+      const width = container.scrollWidth;
         const height = container.scrollHeight || 500;
         let graph = new G6.Graph({
-        container: 'homeImageNode',
-        width,
-        height,
-        plugins: [tooltip,menu],
-        // translate the graph to align the canvas's center, support by v3.5.1
-        // fitCenter: true,
-        // defaultNode: {
-        //     type: 'image',           
-        //     clipCfg: {
-        //     show: false,
-        //     type: 'circle',
-        //     r: 30,
-        //     style: {
-        //         lineWidth: 1,
-        //     },
-        //     },
-        // },
-        defaultNode: {
-          type: 'card-node',
-        },
-        modes: {
-            default: ['drag-canvas', 'drag-node'],
-        },
+          container: 'homeImageNode',
+          width,
+          height,
+          plugins: [tooltip,menu],
+          // translate the graph to align the canvas's center, support by v3.5.1
+          // fitCenter: true,
+          // defaultNode: {
+          //     type: 'image',           
+          //     clipCfg: {
+          //     show: false,
+          //     type: 'circle',
+          //     r: 30,
+          //     style: {
+          //         lineWidth: 1,
+          //     },
+          //     },
+          // },
+          defaultNode: {
+            type: 'card-node',
+          },
+          modes: {
+              default: ['drag-canvas', 'drag-node'],
+          },
         });
         console.log(this.tab)
-        const data = this.tab?this.nodesMouseData:this.nodesHumanData   
+        let data = this.tab?this.nodesMouseData:this.nodesHumanData   
         console.log(data)
         graph.clear()
         graph.data(data);
-        graph.render();
+        graph.render();  
+    },
+    load2(){
+      const descriptionDiv = document.createElement('div');
+descriptionDiv.id = 'discription';
+descriptionDiv.innerHTML = 'Right click a node to activate a contextMenu.';
+document.getElementById('homeImageContainer').appendChild(descriptionDiv);
 
-        
+const container = document.getElementById('homeImageContainer');
+const width = container.scrollWidth;
+const height = container.scrollHeight || 500;
+
+const contextMenu = new G6.Menu({
+  getContent(evt) {
+    let header;
+    if (evt.target && evt.target.isCanvas && evt.target.isCanvas()) {
+      header = 'Canvas ContextMenu';
+    } else if (evt.item) {
+      const itemType = evt.item.getType();
+      header = `${itemType.toUpperCase()} ContextMenu`;
     }
+    return `
+    <h3>${header}</h3>
+    <ul>
+      <li title='1'>li 1</li>
+      <li title='2'>li 2</li>
+      <li>li 3</li>
+      <li>li 4</li>
+      <li>li 5</li>
+    </ul>`;
+  },
+  handleMenuClick: (target, item) => {
+    console.log(target, item);
+  },
+  // offsetX and offsetY include the padding of the parent container
+  // 需要加上父级容器的 padding-left 16 与自身偏移量 10
+  offsetX: 16 + 10,
+  // 需要加上父级容器的 padding-top 24 、画布兄弟元素高度、与自身偏移量 10
+  offsetY: 0,
+  // the types of items that allow the menu show up
+  // 在哪些类型的元素上响应
+  itemTypes: ['node', 'edge', 'canvas'],
+  trigger:'click'
+});
+
+const graph = new G6.Graph({
+  // 使用 contextMenu plugins 时，需要将 container 设置为 position: relative;
+  container: 'homeImageContainer',
+  width,
+  height,
+  linkCenter: true,
+  plugins: [contextMenu],
+  defaultNode: {
+    size: [80, 40],
+    type: 'rect',
+    style: {
+      fill: '#DEE9FF',
+      stroke: '#5B8FF9',
+    },
+  },
+  defaultEdge: {
+    style: {
+      stroke: '#b5b5b5',
+      lineAppendWidth: 3, // Enlarge the range the edge to be hitted
+    },
+    labelCfg: {
+      autoRotate: true,
+      style: {
+        // A white stroke with width 5 helps show the label more clearly avoiding the interference of the overlapped edge
+        stroke: 'white',
+        lineWidth: 5,
+      },
+    },
+  },
+  modes: {
+    default: ['drag-node'],
+  },
+});
+
+const data = {
+  nodes: [
+    {
+      id: 'node1',
+      label: 'node1',
+      x: 200,
+      y: 100,
+      type: 'rect',
+    },
+    {
+      id: 'node2',
+      label: 'node2',
+      x: 250,
+      y: 250,
+      type: 'rect',
+    },
+    {
+      id: 'node3',
+      label: 'node3',
+      x: 350,
+      y: 100,
+      type: 'rect',
+    },
+  ],
+  edges: [
+    {
+      source: 'node1',
+      target: 'node2',
+      label: 'Test Label',
+    },
+    {
+      source: 'node1',
+      target: 'node3',
+      label: 'Test Label 2',
+    },
+  ],
+};
+
+graph.data(data);
+graph.render();
+
+if (typeof window !== 'undefined')
+  window.onresize = () => {
+    if (!graph || graph.get('destroyed')) return;
+    if (!container || !container.scrollWidth || !container.scrollHeight) return;
+    graph.changeSize(container.scrollWidth, container.scrollHeight);
+  };
+
+    }
+    
 }
 }
 </script>

@@ -9,9 +9,10 @@ import * as d3 from 'd3'
 import { Chart } from '@antv/g2';
 export default {
 name: 'barplot',
+props:['data'],
 data() {
 return {
-    data:[
+    d3data:[
         { type: '1-3秒', value: '0.16' },
         { type: '4-10秒', value: '0.125'},
         { type: '11-30秒', value: '0.24'},
@@ -30,15 +31,23 @@ return {
     ]
 }
 },
-created() {},
+watch:{
+  data(){
+    this.load()
+  }
+},
+created() {
+  
+},
 mounted() {
 
-    // this.load()
-    this.antv()
+    this.load()
+    // this.antv()
 },
 methods:{
     
     load(){
+       console.log(this.data)
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
@@ -65,11 +74,11 @@ methods:{
         
 
             // Scale the range of the data in the domains
-            x.domain(this.data.map(function(d) { 
+            x.domain(this.d3data.map(function(d) { 
                 return d.type;
                 // return d.type; 
             }));
-            y.domain([0, d3.max(this.data, function(d) { 
+            y.domain([0, d3.max(this.d3data, function(d) { 
                 // for(var i=0;i<d.value.length;i++){
                 //     return d.value[i]
                 // }
@@ -78,7 +87,7 @@ methods:{
 
             // append the rectangles for the bar chart
             svg.selectAll(".bar")
-                .data(this.data)
+                .data(this.d3data)
                 .enter().append("rect")
                 .attr("class", "bar")
                 .attr("x", function(d) { 

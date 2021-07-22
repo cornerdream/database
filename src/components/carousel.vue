@@ -38,6 +38,7 @@
         v-for="(item,i) in items"
         :key="item"  
 		:class="i==0?'active':''"
+		@click="liClick(item)"
       >{{item}}</li>
 	</ul>
     <!-- 左右按钮 -->
@@ -156,6 +157,11 @@ methods:{
 		step < 0 ? step = len - 1 : null;
 		change();
 	});
+  },
+  liClick(item){
+	// this.$router.push({path:'/'+item.replace(/\s/g,''),query:{view:'Overview'}})
+	let routeUrl = this.$router.resolve({path: '/'+item.replace(/\s/g,''),query: {view:'Overview'}});
+	window.open(routeUrl.href, '_blank');
   }
 }
 }

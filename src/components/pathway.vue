@@ -51,14 +51,16 @@ return {
         y:210,
         width:44,
         height:16,
-        text:'Clk'
+        text:'Clk',
+        color:'green'
       },
       {
         x:426,
         y:220,
         width:44,
         height:16,
-        text:'Pre'
+        text:'Pre',
+        color:'red'
       }
     ],
     switchTable:false,
@@ -171,7 +173,9 @@ methods:{
         g.selectAll().data(data)
           .enter()
           .append('rect')
-          .attr('fill','green') 
+          .attr('fill',function(d){
+              return d.color
+          }) 
           .attr('x',function(d){
               return d.x
           })

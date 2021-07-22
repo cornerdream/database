@@ -1,7 +1,6 @@
 <!-- -->
 <template>
 <div id="tab">
- 
   <v-toolbar
     id="tabHeader"
     dark
@@ -58,6 +57,7 @@
       label="Search"
     ></v-text-field>
     <v-spacer></v-spacer>
+
     <v-switch
      v-model="switchTable"
     :label="switchTable ? 'ccl_mutation_from_ccle' : 'ccl_mutation_from_cosmic'"
@@ -76,16 +76,28 @@
     class="elevation-1"
     hide-default-footer
   >
-    <template v-slot:item.COSMIChsCnt="{ item }" >
+    <template v-slot:item.COSMIChsCnt="{ item }" v-if="switchTable">
       <!-- <v-chip
-        :color="getColor(item.calories)"
+        :color="getColor(item.COSMIChsCnt)"
         dark
-      > -->
-        <div class="color" :style="{'background':getColor(item.COSMIChsCnt)}">
-          {{ item.calories }}
+      >
+       {{ item.COSMIChsCnt }}
+      </v-chip> -->
+        <div class="color" :style="{'background':getColor(item.COSMIChsCnt)}" >
+          {{ item.COSMIChsCnt }}
+        </div> 
+    </template>
+    <template v-slot:item.Gene_CDS_length="{ item }" v-else>
+      <!-- <v-chip
+        :color="getColor(item.COSMIChsCnt)"
+        dark
+      >
+       {{ item.COSMIChsCnt }}
+      </v-chip> -->
+        <div class="color" :style="{'background':getColor(item.Gene_CDS_length)}" >
+          {{item.Gene_CDS_length}}
         </div>
-          <!-- {{ item.calories }} -->
-      <!-- </v-chip> -->
+         
     </template>
     <!-- <template v-slot:footer>
       <v-row
@@ -270,18 +282,15 @@
 </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-// import $ from 'jquery'
 export default {
 name: 'tab',
-props:['data','id'],
+props:['data'],
 computed: {
-  ...mapGetters(['pathwaysData']),
   numberOfPages () {
     return Math.ceil(this.newItems.length / this.itemsPerPage)
   },
   filteredKeys () {
-    return this.keys.filter(key => key !== 'Name')
+    return this.keys.filter(key => key !== 'id')
   },
 },
 data() {
@@ -292,7 +301,7 @@ return {
     sortDesc: false,
     page: 1,
     itemsPerPage: 8,
-    sortBy: 'name',
+    sortBy: 'Gene_name',
     // keys: [
     //   'Name',
     //   'Calories',
@@ -505,17 +514,23 @@ return {
     newHeaders:[],
     switchTable:false,
     // data:{},
-    
+    newData:[]
 }
 },
 watch:{
-  data(){
+  data(newv){
+    console.log('监听')
+    console.log(newv)
     this.load()
   }
 },
 created() {
   // this.id&&this.loadData()
-  Object.keys(this.data).length!==0&&this.load()
+  console.log('初始化')
+  // this.pathway_id&&this.loadData({omics_type:this.omics_type,pathway_id:this.pathway_id})
+  // this.loadNewData();
+  console.log(this.data)
+  Object.keys(this.data).length!==0&&this.load();
 },
 mounted() {
   // $('.color').css('background','0')
@@ -525,7 +540,8 @@ mounted() {
   //   $(this).css('background',c);
   // })
   
-  // this.load();
+  // Object.keys(this.data).length!==0 && this.load()
+  // this.loadData()
 },
 methods: {
     nextPage () {
@@ -538,30 +554,69 @@ methods: {
       this.itemsPerPage = number
     },
     getColor (calories) {
-      if (calories > 400) return '#96a7f3'
-      else if(calories > 300) return '#acddf2'
-      else if (calories > 200) return '#93afcd'
-      else if (calories > 100) return '#e0c3aa'
+      if (calories > 9000) return '#96a7f3'
+      else if(calories > 7000) return '#acddf2'
+      else if (calories > 5000) return '#93afcd'
+      else if (calories > 3000) return '#e0c3aa'
       else return '#aae0da'
     },
     load(){
       this.newItems=[];
       this.newHeaders=[];
+      // this.newData=[]
       console.log(this.data)
+      console.log(this.switchTable)
       let newData = this.switchTable?this.data.ccl_mutation_from_ccle:this.data.ccl_mutation_from_cosmic
-      console.log(newData)
       // this.newkeys = Object.keys(newv)
-      this.newItems = newData
-      // this.newHeaders = Object.keys(newv)
-      this.newItems.map((item)=>{
-        let newKeys = Object.keys(item);
-        newKeys.map((key)=>{
-          let obj = {text:key,value:key};
-          this.newHeaders.push(obj)
-        })    
-      })
+      console.log(newData)
       
-    }
+      if(newData!==undefined&&newData.length>0){
+        let newKeys = Object.keys(newData[0]);
+        newKeys = newKeys.filter((item)=>item!='id')
+        console.log(newKeys)
+          newKeys.forEach((key)=>{
+            // if(key.indexOf(' ')>0){
+              // let obj = {text:key,value:key.replace(/\s/g,'')};  
+            // }else{
+              let obj = {text:key,value:key};  
+            // }  
+            this.newHeaders.push(obj) 
+          })
+        
+          
+      }
+  
+        console.log(this.newHeaders)
+        // newData.map((item)=>{
+  
+          // for(var key in item){ 
+            
+            // if(key.indexOf(' ')>0){
+              
+                // item[key.replace(/\s/g,'')] = item[key]
+                // delete item[key]
+              
+              
+              
+            // }
+          // }
+
+        // })
+        this.newItems = newData
+        // this.newHeaders = Object.keys(newv)
+        // this.newItems.map((item)=>{
+        //   let newKeys = Object.keys(item);
+        //   newKeys.map((key)=>{
+        //     let obj = {text:key,value:key.replace(/\s/g,'')};
+        //     this.newHeaders.push(obj)
+        //   })    
+        // })
+        console.log(this.newItems)
+    
+      
+      
+    },
+    
   },
 }
 </script>

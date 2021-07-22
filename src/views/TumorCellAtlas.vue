@@ -2,91 +2,161 @@
   <div class="TumorCellAtlas">    
     {{view}}
     <div class="container" v-if="view=='Overview'" >
-      <SimpleTable  :data="tableData" :id="cmp_id"></SimpleTable>
+      <v-toolbar flat id="search">
+        <v-autocomplete
+        append-icon="mdi-pencil"
+        v-model="select"
+        :loading="loading"
+        :items="states"   
+        :search-input.sync="search"
+        @change="onsearch(select)"
+        @keyup.enter="onsearch(search)"
+        cache-items
+        flat
+        hide-no-data
+        hide-details
+        label="What state are you from?"
+        solo-inverted
+        ></v-autocomplete>
+        <v-btn
+        class="searchBtn"
+        rounded
+        color="#2477a8"
+        dark
+        @click="onsearch(search)"
+        >
+          SEARCH
+        </v-btn>
+      </v-toolbar>
+      <div class="component">
+        <SimpleTable  :data="tableData" @loadsearch="onsearch" :id="this.select||this.search"></SimpleTable>
+      </div>
+      
     </div>
     <div class="container" v-else-if="view=='Omics'">
-      <Scatter :data="scatterData" ref="scatter" :id="cmp_id"></Scatter>
-      <Area :data="scatterData" ref="area" :id="cmp_id" v-show="Omics.select3!=='Fusion'"></Area>
-      <!-- <div id="select"> -->
-        <div class="select">
+      <v-toolbar flat id="search">
+        <v-autocomplete
+        append-icon="mdi-pencil"
+        v-model="select"
+        :loading="loading"
+        :items="states"   
+        :search-input.sync="search"
+        @change="()=>{if(Omics.select1){onselect()}}"
+        @keyup.enter="()=>{if(Omics.select1){onselect()}}"
+        cache-items
+        flat
+        hide-no-data
+        hide-details
+        label="What state are you from?"
+        solo-inverted
+        ></v-autocomplete>
+        <v-btn
+        class="searchBtn"
+        rounded
+        color="#2477a8"
+        dark
+        @click="()=>{if(Omics.select1){onselect()}}"
+        >
+          SEARCH
+        </v-btn>
+      </v-toolbar>
+      <div class="component">
+        <Scatter :data="scatterData" ></Scatter>
+        <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area>
+      </div>
+      <div class="select">
         <v-combobox
         v-model="Omics.select1"
         :items="Omics.items1"
         label="Gene set"
-        multiple
         outlined
         dense
         solo
         @input="OmicschangeArr"
         :disabled="Omics.disabled1"
-      ></v-combobox>
-      <!-- <v-combobox
-        v-model="select2"
-        :items="items2"
-        label="Gene list"
-        multiple
-        outlined
-        dense
-        solo
-        @input="changeArr2"
-        :disabled="disabled2"
-      ></v-combobox> -->
-      <v-text-field 
-      placeholder="Gene list"
-      :value="Omics.value2"
-      @keyup.enter="OmicschangeArr2"
-      :disabled="Omics.disabled2"
-      >
-        <v-icon
-          slot="append"
-          color="#429fd5"
+        ></v-combobox>
+        <!-- <v-combobox
+          v-model="select2"
+          :items="items2"
+          label="Gene list"
+          multiple
+          outlined
+          dense
+          solo
+          @input="changeArr2"
+          :disabled="disabled2"
+        ></v-combobox> -->
+        <v-text-field 
+        placeholder="Gene list"
+        :value="Omics.value2"
+        @keyup.enter="OmicschangeArr2"
+        :disabled="Omics.disabled2"
         >
-        mdi-pencil
-        </v-icon>
-      </v-text-field>
-      <v-combobox
-        v-model="Omics.select3"
-        :items="Omics.items3"
-        label="Gene data"
-        outlined
-        dense
-        solo
-        @input="OmicschangeArr3"
-        allow-overflow
-      ></v-combobox>
-        </div>
-      <!-- </div> -->
-      
+          <v-icon
+            slot="append"
+            color="#429fd5"
+          >
+          mdi-pencil
+          </v-icon>
+        </v-text-field>
+        <v-combobox
+          v-model="Omics.select3"
+          :items="Omics.items3"
+          label="Gene data"
+          outlined
+          dense
+          solo
+          @input="OmicschangeArr3"
+          allow-overflow
+        ></v-combobox>
+      </div>
+  
     </div>
     <div class="container" v-else-if="view=='Pathways'">
-      <!-- <v-switch
-      inset
-      v-model="switchTable"
-      :label="switchTable ? 'table' : 'pathway'"
-      ></v-switch>   -->
-      {{tab}}
-      <v-tabs
-        v-model="tab"
-        background-color="transparent"
-        class="seqTab"
-        active-class="seqTabActive"
-      >
-          <v-tab
-          v-for="item in tabItems"
-          :key="item.text"
-          >
-          {{ item.text }}
-          </v-tab>
-      </v-tabs>
-
-      
-    
-      <Table :data="pathwaysData" ref="table" :id="cmp_id" v-if="tab==0"></Table>
-      <Pathway :data="pathwaysData" :id="cmp_id" v-else></Pathway>
-      <!-- <Scatter  :dataScater="scatterDataPathways" ref="scatter"></Scatter> -->
-      <!-- <Area :dataArea="scatterDataPathways" ref="area"></Area> -->
-      <!-- <div id="select"> -->
-        <div class="select">
+      <v-toolbar flat id="search">
+        <v-autocomplete
+        append-icon="mdi-pencil"
+        v-model="select"
+        :loading="loading"
+        :items="states"   
+        :search-input.sync="search"
+        @change="()=>{if(Pathways.select1){onselectPathways()}}"
+        @keyup.enter="()=>{if(Pathways.select1){onselectPathways()}}"
+        cache-items
+        flat
+        hide-no-data
+        hide-details
+        label="What state are you from?"
+        solo-inverted
+        ></v-autocomplete>
+        <v-btn
+        class="searchBtn"
+        rounded
+        color="#2477a8"
+        dark
+        @click="()=>{if(Pathways.select1){onselectPathways()}}"
+        >
+          SEARCH
+        </v-btn>
+      </v-toolbar>
+      <div class="component">
+        <v-tabs
+          v-model="tab"
+          background-color="transparent"
+          class="seqTab"
+          active-class="seqTabActive"
+        >
+            <v-tab
+            v-for="item in tabItems"
+            :key="item.text"
+            >
+            {{ item.text }}
+            </v-tab>
+        </v-tabs>
+        <Table :data="pathwaysData" v-if="tab==0"></Table>
+        <Pathway :data="pathwaysData" v-else></Pathway>
+      </div>
+      <div class="select">
           <v-combobox
           v-model="Pathways.select1"
           :items="Pathways.items1"
@@ -106,32 +176,37 @@
             @input="PathwayschangeArr3"
             allow-overflow
           ></v-combobox>
-        </div>
-      <!-- </div> -->
-      
+      </div>
     </div>
     <div class="container" v-else-if="view=='Immunology'">
-      <Sunburst ></Sunburst>
+      <div class="component">
+        <Sunburst ></Sunburst>
+      </div>
     </div>
     <div class="container" v-else-if="view=='Oncogenesis'">
-      <Human ></Human>
+      <div class="component">
+        <Human ></Human>
+      </div>
+      
     </div>
     <div class="container" v-else-if="view=='Regulation'">
-      <Sequence ></Sequence>
+      <div class="component">
+        <Sequence ></Sequence>
+      </div>
+      
     </div>
     <div class="container" v-else-if="view=='Pharmacology'">
-      <Boxplot ></Boxplot>
+      <div class="component">
+        <Boxplot ></Boxplot>
+      </div>
+      
     </div>
     <div class="container" v-else-if="view=='Analysis'">
-      <Network ></Network>
+      <div class="component">
+        <Network ></Network>
+      </div>
+      
     </div>
-    <!-- <Barplot v-else-if="view=='Oncogenesis'"></Barplot> -->
-    
-    
-    
-    
-    
-   
   </div>
 </template>
 <script>
@@ -140,7 +215,7 @@ import SimpleTable from '../components/simpleTable.vue'
 import Scatter from '../components/scatter.vue'
 import Area from '../components/area.vue'
 import Sunburst from '../components/sunburst.vue'
-// import Barplot from '../components/barplot.vue'
+// import Bar from '../components/bar.vue'
 import Pathway from '../components/pathway.vue'
 import Sequence from '../components/sequence.vue'
 import Boxplot from '../components/boxplot.vue'
@@ -149,13 +224,13 @@ import Table from '../components/table.vue'
 import Human from '../components/human.vue'
 export default {
   name:'TumorCellAtlas',
-  props:['view','tableData','cmp_id'],
+  props:['view'],
   components:{
     SimpleTable,
     Scatter,
     Area,
     Sunburst,
-    // Barplot,
+    // Bar,
     Pathway,
     Sequence,
     Boxplot,
@@ -168,8 +243,13 @@ export default {
   // },
   data(){
     return {
+      loading: false,
+      search: null,
+      select: null,
+      states: [],
+      tableData:[],
       Omics:{
-        select1: [],
+        select1: '',
         items1: [],
         disabled1:false,
         value2:'',
@@ -194,20 +274,42 @@ export default {
     }  
       
   },
+  watch: {
+    search (val) {
+      val && val !== this.select && this.querySelections(val)
+    },
+  },
   created(){ 
       this.loadOmics();
       this.loadPathways();
-      // this.load();
+      this.load();
   },
   methods:{
     load(){
-      this.$store.dispatch('GetGeneClass').then(() => {
-        this.Omics.items1 = this.gene_class
-      })
-      this.$store.dispatch('GetPathwayList').then(() => {
-        this.Pathways.items1 = this.pathway_list
+      fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
+        return res.json()
+      }).then((data)=>{
+        this.states = data.datainfo.cmp_id;
       })
     },
+    querySelections (v) {
+      this.loading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items = this.states.filter(e => {
+          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+        })
+        this.loading = false
+      }, 500)
+    },
+    onsearch(data){
+      fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+data).then((res)=>{
+        return res.json()
+      }).then((data)=>{
+        this.tableData = data.datainfo;
+      })
+    },  
+    
     loadOmics(){
       fetch('http://192.168.1.128:8000/api/omics/gene_class/').then((res)=>{
         return res.json()
@@ -223,107 +325,54 @@ export default {
       })
     },
     OmicschangeArr(){
-      // for(var i=0;i<this.items2.length;i++){
-       
-      //   let item = this.items2[i];
-      //   for(var j=0;j<this.select1.length;j++){
-      //     var el = this.select1[j]
-      //     if(el.value==item.value){
-      //       item.disabled = true;   
-      //       break;   
-      //     }else{
-      //       item.disabled = false;
-      //     }
-      //   }
-      // }
       this.Omics.disabled2 = true;
       this.onselect();
-     
     },
     OmicschangeArr2(){
-      // for(var i=0;i<this.items2.length;i++){
-      //   let item = this.items2[i];
-      //   for(var j=0;j<this.select2.length;j++){
-      //     var el = this.select2[j]
-      //     if(el.value==item.value){
-      //       item.disabled = true;   
-      //       break;   
-      //     }else{
-      //       item.disabled = false;
-      //     }
-      //   }
-      // }
       this.Omics.disabled1 = true;
       this.onselect();
-     
     },
     OmicschangeArr3(){
-      this.onselect();
-      
+      this.onselect(); 
     },
     onselect(){
-      console.log('select')
-      fetch('http://192.168.1.128:8000/api/omics/ccl/?cmp_id='+this.cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+(this.Omics.select1.toString())+'&gene_list='+this.Omics.value2).then((res)=>{
+      fetch('http://192.168.1.128:8000/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+(this.Omics.select1.toString())+'&gene_list='+this.Omics.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
           this.scatterData = data.datainfo;
-          console.log(this.$refs)
-          // this.$refs.area.change()
-          // this.$refs.scatter.change()
         }else{
          this.$alert.error(data.message)
         }
-        
       })
-      // const option={
-      //   cmp_id:this.cmp_id,
-      //   omics_type:this.Omics.select3,
-      //   gene_set:this.Omics.select1.toString(),
-      //   gene_list:this.Omics.value2
-      // }
-      // this.$store.dispatch('GetScatterData',option).then(() => { })
       this.Omics.disabled1 = false;
       this.Omics.disabled2 = false;
     },
     PathwayschangeArr(){     
-      this.onselectPathways();
-     
+      this.onselectPathways();     
     },
     PathwayschangeArr3(){
       this.onselectPathways();
-     
     },
     onselectPathways(){
-      console.log('selectPathways')
-      fetch('http://192.168.1.128:8000/api/pathway/pathwaytable/?cmp_id='+this.cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+(this.Pathways.select1.toString())).then((res)=>{
+      fetch('http://192.168.1.128:8000/api/pathway/pathwaytable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+(this.Pathways.select1.toString())).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
           this.pathwaysData = data.data_info;
-          console.log(this.pathwaysData)
-          // this.$refs.table.load()
-          // this.$refs.scatter.change()
         }else{
          this.$alert.error(data.message)
         }
-        
       })
-      // const option={
-      //   cmp_id:this.cmp_id,
-      //   omics_type:this.Pathways.select3,
-      //   pathway_id:this.Pathways.select1.toString()
-      // }
-      // this.$store.dispatch('GetPathwaysData',option).then(() => {})
     }
   }
 }
 </script>
 <style scoped>
-.TumorCellAtlas{
-  height: 780px;
+/* .TumorCellAtlas{ */
+  /* height: 580px; */
   /* position: relative; */
-}
+/* } */
 .container >>>.v-tab{
     color: #0079b5;
     padding: .5rem 1rem;
@@ -332,6 +381,21 @@ export default {
 .container .seqTabActive{
     color: #fff;
     background-color: #0079b5;
+}
+#search{
+  /* padding:0 50px; */
+}
+#search >>>.v-input{
+  border: 1px solid #429fd5;
+  border-radius: 0 ;
+  color:#a0a0a0; 
+}
+#search >>>.v-text-field.v-text-field--solo .v-input__control{
+  min-height: 38px;
+}
+#search >>>.v-btn:not(.v-btn--round).v-size--default{
+  padding:0 26px;
+  margin-left: 90px;
 }
 #select{
   width: 200px;
@@ -347,5 +411,9 @@ export default {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
+}
+.component{
+  padding:0 200px 0 0;
+  min-height: 580px;
 }
 </style>

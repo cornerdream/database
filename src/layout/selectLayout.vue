@@ -33,7 +33,7 @@
     </v-card>
     
     <div class="bread">
-        <v-breadcrumbs :items="breaditems">
+      <v-breadcrumbs :items="breaditems">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item
             :href="item.href"
@@ -45,33 +45,7 @@
         </template>
       </v-breadcrumbs>
     </div>    
-    <v-toolbar flat id="search">
-      <v-autocomplete
-      append-icon="mdi-pencil"
-      v-model="select"
-      :loading="loading"
-      :items="states"   
-      :search-input.sync="search"
-      @change="onsearch(select)"
-      @keyup.enter="onsearch(search)"
-      cache-items
-      class="mx-4"
-      flat
-      hide-no-data
-      hide-details
-      label="What state are you from?"
-      solo-inverted
-      ></v-autocomplete>
-      <v-btn
-      class="searchBtn"
-      rounded
-      color="#2477a8"
-      dark
-      @click="onsearch(search)"
-      >
-        SEARCH
-      </v-btn>
-    </v-toolbar>
+    
     
     
     <div class="content">
@@ -105,9 +79,9 @@
      
       </div>
         <!-- <component :is="currentTab"></component> -->
-        <keep-alive>
-          <router-view :tableData="searchData" :view="currentTab" :cmp_id="this.search||this.select"/>
-        </keep-alive>
+      <keep-alive>
+        <router-view  :view="currentTab" />
+      </keep-alive>
         
     </div>
     
@@ -143,29 +117,17 @@ export default {
     ],
     breaditems: [
       {
-        text: 'Dashboard',
+        text: 'Home',
         disabled: false,
-        href: 'breadcrumbs_dashboard',
+        href: '/',
         icon:'mdi-home'
       },
-      {
-        text: 'Link 1',
-        disabled: false,
-        href: 'breadcrumbs_link_1',
-        icon:'mdi-folder'
-      },
-      {
-        text: 'Link 2',
-        disabled: true,
-        href: 'breadcrumbs_link_2',
-        icon:''
-      },
     ],
-    loading: false,
-    items: [],
-    search: null,
-    select: null,
-    states: [],  
+    
+    // items: [],
+    // search: null,
+    // select: null,
+    // states: [],  
     Menuitems: [
       { title: 'Overview'},
       { title: 'Omics' },
@@ -178,20 +140,10 @@ export default {
     ], 
     model: 0,
     currentTab:'',
-    searchData:[],
+    // searchData:[],
     
   }),
-  watch: {
-    search (val) {
-      val && val !== this.select && this.querySelections(val)
-    },
-    // $route(to){	     
-    //   let view = to.query.view
-    //   this.currentTab = view
-    //   this.model = this.Menuitems.findIndex(item=>item.title==view)
-    // }
  
-  },
   mounted() {
     this.menu()
     
@@ -224,41 +176,19 @@ export default {
       
     },
     load(){
-      fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.states = data.datainfo.cmp_id;
-      })
+      console.log(this.$route)
+      var obj = {text:this.$route.name,disabled:true,href:this.$route.fullPath,icon:''}
+      this.breaditems.push(obj)
       let view = this.$route.query.view
       this.currentTab = view;
       this.model = this.Menuitems.findIndex(item=>item.title==view)
+     
     },
-    
-    querySelections (v) {
-      this.loading = true
-      // Simulated ajax query
-      setTimeout(() => {
-        this.items = this.states.filter(e => {
-          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-        })
-        this.loading = false
-      }, 500)
-      // this.onsearch(v);
-      
-    },
-    onsearch(data){
-      console.log('id')
-      fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+data).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.searchData = data.datainfo;
-      })
-    },  
-
     toggleTab(tab){
       this.currentTab = tab
       this.model = this.Menuitems.findIndex(item=>item.title==tab)
       this.$router.replace({query:{view:tab}})
+      
     }
   },
 };
@@ -276,21 +206,7 @@ export default {
 .bread{
   padding:0 30px;
 }
-#search{
-  padding:0 50px;
-}
-#search >>>.v-input{
-  border: 1px solid #429fd5;
-  border-radius: 0 ;
-  color:#a0a0a0; 
-}
-#search >>>.v-text-field.v-text-field--solo .v-input__control{
-  min-height: 38px;
-}
-#search >>>.v-btn:not(.v-btn--round).v-size--default{
-  padding:0 26px;
-  margin-left: 90px;
-}
+
 #menu{
   width:100px;
   height: 100%;
@@ -351,7 +267,7 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
 }
 .content{
   position: relative;
-  padding:0 280px 0 80px;
+  /* padding:0 280px 0 80px; */
   
 }
 .content{

@@ -47,7 +47,9 @@ watch:{
 created() {
   this.load()
 },
-mounted() {},
+mounted() {
+  this.id&&this.$emit('loadsearch',this.id)
+},
 methods:{
   load(){
     // console.log('id')
@@ -65,6 +67,7 @@ methods:{
     //     this.desserts.push(obj)
     //   }
     // })
+    
     this.desserts = []
     for(var item in this.data){
       let obj = {name:item,calories:this.data[item]}
