@@ -180,7 +180,7 @@
     </div>
     <div class="container" v-else-if="view=='Immunology'">
       <div class="component">
-        <Sunburst ></Sunburst>
+        <Structure ></Structure>
       </div>
     </div>
     <div class="container" v-else-if="view=='Oncogenesis'">
@@ -214,7 +214,8 @@
 import SimpleTable from '../components/simpleTable.vue'
 import Scatter from '../components/scatter.vue'
 import Area from '../components/area.vue'
-import Sunburst from '../components/sunburst.vue'
+// import Sunburst from '../components/sunburst.vue'
+import Structure from '../components/structure.vue'
 // import Bar from '../components/bar.vue'
 import Pathway from '../components/pathway.vue'
 import Sequence from '../components/sequence.vue'
@@ -229,7 +230,8 @@ export default {
     SimpleTable,
     Scatter,
     Area,
-    Sunburst,
+    // Sunburst,
+    Structure,
     // Bar,
     Pathway,
     Sequence,

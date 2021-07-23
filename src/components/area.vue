@@ -341,9 +341,13 @@ methods:{
         // this.antvChart = chart;
         this.areaChart.data(this.antvData);
         this.areaChart.scale({
-        value: {
-            nice: true,
-        }
+            year: {
+                // type: 'linear',
+                // tickInterval: 1,
+            },
+            value: {
+                nice: true,
+            }
         });
 
         this.areaChart.tooltip({
