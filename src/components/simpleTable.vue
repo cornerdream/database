@@ -1,7 +1,7 @@
 <!-- -->
 <template>
 <div class="simpleTable">
-    <v-simple-table height="500px">
+    <v-simple-table height="500px" id="simpleTable">
       <template v-slot:default>
         <thead>
           <tr>
@@ -48,7 +48,7 @@ created() {
   this.load()
 },
 mounted() {
-  this.id&&this.$emit('loadsearch',this.id)
+  // this.id&&this.$emit('loadsearch',this.id)
 },
 methods:{
   load(){
@@ -77,4 +77,8 @@ methods:{
 }
 }
 </script>
-<style scoped></style>
+<style scoped>
+#simpleTable{
+  background: transparent;
+}
+</style>

@@ -6,7 +6,7 @@
 </template>
 <script>
 import * as d3 from 'd3'
-import 'd3-scale-chromatic'
+// import 'd3-scale-chromatic'
 import { Column, G2 } from '@antv/g2plot';
 export default {
 name: 'barplot',

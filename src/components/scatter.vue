@@ -5,28 +5,29 @@
 </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-// import { Scatter } from '@antv/g2plot';
+// import { mapGetters } from 'vuex'
+import { Scatter } from '@antv/g2plot';
 import { Chart } from '@antv/g2';
 import $ from 'jquery'
 export default {
 name: 'scatter',
 props:['data','id'],
-computed: {
-  ...mapGetters(['scatterData'])
-},
+// computed: {
+//   ...mapGetters(['scatterData'])
+// },
 data() {
 return {
   scatterChart:'',
   selectCount:0,
-  // scatterData:[],
+  scatterData:[],
   // data:[],
   antvData:[]
 }
 },
 watch:{
   data(){
-    this.antv()
+    // this.antv()
+    this.data&&this.antv2()
   }
 },
 created() {
@@ -34,7 +35,8 @@ created() {
 },
 mounted() {
  
-  this.antv()
+  // this.antv()
+  this.antv2()
 },
 methods:{
     change(){
@@ -44,7 +46,7 @@ methods:{
     },
     antv(){
       $('#scatter').html('')
-      console.log(this.dataScater)
+      // console.log(this.dataScater)
       console.log('绘制')
       //  fetch('https://gw.alipayobjects.com/os/antfincdn/aao6XnO5pW/IMDB.json')
         // fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/')
@@ -58,7 +60,12 @@ methods:{
         let type1 = {'gender':item}
        
         type1['height'] = obj;
-        var value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+        var value1;
+        if(typeof this.data[item][obj]=='object'){
+          value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+        }else{
+          value1 = this.data[item][obj]
+        }
        
         type1['weight'] = value1;
        
@@ -145,6 +152,80 @@ methods:{
     // });
     // scatterPlot.render();
   // });
+    },
+    antv2(){
+      $('#scatter').html('')
+      // console.log(this.dataScater)
+      console.log('绘制2')
+      //  fetch('https://gw.alipayobjects.com/os/antfincdn/aao6XnO5pW/IMDB.json')
+        // fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/')
+  // .then((res) => res.json())
+  // .then((data) => {
+    this.scatterData=[];
+    console.log(this.data)
+    if(!this.data){return}
+    for(var item in this.data){
+      console.log(item)
+      for(var obj in this.data[item]){
+        console.log(obj)
+        let type1 = {'Genre':item}
+       
+        type1['Revenue (Millions)'] = obj;
+        var value1;
+        if(typeof this.data[item][obj]=='object'){
+          value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+        }else{
+          value1 = this.data[item][obj]
+        }
+        
+       
+        type1['Rating'] = value1;
+        console.log(value1)
+        this.scatterData.push(type1)
+      } 
+     
+    }
+    console.log(this.scatterData)
+    console.log(this.scatterData)
+      const scatterPlot = new Scatter('scatter', {
+      appendPadding: 10,
+      data:this.scatterData,
+      tooltip: {
+        formatter: (datum) => {
+          return { name: datum['Revenue (Millions)'], value: datum['Rating'] + '' };
+        },
+      },
+      xField: 'Revenue (Millions)',
+      yField: 'Rating',
+      shape: 'circle',
+      colorField: 'Genre',
+      size: 4,
+      yAxis: {
+        min:0,
+        nice: true,
+        line: {
+          style: {
+            stroke: '#aaa',
+          },
+        },
+      },
+      xAxis: {
+        min: 0,
+        grid: {
+          line: {
+            style: {
+              stroke: '#eee',
+            },
+          },
+        },
+        line: {
+          style: {
+            stroke: '#aaa',
+          },
+        },
+      },
+    });
+    scatterPlot.render();
     }
 }
 }

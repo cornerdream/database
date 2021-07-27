@@ -352,12 +352,12 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
   
 }
 .content{
-  background: url('../assets/white_corner.gif') no-repeat;
+  background: url('../assets/white_corner.png') no-repeat;
   background-attachment: fixed;
   background-position: 100% 100%;
 }
 body[theme-mode='dark'] .content{
-  background: url('../assets/dark_corner.gif') no-repeat;
+  background: url('../assets/dark_corner.png') no-repeat;
   background-attachment: fixed;
   background-position: 100% 100%;
 }

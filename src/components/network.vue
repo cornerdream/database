@@ -3,6 +3,7 @@
 <div id="network"></div>
 </template>
 <script>
+import * as d3 from 'd3'
 import G6 from '@antv/g6';
 import insertCss from 'insert-css';
 import { isNumber, isArray } from '@antv/util';
@@ -13,10 +14,68 @@ return {}
 },
 created() {},
 mounted() {
+  // this.load()
     this.antv()
 },
 methods:{
-    antv(){
+  load(){
+    var margin = {top: 10, right: 30, bottom: 30, left: 40},
+  width = 400 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#network")
+.append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+.append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_network.json", function( data) {
+
+  // Initialize the links
+  var link = svg
+    .selectAll("line")
+    .data(data.links)
+    .enter()
+    .append("line")
+      .style("stroke", "#aaa")
+
+  // Initialize the nodes
+  var node = svg
+    .selectAll("circle")
+    .data(data.nodes)
+    .enter()
+    .append("circle")
+      .attr("r", 20)
+      .style("fill", "#69b3a2")
+
+  // Let's list the force we wanna apply on the network
+  d3.forceSimulation(data.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(data.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().strength(-400))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .on("end", ticked);
+
+  // This function is run at each iteration of the force algorithm, updating the nodes position.
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+         .attr("cx", function (d) { return d.x+6; })
+         .attr("cy", function(d) { return d.y-6; });
+  }
+})
+  },
+  antv(){
         insertCss(`
   .g6-component-contextmenu {
     position: absolute;
@@ -86,6 +145,7 @@ const virtualEdgeOpacity = 0.1;
 const realEdgeOpacity = 0.2;
 
 const darkBackColor = 'rgb(43, 47, 51)';
+// const darkBackColor = 'transparent';
 const disableColor = '#777';
 const theme = 'dark';
 const subjectColors = [
@@ -112,6 +172,7 @@ const global = {
   node: {
     style: {
       fill: '#2B384E',
+      // fill: '#3F51B5',
     },
     labelCfg: {
       style: {
@@ -128,14 +189,18 @@ const global = {
   edge: {
     style: {
       stroke: '#acaeaf',
+      // stroke: '#3F51B5',
       realEdgeStroke: '#acaeaf', //'#f00',
+      // realEdgeStroke: '#3F51B5', //'#f00',
       realEdgeOpacity,
       strokeOpacity: realEdgeOpacity,
     },
     labelCfg: {
       style: {
         fill: '#acaeaf',
+        // fill: '#3F51B5',
         realEdgeStroke: '#acaeaf', //'#f00',
+        // realEdgeStroke: '#3F51B5', //'#f00',
         realEdgeOpacity: 0.5,
         stroke: '#191b1c',
       },
@@ -183,6 +248,7 @@ G6.registerNode(
           height: height * 1.2,
           fill: colorSet.mainFill, // '#3B4043',
           stroke: '#AAB7C4',
+          // stroke: '#000',
           lineWidth: 1,
           lineOpacty: 0.85,
           radius: (height / 2 || 13) * 1.2,
@@ -239,7 +305,8 @@ G6.registerNode(
             y: -height / 2 + 3,
             r: 4,
             fill: '#6DD400',
-            lineWidth: 0.5,
+            // fill:'000',
+            // lineWidth: 0.5,
             stroke: '#FFFFFF',
           },
           name: 'typeNode-tag-circle',
@@ -620,7 +687,8 @@ G6.registerEdge(
           }
         } else {
           keyShape.stopAnimate();
-          const stroke = '#acaeaf';
+          // const stroke = '#acaeaf';
+          const stroke = '#000';
           const opacity = model.isReal ? realEdgeOpacity : virtualEdgeOpacity;
           keyShape.attr({
             stroke,
@@ -1453,9 +1521,11 @@ fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/relations.json')
     // container.appendChild(descriptionDiv);
 
     container.style.backgroundColor = '#2b2f33';
+    // container.style.backgroundColor = 'transparent';
 
     CANVAS_WIDTH = container.scrollWidth;
     CANVAS_HEIGHT = (container.scrollHeight || 500) - 30;
+    
 
     nodeMap = {};
     const clusteredData = louvain(data, false, 'weight');
@@ -1716,7 +1786,8 @@ if (typeof window !== 'undefined')
     if (!graph || graph.get('destroyed')) return;
     const container = document.getElementById('network');
     if (!container) return;
-    graph.changeSize(container.scrollWidth, container.scrollHeight - 30);
+    // graph.changeSize(container.scrollWidth, container.scrollHeight - 30);
+    
   };
 
     }

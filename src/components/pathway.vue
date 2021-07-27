@@ -2,11 +2,15 @@
 <template>
 <div class="pathway">
     <div class="pathway_content" id="path">
-      <v-switch
+      <!-- <v-switch
       v-model="switchTable"
       :label="switchTable ? 'ccl_mutation_from_ccle' : 'ccl_mutation_from_cosmic'"
       class="switch"
-      ></v-switch>  
+      ></v-switch>   -->
+      <div id="img"></div>
+      <div id="legend"></div>
+      <div id="tooltip" class="hidden"></div>
+      
       <!-- <img :src="map" alt="" id="img"> -->
         <!-- <v-img :src="map"></v-img> -->
     </div>
@@ -33,7 +37,7 @@
 // import { mapGetters } from 'vuex'
 import pathImg from '../assets/map.png'
 import * as d3 from 'd3'
-// import $ from 'jquery'
+import $ from 'jquery'
 export default {
 name: 'pathway',
 props:['data','id'],
@@ -132,24 +136,41 @@ return {
 
 }
 },
+watch:{
+  data(){
+    console.log('jianting')
+    this.data&&this.load()
+  }
+},
 created() {
- 
+  // this.load()
 },
 mounted() {
-  this.load()
+  console.log('mount')
+  this.data&&this.load()
   this.legend()
 },
 methods:{
     
     load(){
-      var boxW = 892;
-      var boxH = 709;
+      $('#img').html(' ');
+      this.map=[],this.rectItem=[];
+      console.log(this.data)
+      if(!this.data.img_info){return}
+      this.map = this.data.img_info.img_path;
+      this.rectItem = this.data.xml_data
+      console.log(this.map)
+      console.log(this.rectItem)
+      
+      var boxW = this.data.img_info.image_width;
+      var boxH = this.data.img_info.image_height;
       console.log(boxW,boxH)
+      $('#path').css({width:boxW,height:boxH})
       // var margin = {top: 10, right: 30, bottom: 30, left: 50},
           // width = 460 - margin.left - margin.right,
           // height = 400 - margin.top - margin.bottom;
-      var data = this.rectItem;
-      var svg = d3.select("#path")
+      // var data = this.rectItem;
+      var svg = d3.select("#img")
                   .append("svg")
                   // .attr('style','position:absolute;left:0;top:50px;')
                   .attr("width", boxW)
@@ -161,7 +182,7 @@ methods:{
              
                   
       g.append('image')
-       .attr('xlink:href', this.map) 
+       .attr('xlink:href', 'http://'+this.map) 
        .attr("width", boxW)
       .attr("height", boxH)    
       // .attr('style','position:absoulte;left:50%')
@@ -170,40 +191,53 @@ methods:{
         
         
           // .attr("transform","translate(" + margin.left + "," + margin.top + ")")
-        g.selectAll().data(data)
+        g.selectAll().data(this.rectItem)
           .enter()
           .append('rect')
           .attr('fill',function(d){
-              return d.color
+              return d.bgcolor
           }) 
+          .attr('fill-opacity','0.1')
+          
+          
+          // .attr('coords',function(d){
+          //   return d.coords
+          // })
           .attr('x',function(d){
-              return d.x
+              return d.coords[0]
           })
           .attr('y',function(d){
-            return d.y
+            return d.coords[1]
           })
           .attr('width',function(d){
-            return d.width
+            return d.coords[2]-d.coords[0]
           })
           .attr('height',function(d){
-            return d.height
+            return d.coords[3]-d.coords[1]
           })
           
-          g.selectAll().data(data)
-            .enter()
-            .append('text')
-          .text(function(d){
-            return d.text
-          })
-          .attr('fill','#000')
-          .attr('font-size','12')
-          .attr('x',function(d){
-            return d.x+8
-          })
-          .attr('y',function(d){
-            return d.y+10
-          })
+          // g.selectAll().data(this.rectItem)
+          //   .enter()
+          //   .append('text')
+          // .text(function(d){
+          //   return d.name
+          // })
+          // .attr('fill',function(d){
+          //   return d.fgcolor
+          // })
+          // .attr('font-size','12')
+          // // .attr('coords',function(d){
+          // //   return d.coords
+          // // })
+          // .attr('x',function(d){
+          //   return d.coords[0]
+          // })
+          // .attr('y',function(d){
+          //   return d.coords[1]
+          // })
+          
           .call(d3.drag().on("drag", dragged))
+          
        
         
          
@@ -220,15 +254,40 @@ methods:{
         function dragged(d) {
           console.log(d)
           d3.select(this).attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
-        }           
+        }        
+        
+        svg.selectAll("rect").on('mouseover', function (d) {
+        //显示提示信息方案一：更新提示条位置和值
+          d3.select("#tooltip")
+              .attr("style", "left:" + (d.coords[0]+(d.coords[2]-d.coords[0])) + "px" + ";top:" +( d.coords[1]+(d.coords[2]-d.coords[0]))+ "px")          
+              .text(d.name);
+          //显示提示条
+          d3.select("#tooltip").classed("hidden", false);
+  
+          //显示提示信息方案二：
+          // d3.select(this).attr("fill", "#f34848").append("title").text(function (d) {
+          //     return  d.name;
+          // }).attr("id", "tooltip");
+        });
+        svg.selectAll("rect").on('mouseout', function () {
+          //显示提示信息方案一：隐藏提示条
+          d3.select("#tooltip").classed("hidden", true);
+  
+          //显示提示信息方案二：
+          // d3.select(this).attr("fill", "rgb(0,0," + (v * 10) + ")");
+          // d3.select("#tooltip").remove();
+        });
+
+        
+        
     },
     legend(){
       console.log(this.colorItem)
       var width = 300, height = 50; 
       var data = this.colorItem;
-      var svg = d3.select('#path') 
+      var svg = d3.select('#legend') 
                   .append('svg') 
-                  .attr('style','position:absolute;right:0;top:0;')
+                  // .attr('style','position:absolute;right:0;top:0;')
                   .attr('width', width) 
                   .attr('height', height); 
       var grad = svg.append('defs') 
@@ -238,22 +297,22 @@ methods:{
                     .attr('x2', '100%') 
                     .attr('y1', '0%') 
                     .attr('y2', '0%'); 
-      console.log(grad)              
+      // console.log(grad)              
       grad.selectAll('stop') 
           .data(data) 
           .enter() 
           .append('stop') 
           .attr('offset', function(d,i) { 
-            console.log(data)
-            console.log(data.length)
-            console.log(i)
+            // console.log(data)
+            // console.log(data.length)
+            // console.log(i)
             return (i/data.length) * 100 + '%'; 
           }) 
           .style('stop-color', function(d) { 
             return d.color; 
           }) 
           .style('stop-opacity', 0.9); 
-      console.log(grad)
+      // console.log(grad)
       svg.append('rect') 
           .attr('x', 0) 
           .attr('y', 0) 
@@ -321,9 +380,10 @@ methods:{
   position: relative;
 }
 #img{
-  position: absolute;
+  /* position: absolute;
   left: 0;
-  top: 0;
+  top: 0; */
+  position: relative;
 }
 .svg{
   position: absolute;
@@ -334,6 +394,41 @@ methods:{
   position: absolute;
   left: 0;
   bottom: 0;
+}
+#legend{
+  width:300px;
+  height: 50px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.tipDiv{
+  /* position: absolute;
+    left: 0;
+    right: 0; */
+    background: red;
+    width: 200px;
+    height: 200px;
+}
+#tooltip {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  padding: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  font-style: 12px;
+  -webkit-box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+#tooltip.hidden {
+  display: none;
 }
 
 </style>

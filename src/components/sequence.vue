@@ -2,7 +2,7 @@
 <template>
 <div id="sequence">
     <v-row>
-        <v-col class=".col-6" id="listChange">
+        <v-col class=".col-2" id="listChange">
             <v-card flat>
                 <v-tabs
                     v-model="tab"
@@ -33,23 +33,24 @@
                             color="indigo"
                         >
                             <v-list-item                            
-                            v-for="(l, i) in item.list"
-                            :key="i"
-                            @mouseenter.native="liHover(l,$event)"
+                            v-for="list in item.list"
+                            :key="list.title"
+                            @mouseenter.native="liHover(list,$event)"
                             @mouseleave.native="liLeave"
                             >
                             <v-list-item-content>
-                                <v-list-item-title>{{l.title}}</v-list-item-title>
+                                <v-list-item-title>{{list.title}}</v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-list-item-group>
                         </v-list>  
                     </v-card>
+                    
                     </v-tab-item>
                 </v-tabs-items>
             </v-card>
         </v-col>
-        <v-col class=".col-6" id="listContainer">
+        <v-col class=".col-10" id="listContainer">
             <v-card
             flat
             >
@@ -83,7 +84,7 @@
                 <!-- <v-col class="charNumbers"> 
                     1<br>81<br>161<br>241<br>321<br>
                 </v-col> -->
-                <v-col class="charSeq" cols="11" id="spanBox">       
+                <v-col class="charSeq" cols="12" id="spanBox">       
                     <!-- <span style="color:black;">MEEPQS</span>
                     <span style="text-decoration:underline;color:#e31a1c;">DPSV EPPLSQETFS DLWKLLPENN V</span>
                     <span style="color:black;">LSPL</span>
@@ -100,17 +101,21 @@
             </v-card-title>
         
             <v-card-text>
-                <!-- <v-chip-group> -->
-               <v-chip color="transparent">
+                <v-chip-group> 
+                <v-chip 
+                v-for="item in chipItems"
+                :key="item.text"
+               color="transparent"
+               >
                     <v-avatar
-                    color="#e31a1c"
+                    :color="item.color"
                     size="6"
                     class="mx-2"
-                    ></v-avatar>
-                    <a>5:30PM</a>
+                    >_{{item.text}}</v-avatar>
+                    <a>{{item.text}}</a>
                 </v-chip>
         
-                <v-chip color="transparent">
+                <!-- <v-chip color="transparent">
                     <v-avatar
                     color="#ff7f00"
                     size="6"
@@ -135,8 +140,8 @@
                     class="mx-2"
                     ></v-avatar>
                     <a>9:00PM</a>
-                </v-chip>
-                <!-- </v-chip-group> -->
+                </v-chip>  -->
+                </v-chip-group>
             </v-card-text>
         
             
@@ -176,6 +181,21 @@ return {
             ]
         }
     ],
+    humanList:[
+                {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
+    ],
+    mouseList:[
+        {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
+        {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
+        {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
+        {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
+        {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
+        {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
+        {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
+        {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
+        {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
+        {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
+    ],
     model:1,
     str:'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD'
     ,
@@ -185,7 +205,12 @@ return {
         {"color":"#e31a1c","underscore":true,"start":6,"end":31},
         {"color":"#ff7f00","underscore":true,"start":35,"end":60}
     ],
-    
+    chipItems:[
+        {color:'#1f78b4',text:'a'},
+        {color:'#33a02c',text:'b'},
+        {color:'#e31a1c',text:'c'},
+        {color:'#ff7f00',text:'d'}
+    ]
 }
 },
 created() {
@@ -197,32 +222,22 @@ mounted() {
 methods:{
     load(){
         let str=this.str.replace(/(.{10})/g, '$1 ')
-
+        // let brstr = str.replace(/(.{88}))/g,'$1<br>')
+        // console.log(brstr)
         let strArr = str.split('')
+        // strArr.forEach((item,i)=>{
+            
+        //     if(i%91==0){
+        //         console.log(i)
+        //         str = str.substring(0,i)+'<br>'+str.substring(i)
+        //     }
+        // })
+        console.log(str)
         this.color.map((item)=>{
             let underscore = item.underscore?'underline':'none';
-            
-            let nStartStrArr = strArr.slice(0,item.start)
-            let startCount = 0,endCount = 0;
-            if(strArr[item.start+1]==' '){
-                startCount+=1;
-            }
-            nStartStrArr.forEach((item)=>{
-                if(item==' '){
-                    startCount++
-                }
-            })
-            let nEndStrArr = strArr.slice(0,item.end)
-            if(strArr[item.end+1]==' '){
-                endCount+=1;
-            }
-            nEndStrArr.forEach((item)=>{
-                if(item==' '){
-                    endCount++
-                }
-            })
-            
-            let searchStr  = strArr.slice(item.start+startCount,item.end+endCount).join('');
+            let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10); 
+            let start = item.start+startCount,end = item.end+endCount                   
+            let searchStr  = strArr.slice(start,end).join('');
             
             console.log(searchStr)
 
@@ -243,160 +258,65 @@ methods:{
         hoverData.push(obj)
         console.log(hoverData)
         let str=this.str.replace(/(.{10})/g, '$1 ')
+
         let strArr = str.split('')
         
         console.log(strArr)
+        
         hoverData.map((item)=>{
             console.log(str)
             let underscore = item.underscore?'underline':'none';
             console.log(item.start,item.end)
-            let nStartStrArr = strArr.slice(0,item.start)
-            console.log(nStartStrArr)
-            let startCount = 0,endCount = 0;
-            if(strArr[item.start+1]==' '){
-                startCount+=1;
-            }
-            nStartStrArr.forEach((item)=>{
-                if(item==' '){
-                    startCount++
-                }
-            })
-            let nEndStrArr = strArr.slice(0,item.end)
-            console.log(nEndStrArr)
-            if(strArr[item.end+1]==' '){
-                endCount+=1;
-            }
-            nEndStrArr.forEach((item)=>{
-                if(item==' '){
-                    endCount++
-                }
-            })
+            let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10);            
             console.log(startCount,endCount)
-            let searchStr  = strArr.slice(item.start+startCount,item.end+endCount).join('');
-            // let searchStr  = strArr.slice(item.start+endCount,item.end+endCount).join('');
+            let start = item.start+startCount,end = item.end+endCount
+            console.log(start,end)
+            let searchStr  = strArr.slice(start,end).join('');
+            // let searchStr  = strArr.slice(item.start,item.end).join('');
             console.log(searchStr)
-
-            let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
-            let srtStartIndex = str.indexOf(searchStr);
+            var reg=searchStr.split('').reduce((total,next)=>{
+                return total+'[<span>|</span>]*?'+next
+            })
+            console.log(reg)
+            var m = str.match(reg)
+            console.log(m)
+            let search = m.reduce((p,n)=>p+n)
+            console.log(search)
+            
+            var regs = /<[^>]+>/g
+            var span = search.match(regs)
+            console.log(span)
+            
+            let spanCount =span?span.reduce((p,n)=>p.length+n.length).split('').length:0
+            console.log(spanCount)
+            let srtEndIndex = m.index+spanCount + searchStr.length;
+            let srtStartIndex = m.index;
+            // let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
+            // let srtStartIndex = str.indexOf(searchStr);
             console.log(srtStartIndex,srtEndIndex)
-            let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);           
-            newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
+            let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);   
+            console.log(newStr)     
+            let replace = newStr.substring(srtStartIndex,srtEndIndex)
+            console.log(replace)
+            console.log(newStr)   
+            let replacestr = replace.replace(/<[^>]+>/g,'')
+            console.log(replacestr)
+            let replaceL = replacestr.length;
+            console.log(replaceL)
+            console.log(newStr.substring(srtStartIndex+replaceL+spanCount))
+            console.log(newStr.substring(srtStartIndex+replaceL+spanCount))
+            if(span){
+                newStr = newStr.substring(0, srtStartIndex) + '</span>'+(item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ replacestr+newStr.substring(srtStartIndex+replaceL+spanCount);          
+            }else{
+                newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
+            }
+            //newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
+            console.log(newStr)
             str = newStr;
             console.log(str)
         })
         $('#spanBox').html(str)
-        // let hoverstrH = $('#spanBox').html()//有标签的
-        // let nhoverstr = $('#spanBox').text()//有空格的
-        // console.log(nhoverstr)
-        // let hoverstr = nhoverstr.replace(/\s/g,'');//没有空格，匹配查找的
         
-        // let hoverSearchStr = $(e.target).text()//查询的  
-
-        // console.log(hoverstr)  
-        // console.log(hoverstrH)
-        // console.log(hoverSearchStr) 
-        // // let textArr = []
-        
-        // // hoverstrH = hoverstrH.replace(/<[^>]+>/g,"")
-        // // console.log(hoverstrH)
-        // var reg = /<[^>]+>/g;//标签
-        // var span = hoverstrH.match(reg);  //全局匹配所有标签
-        // console.log(span);
-        // var reg2 = /([^*]+?)/g
-        // var s = hoverstrH.match(reg2);  //全局匹配所有标签
-        // console.log(s);
-        // // var obj = $("#spanBox").clone()
-        // // var span = obj.find(':nth-child(n)')
-        // // console.log(span)
-        // // span.remove()
-        // // var str=obj.html()
-        // // console.log(str)
-        // // textArr.push(str)
-        // let strArr = nhoverstr.split('')
-        // console.log(strArr)
-        // // $('#spanBox span').each(function(){
-        //     // let hoverstr  = $(this).text()
-        //     // hoverstr = hoverstr.replace(/\s/g,'')
-        //     // console.log(hoverstr)
-        //     console.log(hoverstr.indexOf(hoverSearchStr))
-        //     let srtEndIndex = hoverstr.indexOf(hoverSearchStr) + hoverSearchStr.length;
-        //     let srtStartIndex = hoverstr.indexOf(hoverSearchStr);
-        //     console.log(srtEndIndex,srtStartIndex)
-        // let nStartStrArr = strArr.slice(0,srtStartIndex)
-        // let startCount = 0,endCount = 0;          
-        // nStartStrArr.forEach((item)=>{
-        //     if(item==' '){
-        //         startCount++
-        //     }
-        // })
-
-        // let nEndStrArr = strArr.slice(0,srtEndIndex)
-        // nEndStrArr.forEach((item)=>{
-        //     if(item==' '){
-        //         endCount++
-        //     }
-        // })
-        // console.log(startCount,endCount)
-        //     let newStr = hoverstr.substring(0, srtEndIndex) + "</span>" + hoverstr.substring(srtEndIndex); 
-        //     newStr = newStr.substring(0, srtStartIndex) + '<span style="background:#ffd891;">' + newStr.substring(srtStartIndex);
-        //     $('#spanBox').html(newStr)    
-                 
-            // textArr.push()
-        // })
-         
-        // let strArr = hoverstr.split('')
-        // this.strData.color.map((item)=>{
-        //     let underscore = item.underscore?'underline':'none';
-        //     let nStartStrArr = strArr.slice(0,item.start)
-        //     let startCount = 0,endCount = 0;          
-        //     nStartStrArr.forEach((item)=>{
-        //         if(item==' '){
-        //             startCount++
-        //         }
-        //     })
-        //     let nEndStrArr = strArr.slice(0,item.end)
-        //     nEndStrArr.forEach((item)=>{
-        //         if(item==' '){
-        //             endCount++
-        //         }
-        //     })
-
-        //     let searchStr  = strArr.slice(item.start+startCount,item.end+endCount).join('');
-
-        //     console.log(searchStr)
-        //     let srtEndIndex = hoverstr.indexOf(searchStr) + searchStr.length;
-        //     let srtStartIndex = hoverstr.indexOf(searchStr);
-        //     let newStr = hoverstr.substring(0, srtEndIndex) + "</span>" + hoverstr.substring(srtEndIndex);           
-        //     newStr = newStr.substring(0, srtStartIndex) + '<span style="color:'+item.color+';text-decoration:'+underscore+'">' + newStr.substring(srtStartIndex);          
-        //     hoverstr = newStr;
-        // })
-        // console.log(hoverSearchStr.length)
-        // console.log(nhoverstr.indexOf(hoverSearchStr))
-        
-        // let hoversrtEndIndex = nhoverstr.indexOf(hoverSearchStr) + hoverSearchStr.length;
-        // let hoversrtStartIndex = nhoverstr.indexOf(hoverSearchStr);
-        // console.log(hoversrtEndIndex,hoversrtStartIndex)
-        // let nStartStrArr = strArr.slice(0,hoversrtStartIndex)
-        // let hoverstartCount = 0,hoverendCount = 0;
-        
-        // nStartStrArr.forEach((item)=>{
-        //     if(item==' '){
-        //         hoverstartCount++
-        //     }
-        // })
-        // let nEndStrArr = strArr.slice(0,hoversrtEndIndex)
-        
-        // nEndStrArr.forEach((item)=>{
-        //     if(item==' '){
-        //         hoverendCount++
-        //     }
-        // })
-        // console.log(hoverstartCount,hoverendCount)
-        // let newHoverStr = hoverstr.substring(0, hoversrtEndIndex+hoverendCount+1) + "</span>" + hoverstr.substring(hoversrtEndIndex+hoverendCount+1);           
-        // newHoverStr = newHoverStr.substring(0, hoversrtStartIndex+hoverstartCount+1) + '<span style="background:#ffd891;">' + newHoverStr.substring(hoversrtStartIndex+hoverstartCount+1);          
-        // hoverstr = newHoverStr;
-        // console.log(hoverstr)
-        // $('#spanBox').html(hoverstr)
         
         $(e.target).addClass('liactiveClass').siblings().removeClass('liactiveClass')
     },
@@ -432,5 +352,7 @@ methods:{
 .liactiveClass.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
     color: #fff !important;
 }
-
+#spanbox{
+    text-align: left;
+}
 </style>

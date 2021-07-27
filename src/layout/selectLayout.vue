@@ -78,10 +78,10 @@
         </v-list>
      
       </div>
-        <!-- <component :is="currentTab"></component> -->
-      <keep-alive>
+       
+      
         <router-view  :view="currentTab" />
-      </keep-alive>
+     
         
     </div>
     
@@ -250,13 +250,13 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
   text-shadow: 0 1px 0 #fff;
   box-shadow: 0px 2px 4px -1px #2477a8;
 }
-.select {
+/* .select {
   position: fixed;
   bottom: 100px;
   right: 50px;
   width: 200px;
-}
-.select >>>.v-text-field--outlined fieldset{
+} */
+/* .select >>>.v-text-field--outlined fieldset{
   border-color: #429fd5;
 }
 .select >>>.v-input__slot{
@@ -264,19 +264,19 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
 }
 .select >>>.v-icon.v-icon{
   color:#429fd5;
-}
+} */
 .content{
   position: relative;
   /* padding:0 280px 0 80px; */
   
 }
 .content{
-  background: url('../assets/white_corner.gif') no-repeat;
+  background: url('../assets/white_corner.png') no-repeat;
   background-attachment: fixed;
   background-position: 100% 100%;
 }
 body[theme-mode='dark'] .content{
-  background: url('../assets/dark_corner.gif') no-repeat;
+  background: url('../assets/dark_corner.png') no-repeat;
   background-attachment: fixed;
   background-position: 100% 100%;
 }

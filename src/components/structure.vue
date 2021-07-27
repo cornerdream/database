@@ -123,7 +123,7 @@
 </div>
 </template>
 <script>
-// import 'structure-3d-webgl.min.js'
+
 import $ from 'jquery'
 export default {
 name: 'structure',

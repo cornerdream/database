@@ -316,6 +316,7 @@ methods:{
         $('#areab').html('') 
         console.log('area')
         this.antvData=[];
+        if(!this.data){return}
         for(var item in this.data){
         
         for(var obj in this.data[item]){
@@ -323,7 +324,12 @@ methods:{
             let type1 = {'type':item}
         
             type1['year'] = obj;
-            var value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+            var value1;
+            if(typeof this.data[item][obj]=='object'){
+            value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+            }else{
+            value1 = this.data[item][obj]
+            }
         
             type1['value'] = value1;
         

@@ -21,6 +21,7 @@ body {
   padding: 0;
   font-size: 14px;
   background-color: $mode-white;
+  min-width: 1290px;
 }
 body[theme-mode=dark] {
   background-color: $mode-dark;
@@ -105,4 +106,59 @@ $--color-info: $info-color;
   &-info {
     background: $--color-info;
   }
+}
+
+.container .v-tab{
+  color: #0079b5;
+  padding: .5rem 1rem;
+  border-radius: .25rem;
+}
+
+.container .seqTabActive{
+  color: #fff;
+  background-color: #0079b5;
+}
+
+#search  .v-input{
+border: 1px solid #429fd5;
+border-radius: 0 ;
+color:#a0a0a0; 
+}
+#search .v-toolbar__content, .v-toolbar__extension {
+  padding:0;
+}
+#search .v-text-field.v-text-field--solo .v-input__control{
+min-height: 38px;
+}
+#search .v-btn:not(.v-btn--round).v-size--default{
+padding:0 26px;
+margin-left: 90px;
+}
+#select{
+width: 200px;
+height: 100%;
+position: absolute;
+right: 0;
+bottom: 0;
+z-index: 9999;
+}
+.select{
+width: 200px;
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+}
+.select .v-text-field--outlined fieldset{
+  border-color: #429fd5;
+}
+.select .v-input__slot{
+  border-color: #429fd5;
+}
+.select .v-icon.v-icon{
+  color:#429fd5;
+}
+.component{
+padding:0 200px 0 0;
+min-height: 520px;
 }

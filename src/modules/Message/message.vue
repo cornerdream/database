@@ -108,10 +108,10 @@ $btnDark: darken($btnMain, 5%);
   align-items: center;
 }
 .alert.success{
-    background-color: #4caf50;
+    background-color: $success-color;
 } 
 .alert.error{
-    background-color: #ff5252;
+    background-color: $danger-color;
 }
 .flex {
   flex: 1;
