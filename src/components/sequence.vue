@@ -54,9 +54,9 @@
             <v-card
             flat
             >
-            <v-card-title>P04637</v-card-title>
+            <v-card-title>{{gene}}</v-card-title>
         
-            <v-card-text>
+            <!-- <v-card-text>
                 <v-row
                 align="center"
                 class="mx-0"
@@ -72,7 +72,7 @@
                 </v-row>
         
                
-            </v-card-text>
+            </v-card-text> -->
         
             <v-divider class="mx-4"></v-divider>
         
@@ -154,74 +154,131 @@
 import $ from 'jquery'
 export default {
 name: 'sequence',
+props:['seq','cov','gene'],
 data() {
 return {
     tab: null,
     tabItems: [
         {
-            text:'human',
+            text:'HLA',
             list:[
-                {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
+                // {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
             ]
         },
-        {   
-            text:'mouse',
-            list:[
-                {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
-                {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
-                {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
-                {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
-                {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
-                {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
-                {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
-                {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
-                {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
-                {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
+        // {   
+        //     text:'mouse',
+        //     list:[
+        //         {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
+        //         {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
+        //         {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
+        //         {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
+        //         {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
+        //         {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
+        //         {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
+        //         {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
+        //         {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
+        //         {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
                 
-            ]
-        }
+        //     ]
+        // }
     ],
-    humanList:[
-                {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
-    ],
-    mouseList:[
-        {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
-        {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
-        {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
-        {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
-        {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
-        {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
-        {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
-        {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
-        {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
-        {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
-    ],
-    model:1,
-    str:'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD'
-    ,
+    // str:'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD'
+    // ,
+    str:'',
     color:[
-        {"color":"#1f78b4","underscore":true,"start":99,"end":290},
-        {"color":"#33a02c","underscore":true,"start":319,"end":359},
-        {"color":"#e31a1c","underscore":true,"start":6,"end":31},
-        {"color":"#ff7f00","underscore":true,"start":35,"end":60}
+        // {"color":"#1f78b4","underscore":true,"start":99,"end":290},
+        // {"color":"#33a02c","underscore":true,"start":319,"end":359},
+        // {"color":"#e31a1c","underscore":true,"start":6,"end":31},
+        // {"color":"#ff7f00","underscore":true,"start":35,"end":60}
+    ],
+    colorItems:[
+        '#1f78b4',
+        '#33a02c',
+        '#e31a1c',
+        '#ff7f00'
     ],
     chipItems:[
-        {color:'#1f78b4',text:'a'},
-        {color:'#33a02c',text:'b'},
-        {color:'#e31a1c',text:'c'},
-        {color:'#ff7f00',text:'d'}
+        // {color:'#1f78b4',text:'a'},
+        // {color:'#33a02c',text:'b'},
+        // {color:'#e31a1c',text:'c'},
+        // {color:'#ff7f00',text:'d'}
     ]
 }
 },
+watch:{
+    seq(){
+        this.loadseq()
+        this.load()
+    },
+    cov(){
+        this.loadcolor()
+        this.load()
+    }
+},
 created() {
-    
+    this.loadseq()
+    this.loadcolor()
+    this.load()
 },
 mounted() {
+    this.loadseq()
+    this.loadcolor()
     this.load()
 },
 methods:{
+    loadcolor(){
+        this.color=[];
+        this.chipItems=[];
+        this.cov.map((item,i)=>{
+            var colorObj = {
+                color:this.colorItems[i],
+                underscore:true,
+                start:item.domain_start,
+                end:item.domain_end
+            }
+            this.color.push(colorObj)
+            // this.color[i].start = item.domain_start;
+            // this.color[i].end = item.domain_end;
+            var chipObj = {
+                color:this.colorItems[i],
+                text:item.domain_name
+            }
+            this.chipItems.push(chipObj)
+            // this.chipItems[i].text = item.domain_name
+        })
+    },
+    loaddomain(){
+        console.log(this.domain)
+        this.tabItems[0].list=[];
+        let obj = {
+            title:this.domain.domain_name,
+            start:this.domain.domain_start,
+            end:this.domain.domain_end
+        }
+        this.tabItems[0].list.push(obj)
+        console.log(this.tabItems)
+    },
+    loadseq(){
+        // console.log(this.data)
+        // let data = this.data[this.id];
+        // console.log(data)
+        // Object.keys(data).map((item)=>{
+        //     let obj = {title:item}
+        //     this.tabItems[0].list.push(obj)
+        // })
+        
+        console.log(this.seq)
+        
+        this.str='';
+        
+        this.str = this.seq.seq;
+        
+        console.log(this.str)
+    },
     load(){
+        if(!this.str) return
         let str=this.str.replace(/(.{10})/g, '$1 ')
+        console.log(str)
         // let brstr = str.replace(/(.{88}))/g,'$1<br>')
         // console.log(brstr)
         let strArr = str.split('')

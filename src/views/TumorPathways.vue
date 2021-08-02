@@ -7,7 +7,7 @@
         append-icon="mdi-pencil"
         v-model="select"
         :loading="loading"
-        :items="states"   
+        :items="cmp_id"   
         :search-input.sync="search"
         @change="onsearch"
         @keyup.enter="onsearch"
@@ -49,7 +49,7 @@
       <div class="select">
           <v-combobox
           v-model="Pathways.select1"
-          :items="Pathways.items1"
+          :items="pathway_list"
           label="Pathways list"
           outlined
           dense
@@ -71,6 +71,7 @@
 </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 import Table from '../components/table.vue'
 import Pathway from '../components/pathway.vue'
 export default {
@@ -78,6 +79,9 @@ name: 'TumorPathways',
 components:{ 
     Table,
     Pathway,
+},
+computed: {
+  ...mapGetters(['cmp_id','pathway_list']),
 },
 data() {
 return {
@@ -94,7 +98,6 @@ return {
     },
     pathwaysData:{},
     pathwaysTableData:{},
-    switchTable:true,
     tab: 0,
     tabItems:[
         {text:'table'},
@@ -102,44 +105,14 @@ return {
     ]
 }
 },
-// watch: {
-//     search (val) {
-//       val && val !== this.select && this.querySelections(val)
-//     },
-//   },
 created() {
-    this.loadPathways();
-    this.load();
+   
 },
 mounted() {},
 methods:{
-    load(){
-      fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.states = data.datainfo.cmp_id;
-      })
-    },
-    // querySelections (v) {
-    //   this.loading = true
-    //   // Simulated ajax query
-    //   setTimeout(() => {
-    //     this.items = this.states.filter(e => {
-    //       return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-    //     })
-    //     this.loading = false
-    //   }, 500)
-    // },
-    loadPathways(){
-      fetch('http://192.168.1.128:8000/api/pathway/pathwayid/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.Pathways.items1 = data.datainfo;
-      })
-    },
+    
     onsearch(){
       if(this.Pathways.select1){
-        console.log(this.tab)
         if(this.tab==0){
           this.onselectPathwaysTable()
         }else{
@@ -148,21 +121,24 @@ methods:{
         
       }
     },
-    PathwayschangeArr(){     
-      console.log(this.tab)
-      if(this.tab==0){
+    PathwayschangeArr(){    
+      if(this.select||this.search){
+        if(this.tab==0){
           this.onselectPathwaysTable()
         }else{
           this.onselectPathways()
         } 
+      } 
+      
     },
     PathwayschangeArr3(){
-      console.log(this.tab)
-      if(this.tab==0){
+      if(this.select||this.search){
+        if(this.tab==0){
           this.onselectPathwaysTable()
         }else{
           this.onselectPathways()
         }
+      }  
     },
     onselectPathwaysTable(){
       fetch('http://192.168.1.128:8000/api/pathway/pathwaytable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1).then((res)=>{
@@ -187,10 +163,12 @@ methods:{
       })
     },
     onchange(){
-      if(this.tab==0){
-        this.onselectPathways()
-      }else{
-        this.onselectPathwaysTable() 
+      if(this.select||this.search){
+        if(this.tab==0){
+          this.onselectPathways()
+        }else{
+          this.onselectPathwaysTable() 
+        }
       }
     }
 }

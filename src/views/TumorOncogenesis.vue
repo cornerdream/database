@@ -45,7 +45,9 @@
         </v-tabs> -->
         <!-- <Table :data="pathwaysTableData" v-if="tab==0"></Table>
         <Pathway :data="pathwaysData" v-else></Pathway> -->
-        <Network></Network>
+        <!-- <Network></Network> -->
+        <HeatmapShape></HeatmapShape>
+        <!-- <Heatmap></Heatmap> -->
       </div>
       <div class="select">
         <v-combobox
@@ -87,13 +89,15 @@
 </div>
 </template>
 <script>
-import Network from '../components/network.vue'
-
+// import Network from '../components/network.vue'
+import HeatmapShape from '../components/heatmap-shape.vue'
+// import Heatmap from '../components/heatmap.vue'
 export default {
 name: 'TumorOncogenesis',
 components:{
-  Network
-   
+  // Network
+  HeatmapShape,
+  // Heatmap
 },
 data() {
 return {

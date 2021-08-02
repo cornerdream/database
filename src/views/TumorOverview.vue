@@ -7,7 +7,7 @@
         append-icon="mdi-pencil"
         v-model="select"
         :loading="loading"
-        :items="states"   
+        :items="cmp_id"   
         :search-input.sync="search"
         @change="onsearch(select)"
         @keyup.enter="onsearch(search)"
@@ -29,19 +29,22 @@
         </v-btn>
       </v-toolbar>
       <div class="component">
-        <SimpleTable  :data="tableData" @loadsearch="onsearch" :id="this.select||this.search"></SimpleTable>
+        <SimpleTable  :data="tableData"></SimpleTable>
       </div>
       
     </div>
 </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 import SimpleTable from '../components/simpleTable.vue'
 export default {
 name: 'TumorOverview',
 components:{
-    SimpleTable,
-    
+  SimpleTable,
+},
+computed: {
+  ...mapGetters(['cmp_id']),
 },
 data() {
 return {
@@ -52,38 +55,21 @@ return {
     tableData:[],
 }
 },
-// watch: {
-//     search (val) {
-//       val && val !== this.select && this.querySelections(val)
-//     },
-//   },
 created() {
-    this.load();
 },
-mounted() {},
+mounted() {
+  // this.$EventBus.$on("aMsg", (msg) => {
+  //     // A发送来的消息
+  //     console.log(msg)
+  //   this.onsearch(msg);
+  // })
+},
 methods:{
-    load(){
-      fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.states = data.datainfo.cmp_id;
-      })
-    },
-    // querySelections (v) {
-    //   this.loading = true
-    //   // Simulated ajax query
-    //   setTimeout(() => {
-    //     this.items = this.states.filter(e => {
-    //       return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-    //     })
-    //     this.loading = false
-    //   }, 500)
-    // },
     onsearch(data){
       fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+data).then((res)=>{
         return res.json()
       }).then((data)=>{
-        this.tableData = data.datainfo;
+        this.tableData = data.data_info;
       })
     },  
 }

@@ -11,7 +11,7 @@ import './styles/index.scss'
 Vue.config.productionTip = false
 Vue.use(Message)
 // Vue.prototype.$message = Message
-
+Vue.prototype.$EventBus = new Vue()
 
 new Vue({
   vuetify,

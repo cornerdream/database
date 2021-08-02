@@ -1,8 +1,20 @@
 <!-- -->
 <template>
 <div id="tab">
-
-  <v-toolbar
+  
+  <v-data-table
+    :headers="newHeaders"
+    :items="newItems"
+    :items-per-page.sync="itemsPerPage"
+    :page.sync="page"
+    :search="search"
+    :sort-by="sortBy.toLowerCase()"
+    :sort-desc="sortDesc"
+    class="elevation-1"
+    hide-default-footer
+  >
+    <template v-slot:top>
+      <v-toolbar
     id="tabHeader"
     dark
     color="#7695b1"
@@ -44,7 +56,7 @@
       :value="false"
     >
       DOWNLOAD
-      <!-- <v-icon>mdi-download</v-icon> -->
+      
     </v-btn>
     <v-spacer></v-spacer>
     <v-text-field
@@ -57,137 +69,26 @@
       prepend-inner-icon="mdi-magnify"
       label="Search"
     ></v-text-field>
-    <v-spacer></v-spacer>
-
-    <v-switch
-     v-model="switchTable"
-    :label="switchTable ? 'ccl_mutation_from_ccle' : 'ccl_mutation_from_cosmic'"
-    class="tabSwitch"
-    @change="load"
-    ></v-switch>        
-  </v-toolbar>
-  <v-data-table
-    :headers="newHeaders"
-    :items="newItems"
-    :items-per-page.sync="itemsPerPage"
-    :page.sync="page"
-    :search="search"
-    :sort-by="sortBy.toLowerCase()"
-    :sort-desc="sortDesc"
-    class="elevation-1"
-    hide-default-footer
-  >
-    <template v-slot:item.COSMIChsCnt="{ item }" v-if="switchTable">
+    
+      </v-toolbar>
+    </template>  
+    <template v-slot:item.chr="{ item }" >
       <!-- <v-chip
         :color="getColor(item.COSMIChsCnt)"
         dark
       >
        {{ item.COSMIChsCnt }}
       </v-chip> -->
-        <div class="color" :style="{'background':getColor(item.COSMIChsCnt)}" >
-          {{ item.COSMIChsCnt }}
+        <div class="color" :style="{'background':getColor(item.chr)}" >
+          {{ item.chr }}
         </div> 
     </template>
-    <template v-slot:item.Gene_CDS_length="{ item }" v-else>
-      <!-- <v-chip
-        :color="getColor(item.COSMIChsCnt)"
-        dark
-      >
-       {{ item.COSMIChsCnt }}
-      </v-chip> -->
-        <div class="color" :style="{'background':getColor(item.Gene_CDS_length)}" >
-          {{item.Gene_CDS_length}}
-        </div>
-         
-    </template>
-    <!-- <template v-slot:footer>
-      <v-row
-      id="tabFooter"
-      align="center"
-      justify="center"
-    >
-            
-      <div class="text-center">
-        Legend
-        <v-chip
-          x-small
-          class="ma-2"
-          color="#aae0da"
-          label
-          text-color="white"
-        >
-                            
-        </v-chip>
-        Frame Shift   
-        <v-chip
-          x-small
-          class="ma-2"
-          color="#e0c3aa"
-          label
-          text-color="white"
-        >
-          
-        </v-chip>
-        In Frame
-        <v-chip
-          x-small
-          class="ma-2"
-          color="#93afcd"
-          label
-          text-color="white"
-        >
-          
-        </v-chip>
-        Missens
-        <v-chip
-          x-small
-          class="ma-2"
-          color="#acddf2"
-          label
-          text-color="white"
-        >
-          
-        </v-chip>
-        Nonsense
-        <v-chip
-          x-small
-          class="ma-2"
-          color="#96a7f3"
-          label
-          text-color="white"
-        >  
-        </v-chip>
-        silent
-      </div>
-      <v-spacer></v-spacer>
-  
-      <span
-        class="mr-4"
-      >
-        Page {{ page }} of {{ numberOfPages }}
-      </span>
-      <v-btn
-        x-small
-        fab
-        dark
-        color="blue darken-3"
-        class="mr-1"
-        @click="formerPage"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-      <v-btn
-        x-small
-        fab
-        dark
-        color="blue darken-3"
-        class="ml-1"
-        @click="nextPage"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-row>
-    </template>     -->
+    
+    
+    
+    
+    
+    
   </v-data-table>
   <v-toolbar
     dark
@@ -283,6 +184,7 @@
 </div>
 </template>
 <script>
+
 export default {
 name: 'tab',
 props:['data'],
@@ -302,7 +204,7 @@ return {
     sortDesc: false,
     page: 1,
     itemsPerPage: 8,
-    sortBy: 'Gene_name',
+    sortBy: 'gene',
     // keys: [
     //   'Name',
     //   'Calories',
@@ -513,28 +415,19 @@ return {
     newkeys:[],
     newItems:[],
     newHeaders:[],
-    switchTable:false,
-    // data:{},
-    newData:[]
 }
 },
 watch:{
-  data(newv){
-    console.log('监听')
-    console.log(newv)
+  data(){
     this.load()
   }
 },
 created() {
-  // this.id&&this.loadData()
   console.log('初始化')
-  // this.pathway_id&&this.loadData({omics_type:this.omics_type,pathway_id:this.pathway_id})
-  // this.loadNewData();
-  console.log(this.data)
   this.load();
 },
 mounted() {
-//  this.load()
+ 
 },
 methods: {
     nextPage () {
@@ -547,53 +440,31 @@ methods: {
       this.itemsPerPage = number
     },
     getColor (calories) {
-      if (calories > 9000) return '#96a7f3'
-      else if(calories > 7000) return '#acddf2'
-      else if (calories > 5000) return '#93afcd'
-      else if (calories > 3000) return '#e0c3aa'
+      if (calories > 20) return '#96a7f3'
+      else if(calories > 15) return '#acddf2'
+      else if (calories > 10) return '#93afcd'
+      else if (calories > 5) return '#e0c3aa'
       else return '#aae0da'
     },
     load(){
       this.newItems=[];
       this.newHeaders=[];
-
-    //   console.log(this.data)
-    //   console.log(this.switchTable)
-    //  console.log(this.data.ccl_mutation_from_ccle)
-    //  console.log(this.data.ccl_mutation_from_cosmic)
-    //  let newData;
-    //  if(this.switchTable){
-    //    console.log('ccl_mutation_from_ccle')
-    //    newData = this.data.ccl_mutation_from_ccle
-    //  }else{
-    //    console.log('ccl_mutation_from_cosmic')
-    //    newData = this.data.ccl_mutation_from_cosmic
-    //  }
-      let newData = this.switchTable?this.data.ccl_mutation_from_ccle:this.data.ccl_mutation_from_cosmic
-
-      console.log(newData)
-      if(!newData) return 
+      console.log(this.data)
+      console.log(this.data)
+      if(!this.data) return 
+      let newData = this.data
       if(newData!==undefined&&newData.length>0){
         let newKeys = Object.keys(newData[0]);
         newKeys = newKeys.filter((item)=>item!='id')
         console.log(newKeys)
           newKeys.forEach((key)=>{
             let obj = {text:key,value:key};  
-
-            this.newHeaders.push(obj) 
+            this.newHeaders.push(obj)           
           })
-        
-          
       }
-  
-        console.log(this.newHeaders)
-       
-        this.newItems = newData
-       
-        console.log(this.newItems)
-    
-      
-      
+      console.log(this.newHeaders)
+      this.newItems = newData    
+      console.log(this.newItems)
     },
     
   },

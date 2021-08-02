@@ -7,10 +7,10 @@
         append-icon="mdi-pencil"
         v-model="select"
         :loading="loading"
-        :items="states"   
+        :items="cmp_id"   
         :search-input.sync="search"
-        @change="()=>{if(Omics.select1){onselect()}}"
-        @keyup.enter="()=>{if(Omics.select1){onselect()}}"
+        @change="onsearch"
+        @keyup.enter="onsearch"
         cache-items
         flat
         hide-no-data
@@ -23,7 +23,7 @@
         rounded
         color="#2477a8"
         dark
-        @click="()=>{if(Omics.select1){onselect()}}"
+        @click="onsearch"
         >
           SEARCH
         </v-btn>
@@ -35,7 +35,7 @@
       <div class="select">
         <v-combobox
         v-model="Omics.select1"
-        :items="Omics.items1"
+        :items="gene_class"
         label="Gene set"
         outlined
         dense
@@ -72,82 +72,61 @@
 </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-// import Area from '../components/area.vue'
 export default {
 name: 'TumorOmics',
-components:{
-   
+components:{ 
     Scatter,
-    // Area,
-    
-  },
+},
+computed: {
+  ...mapGetters(['cmp_id','gene_class']),
+},
 data() {
 return {
     loading: false,
-      search: null,
-      select: null,
-      states: [],
-      Omics:{
-        select1: '',
-        items1: [],
-        disabled1:false,
-        value2:'',
-        disabled2:false,
-        select3: 'Mutation',
-        items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-      },
-      scatterData:[],
-
-      
+    search: null,
+    select: null,
+    states: [],
+    Omics:{
+      select1: '',
+      items1: [],
+      disabled1:false,
+      value2:'',
+      disabled2:false,
+      select3: 'Mutation',
+      items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+    },
+    scatterData:[], 
 }
 },
-//  watch: {
-//     search (val) {
-//       val && val !== this.select && this.querySelections(val)
-//     },
-//   },
 created() {
-    this.loadOmics();
-    this.load();
 },
 mounted() {},
 methods:{
-    load(){
-      this.currentView = this.$route.query.view
-      fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.states = data.datainfo.cmp_id;
-      })
-    },
-    // querySelections (v) {
-    //   this.loading = true
-    //   // Simulated ajax query
-    //   setTimeout(() => {
-    //     this.items = this.states.filter(e => {
-    //       return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-    //     })
-    //     this.loading = false
-    //   }, 500)
-    // },
-    loadOmics(){
-      fetch('http://192.168.1.128:8000/api/omics/gene_class/').then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        this.Omics.items1 = data.datainfo.gene_class;
-      })
+  
+    onsearch(){
+      if(this.Omics.select1){
+        this.onselect()
+      }
     },
     OmicschangeArr(){
       this.Omics.disabled2 = true;
-      this.onselect();
+      if(this.search||this.select){
+        this.onselect();
+      }
+      
     },
     OmicschangeArr2(){
       this.Omics.disabled1 = true;
-      this.onselect();
+      if(this.search||this.select){
+        this.onselect();
+      }
     },
     OmicschangeArr3(){
-      this.onselect(); 
+      if(this.search||this.select){
+        this.onselect();
+      }
     },
     onselect(){
       fetch('http://192.168.1.128:8000/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{

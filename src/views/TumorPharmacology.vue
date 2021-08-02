@@ -7,7 +7,7 @@
         append-icon="mdi-pencil"
         v-model="select"
         :loading="loading"
-        :items="states"   
+        :items="cmp_id"   
         :search-input.sync="search"
         @change="onsearch"
         @keyup.enter="onsearch"
@@ -29,40 +29,71 @@
         </v-btn>
       </v-toolbar>
       <div class="component">
-        <!-- <v-tabs
-          v-model="tab"
-          background-color="transparent"
-          class="seqTab"
-          active-class="seqTabActive"
-        >
-            <v-tab
-            v-for="item in tabItems"
-            :key="item.text"
-            @change="onchange"
-            >
-            {{ item.text }}
-            </v-tab>
-        </v-tabs> -->
-        <!-- <Table :data="pathwaysTableData" v-if="tab==0"></Table>
-        <Pathway :data="pathwaysData" v-else></Pathway> -->
-        <Human></Human>
+
+        <v-select
+          v-model="menuselect"
+          :items="selectitems"
+          label="Outlined style"
+          dense
+          outlined
+          @change="onchange"
+        ></v-select>
+        <Scatter :data="PharmacologyData" :x="'DRUG_NAME'" :y="Pharmacology.select3"  v-if="menuselect=='scatter'"></Scatter>
+        <!-- <ScatterList :data="PharmacologyData" :x="'DRUG_NAME'" :y="'AUC'" :l="'LN_IC50'" v-if="menuselect=='scatter'"></ScatterList> -->
+        <div v-else>
+          <v-row
+          align="center"
+          justify="center"
+          >
+            <v-col cols="4">
+              <Network></Network>
+            </v-col>
+            <v-col cols="8">
+              <TablePharmacology :data="tableData"></TablePharmacology>
+            </v-col>
+          </v-row>
+        </div>
+ 
       </div>
       <div class="select">
         <v-combobox
         v-model="Pharmacology.select1"
-        :items="Pharmacology.items1"
-        label="Gene set"
+        :items="drugclass"
+        label="Drug set"
         outlined
         dense
         solo
         @input="PharmacologychangeArr"
         :disabled="Pharmacology.disabled1"
         ></v-combobox>
+        <v-combobox
+        v-model="Pharmacology.select2"
+        :items="gene_class"
+        label="Gene set"
+        outlined
+        dense
+        solo
+        @input="PharmacologychangeArr2"
+        :disabled="Pharmacology.disabled2"
+        ></v-combobox>
+        <v-text-field 
+        placeholder="Drug list"
+        :value="Pharmacology.value1"
+        @keyup.enter="PharmacologychangeArr3"
+        :disabled="Pharmacology.disabled3"
+        >
+          <v-icon
+            slot="append"
+            color="#429fd5"
+          >
+          mdi-pencil
+          </v-icon>
+        </v-text-field>
         <v-text-field 
         placeholder="Gene list"
         :value="Pharmacology.value2"
-        @keyup.enter="PharmacologychangeArr2"
-        :disabled="Pharmacology.disabled2"
+        @keyup.enter="PharmacologychangeArr4"
+        :disabled="Pharmacology.disabled4"
         >
           <v-icon
             slot="append"
@@ -74,11 +105,11 @@
         <v-combobox
           v-model="Pharmacology.select3"
           :items="Pharmacology.items3"
-          label="Gene data"
+          label="drug response indicator"
           outlined
           dense
           solo
-          @input="PharmacologychangeArr3"
+          @input="PharmacologychangeArr5"
           allow-overflow
         ></v-combobox>
       </div>
@@ -92,44 +123,137 @@
 </div>
 </template>
 <script>
-import Human from '../components/human.vue'
+import {mapGetters} from 'vuex'
+import Scatter from '../components/scatter.vue'
+import Network from '../components/network.vue'
+import TablePharmacology from '../components/tablePharmacology.vue'
 export default {
 name: 'TumorPharmacology',
 components:{
-     Human
+  
+  Scatter,
+  Network,
+  TablePharmacology
+},
+computed: {
+  ...mapGetters(['cmp_id','gene_class','drugclass']),
 },
 data() {
 return {
     loading: false,
-      search: null,
-      select: null,
-      states: [],
-      Pharmacology:{
-        select1: '',
-        items1: [],
-        disabled1:false,
-        value2:'',
-        disabled2:false,
-        select3: 'Mutation',
-        items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-      },
-      scatterData:[],
+    search: null,
+    select: null,
+    states: [],
+    Pharmacology:{
+      select1: '',
+      items1: [],
+      disabled1:false,
+      select2: '',
+      items2: [],
+      disabled2:false,
+      value1:'',
+      disabled3:false,
+      value2:'',
+      disabled4:false,
+      select3: 'LN_IC50',
+      items3: ['LN_IC50','AUC'], 
+    },
+    menuselect:'scatter',
+    selectitems:['scatter','table'],
+    PharmacologyData:[],
+    tableData:[],
 }
 },
-created() {},
+created() {
+},
 mounted() {},
 methods:{
     onsearch(){
-      
+      if(this.Pharmacology.select1){
+        if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
+      }  
     },
     PharmacologychangeArr(){
-
+      this.Pharmacology.disabled2 = true;
+      this.Pharmacology.disabled3 = true;
+      this.Pharmacology.disabled4 = true;
+      if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
     },
     PharmacologychangeArr2(){
-
+      this.Pharmacology.disabled1 = true;
+      this.Pharmacology.disabled3 = true;
+      this.Pharmacology.disabled4 = true;
+      if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
     },
     PharmacologychangeArr3(){
-        
+      this.Pharmacology.disabled1 = true;
+      this.Pharmacology.disabled2 = true;
+      this.Pharmacology.disabled4 = true;  
+      if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
+    },
+    PharmacologychangeArr4(){
+      this.Pharmacology.disabled1 = true;
+      this.Pharmacology.disabled2 = true;
+      this.Pharmacology.disabled3 = true;  
+      if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
+    },
+    PharmacologychangeArr5(){
+        if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
+    },
+    onselect(){
+      fetch('http://192.168.1.128:8000/api/drug/drug_info/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+        return res.json()
+      }).then((data)=>{
+        this.PharmacologyData = data.data_info;
+      })
+      this.Pharmacology.disabled1 = false;
+      this.Pharmacology.disabled2 = false;
+      this.Pharmacology.disabled3 = false;  
+      this.Pharmacology.disabled4 = false;  
+    },
+    onselectTable(){
+      fetch('http://192.168.1.128:8000/api/drug/drugtable/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+        return res.json()
+      }).then((data)=>{
+        this.tableData = data.data_info;
+      })
+      this.Pharmacology.disabled1 = false;
+      this.Pharmacology.disabled2 = false;
+      this.Pharmacology.disabled3 = false;  
+      this.Pharmacology.disabled4 = false; 
+    },
+    onchange(){
+      if(this.search||this.select){
+        if(this.menuselect=='scatter'){
+          this.onselect()
+        }else{
+          this.onselectTable() 
+        }
+      }  
     }
 }
 }

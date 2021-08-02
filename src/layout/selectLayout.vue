@@ -79,8 +79,7 @@
      
       </div>
        
-      
-        <router-view  :view="currentTab" />
+      <router-view  :view="currentTab" />
      
         
     </div>
@@ -123,11 +122,6 @@ export default {
         icon:'mdi-home'
       },
     ],
-    
-    // items: [],
-    // search: null,
-    // select: null,
-    // states: [],  
     Menuitems: [
       { title: 'Overview'},
       { title: 'Omics' },
@@ -140,8 +134,6 @@ export default {
     ], 
     model: 0,
     currentTab:'',
-    // searchData:[],
-    
   }),
  
   mounted() {
@@ -189,7 +181,7 @@ export default {
       this.model = this.Menuitems.findIndex(item=>item.title==tab)
       this.$router.replace({query:{view:tab}})
       
-    }
+    },
   },
 };
 </script>
@@ -250,25 +242,8 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
   text-shadow: 0 1px 0 #fff;
   box-shadow: 0px 2px 4px -1px #2477a8;
 }
-/* .select {
-  position: fixed;
-  bottom: 100px;
-  right: 50px;
-  width: 200px;
-} */
-/* .select >>>.v-text-field--outlined fieldset{
-  border-color: #429fd5;
-}
-.select >>>.v-input__slot{
-  border-color: #429fd5;
-}
-.select >>>.v-icon.v-icon{
-  color:#429fd5;
-} */
 .content{
   position: relative;
-  /* padding:0 280px 0 80px; */
-  
 }
 .content{
   background: url('../assets/white_corner.png') no-repeat;

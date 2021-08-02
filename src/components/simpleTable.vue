@@ -27,13 +27,9 @@
 </div>
 </template>
 <script>
-// import { mapGetters } from 'vuex'
 export default {
 name: 'simpleTable',
-props:['data','id'],
-// computed: {
-//   ...mapGetters(['tableData'])
-// },
+props:['data'],
 data() {
 return {
     desserts: [],
@@ -48,31 +44,27 @@ created() {
   this.load()
 },
 mounted() {
-  // this.id&&this.$emit('loadsearch',this.id)
+  
 },
 methods:{
   load(){
-    // console.log('id')
-      // fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+this.id).then((res)=>{
-      //   return res.json()
-      // }).then((data)=>{
-      //   for(var item in data.datainfo){
-      //     let obj = {name:item,calories:data.datainfo[item]}
-      //     this.desserts.push(obj)
-      //   }
-      // })
-    // this.$store.dispatch('GetTableData',this.id).then(() => {
-    //   for(var item in this.tableData){
-    //     let obj = {name:item,calories:this.tableData[item]}
-    //     this.desserts.push(obj)
-    //   }
-    // })
-    
+    console.log(this.data)
     this.desserts = []
-    for(var item in this.data){
-      let obj = {name:item,calories:this.data[item]}
-      this.desserts.push(obj)
+    if(Array.isArray(this.data)){
+      this.data.forEach((item)=>{
+        let name = Object.keys(item);
+        name.map((n)=>{
+          let obj = {name:n,calories:item[n]}
+          this.desserts.push(obj)
+        })
+      })
+    }else{
+      for(var item in this.data){
+        let obj = {name:item,calories:this.data[item]}
+        this.desserts.push(obj)
+      }
     }
+    console.log(this.desserts)
   }
 }
 }
