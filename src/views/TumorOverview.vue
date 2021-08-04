@@ -36,6 +36,7 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import SimpleTable from '../components/simpleTable.vue'
 export default {
@@ -66,7 +67,8 @@ mounted() {
 },
 methods:{
     onsearch(data){
-      fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+data).then((res)=>{
+      console.log(baseUrl)
+      fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+data).then((res)=>{
         return res.json()
       }).then((data)=>{
         this.tableData = data.data_info;

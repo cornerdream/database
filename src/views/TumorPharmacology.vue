@@ -123,6 +123,7 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 import Network from '../components/network.vue'
@@ -225,7 +226,7 @@ methods:{
         }
     },
     onselect(){
-      fetch('http://192.168.1.128:8000/api/drug/drug_info/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+      fetch(baseUrl+'/api/drug/drug_info/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
         return res.json()
       }).then((data)=>{
         this.PharmacologyData = data.data_info;
@@ -236,7 +237,7 @@ methods:{
       this.Pharmacology.disabled4 = false;  
     },
     onselectTable(){
-      fetch('http://192.168.1.128:8000/api/drug/drugtable/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+      fetch(baseUrl+'/api/drug/drugtable/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
         return res.json()
       }).then((data)=>{
         this.tableData = data.data_info;

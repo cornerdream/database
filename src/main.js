@@ -9,9 +9,12 @@ import Message from './modules/Message'
 
 import './styles/index.scss'
 Vue.config.productionTip = false
+
 Vue.use(Message)
 // Vue.prototype.$message = Message
 Vue.prototype.$EventBus = new Vue()
+
+// Vue.prototype.baseUrl = process.env.NODE_ENV !== 'development'?'':'http://192.168.1.218:8001';
 
 new Vue({
   vuetify,

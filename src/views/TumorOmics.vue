@@ -29,7 +29,23 @@
         </v-btn>
       </v-toolbar>
       <div class="component">
-        <Scatter :data="scatterData" ></Scatter>
+        <v-tabs
+          v-model="tab"
+          background-color="transparent"
+          class="seqTab"
+          active-class="seqTabActive"
+        >
+            <v-tab
+            v-for="item in tabItems"
+            :key="item.text"
+            @change="onchange"
+            >
+            {{ item.text }}
+            </v-tab>
+        </v-tabs>
+        <Scatter :data="scatterData" v-if="tab==0"></Scatter>
+        <Table :data="tableData" :msg="current" v-else></Table>
+        <!-- {{tableData}} -->
         <!-- <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area> -->
       </div>
       <div class="select">
@@ -72,16 +88,20 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
+import Table from '../components/table.vue'
 export default {
 name: 'TumorOmics',
 components:{ 
     Scatter,
+    Table
 },
 computed: {
   ...mapGetters(['cmp_id','gene_class']),
 },
+props:['current'],
 data() {
 return {
     loading: false,
@@ -97,39 +117,79 @@ return {
       select3: 'Mutation',
       items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
     },
+    tab: 0,
+    tabItems:[
+        {text:'scatter'},
+        {text:'table'},
+    ],
     scatterData:[], 
+    tableData:[],
+    source:'',
+    msg:''
 }
 },
 created() {
+  console.log('omics')
+  console.log(this.current)
+  this.$EventBus.$on(this.current, (msg) => {
+      console.log(msg)
+      this.source = msg;  
+      if(this.search||this.select||this.Omics.select1){
+        if(this.tab==0){
+          this.onselect();
+        }else{
+          this.onselectTable()
+        }
+      }
+  })
 },
-mounted() {},
-methods:{
+mounted() {
   
+},
+methods:{
     onsearch(){
       if(this.Omics.select1){
-        this.onselect()
+        if(this.tab==0){
+          this.onselect()
+        }else{
+          this.onselectTable()
+        }
       }
     },
     OmicschangeArr(){
       this.Omics.disabled2 = true;
       if(this.search||this.select){
-        this.onselect();
+        if(this.tab==0){
+          this.onselect();
+        }else{
+          this.onselectTable()
+        }
       }
       
     },
     OmicschangeArr2(){
       this.Omics.disabled1 = true;
       if(this.search||this.select){
-        this.onselect();
+        if(this.tab==0){
+          this.onselect();
+        }else{
+          this.onselectTable()
+        }
+        
       }
     },
     OmicschangeArr3(){
       if(this.search||this.select){
-        this.onselect();
+        if(this.tab==0){
+          this.onselect();
+        }else{
+          this.onselectTable()
+        }
+        
       }
     },
     onselect(){
-      fetch('http://192.168.1.128:8000/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
+      fetch(baseUrl+'/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -141,6 +201,31 @@ methods:{
       this.Omics.disabled1 = false;
       this.Omics.disabled2 = false;
     },
+    onselectTable(){
+      fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'&source='+(this.source)).then((res)=>{
+        return res.json()
+      }).then((data)=>{
+        if(data.code==200){
+          this.tableData = data.data_info;
+        }else{
+         this.$alert.error(data.message)
+        }
+      })
+      this.Omics.disabled1 = false;
+      this.Omics.disabled2 = false;
+    },
+    onchange(){
+      if(this.source){
+        if(this.select||this.search){
+          if(this.tab==0){
+            this.onselectTable()
+          }else{
+            this.onselect();
+          }
+        }
+      }
+      
+    }
 }
 }
 </script>

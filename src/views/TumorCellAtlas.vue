@@ -2,7 +2,7 @@
   <div class="TumorCellAtlas">    
     
     <keep-alive>
-      <component :is="view"></component>
+      <component :is="view" :current="view"></component>
     </keep-alive>
    
   </div>

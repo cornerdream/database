@@ -2,12 +2,16 @@
 <template>
 <div class="pathway">
     <div class="pathway_content" id="path">
-      <!-- <v-switch
-      v-model="switchTable"
-      :label="switchTable ? 'ccl_mutation_from_ccle' : 'ccl_mutation_from_cosmic'"
-      class="switch"
-      ></v-switch>   -->
+      
       <div id="img"></div>
+      <div id="switch">
+        <v-switch
+        v-model="switchTable"
+        :label="switchTable ? 'ccle' : 'cosmic'"
+        class="tabSwitch"
+        @change="onchange"
+        ></v-switch>     
+      </div>
       <div id="legend"></div>
       <div id="tooltip" class="hidden"></div>
       
@@ -40,7 +44,7 @@ import * as d3 from 'd3'
 import $ from 'jquery'
 export default {
 name: 'pathway',
-props:['data','id'],
+props:['data','msg'],
 // computed: {
 //   ...mapGetters(['pathwaysData'])
 // },
@@ -132,8 +136,7 @@ return {
       //   label: '1' 
   
       // }
-    ]
-
+    ],
 }
 },
 watch:{
@@ -147,6 +150,7 @@ created() {
 },
 mounted() {
   console.log('mount')
+  this.emit()
   this.data&&this.load()
   this.legend()
 },
@@ -371,7 +375,14 @@ methods:{
 
     } 
  
-  }
+    },
+    emit(){
+      var source = this.switchTable?'ccle':'cosmic'
+      this.$EventBus.$emit(this.msg, source)
+    },
+    onchange(){
+      this.emit()
+    }
 }
 }
 </script>
@@ -401,6 +412,11 @@ methods:{
   position: absolute;
   right: 5px;
   top: 5px;
+}
+#switch{
+  position: absolute;
+  left: 10px;
+  top: -10px;
 }
 .tipDiv{
   /* position: absolute;

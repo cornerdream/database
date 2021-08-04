@@ -43,8 +43,8 @@
             {{ item.text }}
             </v-tab>
         </v-tabs>
-        <Table :data="pathwaysTableData" v-if="tab==0"></Table>
-        <Pathway :data="pathwaysData" v-else></Pathway>
+        <Table :data="pathwaysTableData" :msg="current" v-if="tab==0"></Table>
+        <Pathway :data="pathwaysData" :msg="current" v-else></Pathway>
       </div>
       <div class="select">
           <v-combobox
@@ -71,6 +71,7 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Table from '../components/table.vue'
 import Pathway from '../components/pathway.vue'
@@ -83,6 +84,7 @@ components:{
 computed: {
   ...mapGetters(['cmp_id','pathway_list']),
 },
+props:['current'],
 data() {
 return {
     loading: false,
@@ -96,19 +98,36 @@ return {
         select3: 'Mutation',
         items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'],
     },
-    pathwaysData:{},
-    pathwaysTableData:{},
+    
     tab: 0,
     tabItems:[
         {text:'table'},
         {text:'pathway'},
-    ]
+    ],
+    pathwaysData:{},
+    pathwaysTableData:[],
+    source:'',
+    msg:''
 }
 },
 created() {
-   
+  console.log(this.current)
+  this.$EventBus.$on(this.current, (msg) => {
+    console.log(1)
+      console.log(msg)
+      this.source = msg;  
+      if(this.search||this.select||this.Pathways.select1){
+        if(this.tab==0){
+          this.onselectPathwaysTable()
+        }else{
+          this.onselectPathways()
+        }
+      }
+  })
 },
-mounted() {},
+mounted() {
+  
+},
 methods:{
     
     onsearch(){
@@ -141,7 +160,7 @@ methods:{
       }  
     },
     onselectPathwaysTable(){
-      fetch('http://192.168.1.128:8000/api/pathway/pathwaytable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1).then((res)=>{
+      fetch(baseUrl+'/api/pathway/pathwaytable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -152,7 +171,7 @@ methods:{
       })
     },
     onselectPathways(){
-      fetch('http://192.168.1.128:8000/api/pathway/pathway/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1).then((res)=>{
+      fetch(baseUrl+'/api/pathway/pathway/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -163,13 +182,15 @@ methods:{
       })
     },
     onchange(){
-      if(this.select||this.search){
-        if(this.tab==0){
-          this.onselectPathways()
-        }else{
-          this.onselectPathwaysTable() 
+      if(this.source){
+        if(this.select||this.search){
+          if(this.tab==0){
+            this.onselectPathways()
+          }else{
+            this.onselectPathwaysTable() 
+          }
         }
-      }
+      }  
     }
 }
 }

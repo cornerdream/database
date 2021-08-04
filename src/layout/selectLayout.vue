@@ -237,6 +237,7 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
   color: #fff !important;
 } */
 .menuListItemActive{
+  width:220px;
   background: rgba(36, 119, 168,0.6);
   color: #fff;
   text-shadow: 0 1px 0 #fff;

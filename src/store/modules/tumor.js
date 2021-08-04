@@ -1,3 +1,4 @@
+import baseUrl from '../../utils/baseurl'
 const theme = {
     state: {
       cmp_id:[],  
@@ -27,35 +28,37 @@ const theme = {
   
     actions: {   
       GetCmpId({commit}){
-        fetch('http://192.168.1.128:8000/api/introduction/get_cmp_id/').then((res)=>{
+        console.log(baseUrl)
+        fetch(baseUrl+'/api/introduction/get_cmp_id/').then((res)=>{
             return res.json()
         }).then((data)=>{
             commit('SET_CMPID', data.data_info.cmp_id)
         })        
       },
       GetGeneClass({commit}){
-        fetch('http://192.168.1.128:8000/api/omics/gene_class/').then((res)=>{
+        fetch(baseUrl+'/api/omics/gene_class/').then((res)=>{
             return res.json()
         }).then((data)=>{
             commit('SET_GENECLASS', data.datainfo.gene_class)
         })
       },
       GetPathwayList({commit}){
-        fetch('http://192.168.1.128:8000/api/pathway/pathwayid/').then((res)=>{
+
+        fetch(baseUrl+'/api/pathway/pathwayid/').then((res)=>{
             return res.json()
         }).then((data)=>{
             commit('SET_PATHWAYLIST', data.datainfo)   
         })
       },
       GetHlaAllele({commit}){
-        fetch('http://192.168.1.128:8000/api/immunity/hla_allele/').then((res)=>{
+        fetch(baseUrl+'/api/immunity/hla_allele/').then((res)=>{
             return res.json()
         }).then((data)=>{
             commit('SET_HLAALLELE', data.data_info)   
         })
       },
       GetDrugclass({commit}){
-        fetch('http://192.168.1.128:8000/api/drug/drugclass/').then((res)=>{
+        fetch(baseUrl+'/api/drug/drugclass/').then((res)=>{
             return res.json()
         }).then((data)=>{
             commit('SET_DRUGCLASS', data.data_info)   

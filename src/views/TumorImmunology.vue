@@ -124,6 +124,7 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 // import Table from '../components/table.vue'
@@ -176,7 +177,7 @@ mounted() {},
 methods:{
     
     loadImmunologyInfo(){
-      fetch('http://192.168.1.128:8000/api/immunity/msi_tmb/?cmp_id='+(this.search||this.select)).then((res)=>{
+      fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+(this.search||this.select)).then((res)=>{
         return res.json()
       }).then((data)=>{
         this.info = data.data_info;        
@@ -225,7 +226,7 @@ methods:{
       }  
     },
     onselect(){
-      fetch('http://192.168.1.128:8000/api/immunity/immunity/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+      fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -238,7 +239,7 @@ methods:{
       this.Immunology.disabled2 = false;
     },
     onselectTable(){
-      fetch('http://192.168.1.128:8000/api/immunity/hlatable/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+      fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){

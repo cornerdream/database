@@ -61,9 +61,9 @@
 
     <v-switch
      v-model="switchTable"
-    :label="switchTable ? 'ccl_mutation_from_ccle' : 'ccl_mutation_from_cosmic'"
+    :label="switchTable ? 'ccle' : 'cosmic'"
     class="tabSwitch"
-    @change="load"
+    @change="onchange"
     ></v-switch>        
   </v-toolbar>
   <v-data-table
@@ -285,7 +285,7 @@
 <script>
 export default {
 name: 'tab',
-props:['data'],
+props:['data','msg'],
 computed: {
   numberOfPages () {
     return Math.ceil(this.newItems.length / this.itemsPerPage)
@@ -526,15 +526,13 @@ watch:{
   }
 },
 created() {
-  // this.id&&this.loadData()
   console.log('初始化')
-  // this.pathway_id&&this.loadData({omics_type:this.omics_type,pathway_id:this.pathway_id})
-  // this.loadNewData();
   console.log(this.data)
+  this.emit();
   this.load();
 },
 mounted() {
-//  this.load()
+  
 },
 methods: {
     nextPage () {
@@ -554,6 +552,7 @@ methods: {
       else return '#aae0da'
     },
     load(){
+      if(this.data==undefined||this.data.length==0) return 
       this.newItems=[];
       this.newHeaders=[];
 
@@ -569,33 +568,73 @@ methods: {
     //    console.log('ccl_mutation_from_cosmic')
     //    newData = this.data.ccl_mutation_from_cosmic
     //  }
-      let newData = this.switchTable?this.data.ccl_mutation_from_ccle:this.data.ccl_mutation_from_cosmic
+      // let newData = this.switchTable?this.data.ccl_mutation_from_ccle:this.data.ccl_mutation_from_cosmic
 
-      console.log(newData)
-      if(!newData) return 
-      if(newData!==undefined&&newData.length>0){
-        let newKeys = Object.keys(newData[0]);
-        newKeys = newKeys.filter((item)=>item!='id')
-        console.log(newKeys)
-          newKeys.forEach((key)=>{
-            let obj = {text:key,value:key};  
+      // console.log(newData)
+      // if(!newData) return 
+      // if(newData!==undefined&&newData.length>0){
+      //   let newKeys = Object.keys(newData[0]);
+      //   newKeys = newKeys.filter((item)=>item!='id')
+      //   console.log(newKeys)
+      //     newKeys.forEach((key)=>{
+      //       let obj = {text:key,value:key};  
 
-            this.newHeaders.push(obj) 
-          })
+      //       this.newHeaders.push(obj) 
+      //     })
         
           
-      }
+      // }
   
-        console.log(this.newHeaders)
+      //   console.log(this.newHeaders)
        
-        this.newItems = newData
+      //   this.newItems = newData
        
-        console.log(this.newItems)
-    
+      //   console.log(this.newItems)
+      let newData = this.data;
+      this.newItems = newData
+      let newKeys = Object.keys(newData[0]);
+      newKeys = newKeys.filter((item)=>item!='id')
+      newKeys.forEach((key)=>{
+        let obj = {text:key,value:key};  
+        this.newHeaders.push(obj) 
+      })
       
-      
+      console.log(this.newItems)
+      console.log(this.newHeaders)
     },
-    
+    // onselect(){
+    //   fetch(this.baseUrl+'/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'source='+(this.switchTable?'ccle':'cosmic')).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.scatterData = data.datainfo;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    //   this.Omics.disabled1 = false;
+    //   this.Omics.disabled2 = false;
+    // },
+    // onselectTable(){
+    //   fetch(this.baseUrl+'/api/omics/ccltable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'source='+(this.switchTable?'ccle':'cosmic')).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.scatterData = data.datainfo;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    //   this.Omics.disabled1 = false;
+    //   this.Omics.disabled2 = false;
+    // },
+    emit(){
+      var source = this.switchTable?'ccle':'cosmic'
+      this.$EventBus.$emit(this.msg, source)
+    },
+    onchange(){
+      this.emit()
+    }
   },
 }
 </script>
