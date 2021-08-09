@@ -219,7 +219,7 @@ created() {
     // this.id&&this.loadData()
 },
 mounted() {
-    this.antv()
+    // this.antv()
 },
 methods:{
     load(){

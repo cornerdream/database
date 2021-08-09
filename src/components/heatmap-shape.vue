@@ -34,7 +34,7 @@ methods:{
         },
       },
     });
-    heatmapPlot.chart.interaction('brush-visible');
+    heatmapPlot.chart.interaction('brush');
     heatmapPlot.render();
   });
 

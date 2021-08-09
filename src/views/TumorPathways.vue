@@ -44,7 +44,7 @@
             </v-tab>
         </v-tabs>
         <Table :data="pathwaysTableData" :msg="current" v-if="tab==0"></Table>
-        <Pathway :data="pathwaysData" :msg="current" v-else></Pathway>
+        <Pathway :data="pathwaysData" :msg="current" :pathway="Pathways.select3" v-else></Pathway>
       </div>
       <div class="select">
           <v-combobox
@@ -96,7 +96,8 @@ return {
         select1: '',
         items1: [],
         select3: 'Mutation',
-        items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'],
+        // items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'],
+        items3: ['Mutation', 'CNV', 'Fusion', 'gene expression'],
     },
     
     tab: 0,
@@ -175,7 +176,7 @@ methods:{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
-          this.pathwaysData = data.pathway_info;
+          this.pathwaysData = data.data_info;
         }else{
          this.$alert.error(data.message)
         }

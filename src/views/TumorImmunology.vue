@@ -9,8 +9,8 @@
         :loading="loading"
         :items="cmp_id"   
         :search-input.sync="search"
-        @change="onsearch"
-        @keyup.enter="onsearch"
+        @change="onsearch(select)"
+        @keyup.enter="onsearch(search)"
         cache-items
         flat
         hide-no-data
@@ -23,7 +23,7 @@
         rounded
         color="#2477a8"
         dark
-        @click="onsearch"
+        @click="onsearch(search)"
         >
           SEARCH
         </v-btn>
@@ -70,7 +70,7 @@
                 <v-card-title>TMB:{{info['mutational_burden']}}</v-card-title>
               <!-- </v-col> -->
               <!-- <v-col class="col-10"> -->
-                <TableImmunology :data="ImmunologyDataTable"></TableImmunology>
+                <TableImmunology :data="ImmunologyDataTable" :cmp_id="select||search"></TableImmunology>
               <!-- </v-col> -->
             <!-- </v-row> -->
             
@@ -176,20 +176,20 @@ created() {
 mounted() {},
 methods:{
     
-    loadImmunologyInfo(){
-      fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+(this.search||this.select)).then((res)=>{
+    loadImmunologyInfo(cmp_id){
+      fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+cmp_id).then((res)=>{
         return res.json()
       }).then((data)=>{
         this.info = data.data_info;        
       })
     },
-    onsearch(){
+    onsearch(cmp_id){
       if(this.Immunology.select1){
         if(this.menuselect=='scatter'){
-          this.onselect()
+          this.onselect(cmp_id)
         }else{
-          this.loadImmunologyInfo()
-          this.onselectTable() 
+          this.loadImmunologyInfo(cmp_id)
+          this.onselectTable(cmp_id) 
         }
       }
     },
@@ -197,10 +197,10 @@ methods:{
       this.Immunology.disabled2 = true;
       if(this.search||this.select){
         if(this.menuselect=='scatter'){
-            this.onselect()
+            this.onselect(this.select)
           }else{
-            this.loadImmunologyInfo()
-            this.onselectTable() 
+            this.loadImmunologyInfo(this.select)
+            this.onselectTable(this.select) 
           }
       }   
     },
@@ -208,25 +208,27 @@ methods:{
       this.Immunology.disabled1 = true;
       if(this.search||this.select){
         if(this.menuselect=='scatter'){
-          this.onselect()
+          this.onselect(this.select)
         }else{
-          this.loadImmunologyInfo()
-          this.onselectTable() 
+          this.loadImmunologyInfo(this.select)
+          this.onselectTable(this.select) 
         }
       }  
     },
     ImmunologychangeArr3(){
       if(this.search||this.select){
         if(this.menuselect=='scatter'){
-          this.onselect()
+          this.onselect(this.select)
         }else{
-          this.loadImmunologyInfo()
-          this.onselectTable() 
+          this.loadImmunologyInfo(this.select)
+          this.onselectTable(this.select) 
         }
       }  
     },
-    onselect(){
-      fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+    onselect(cmp_id){
+      console.log(this.search)
+      console.log(this.select)
+      fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -238,8 +240,10 @@ methods:{
       this.Immunology.disabled1 = false;
       this.Immunology.disabled2 = false;
     },
-    onselectTable(){
-      fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+(this.search||this.select)+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+    onselectTable(cmp_id){
+      console.log(this.search)
+      console.log(this.select)
+      fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -254,10 +258,10 @@ methods:{
     onchange(){
       if(this.search||this.select){
         if(this.menuselect=='scatter'){
-          this.onselect()
+          this.onselect(this.select)
         }else{
-          this.loadImmunologyInfo()
-          this.onselectTable() 
+          this.loadImmunologyInfo(this.select)
+          this.onselectTable(this.select) 
         }
       }  
     },

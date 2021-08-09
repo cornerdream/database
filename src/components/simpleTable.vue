@@ -9,7 +9,7 @@
               Name
             </th>
             <th class="text-center">
-              Calories
+              Value
             </th>
           </tr>
         </thead>
@@ -41,7 +41,7 @@ watch:{
     }
 },
 created() {
-  this.load()
+  // this.load()
 },
 mounted() {
   

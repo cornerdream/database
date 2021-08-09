@@ -523,13 +523,14 @@ watch:{
     console.log('监听')
     console.log(newv)
     this.load()
+    
   }
 },
 created() {
   console.log('初始化')
   console.log(this.data)
-  this.emit();
-  this.load();
+  this.data&&this.emit();
+  // this.load();
 },
 mounted() {
   

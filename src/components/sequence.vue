@@ -13,6 +13,7 @@
                     <v-tab
                     v-for="item in tabItems"
                     :key="item.text"
+                    @change="onchange"
                     >
                     {{ item.text }}
                     </v-tab>
@@ -103,8 +104,8 @@
             <v-card-text>
                 <v-chip-group> 
                 <v-chip 
-                v-for="item in chipItems"
-                :key="item.text"
+                v-for="(item,i) in chipItems"
+                :key="item.text+i"
                color="transparent"
                >
                     <v-avatar
@@ -154,33 +155,33 @@
 import $ from 'jquery'
 export default {
 name: 'sequence',
-props:['seq','cov','gene'],
+props:['seq','cov','neoepitope','gene'],
 data() {
 return {
     tab: null,
     tabItems: [
-        {
-            text:'HLA',
-            list:[
-                // {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
-            ]
-        },
-        // {   
-        //     text:'mouse',
+        // {
+        //     text:'HLA',
         //     list:[
-        //         {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
-        //         {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
-        //         {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
-        //         {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
-        //         {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
-        //         {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
-        //         {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
-        //         {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
-        //         {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
-        //         {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
-                
+        //         // {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
         //     ]
-        // }
+        // },
+        {   
+            text:'neoepitope',
+            list:[
+                // {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
+                // {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
+                // {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
+                // {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
+                // {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
+                // {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
+                // {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
+                // {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
+                // {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
+                // {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
+                
+            ]
+        }
     ],
     // str:'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD'
     // ,
@@ -213,19 +214,50 @@ watch:{
     cov(){
         this.loadcolor()
         this.load()
+    },
+    neoepitope(){
+        this.loadneoepitope()
+        this.load()
     }
 },
 created() {
-    this.loadseq()
-    this.loadcolor()
-    this.load()
+    // console.log('create')
+    // this.loadseq()
+    // this.loadcolor()
+    // this.loadneoepitope()
+    // this.load()
 },
 mounted() {
-    this.loadseq()
-    this.loadcolor()
-    this.load()
+    // console.log('mount')
+    // this.loadseq()
+    // this.loadcolor()
+    // this.loadneoepitope()
+    // this.load()
 },
 methods:{
+    onchange(){
+        this.loadseq()
+        this.loadcolor()
+        this.loadneoepitope()
+        this.load()
+    },
+    loadseq(){
+        // console.log(this.data)
+        // let data = this.data[this.id];
+        // console.log(data)
+        // Object.keys(data).map((item)=>{
+        //     let obj = {title:item}
+        //     this.tabItems[0].list.push(obj)
+        // })
+        if(this.seq==''){return}
+        console.log(this.seq)
+        
+        this.str='';
+        
+        this.str = this.seq;
+        
+        console.log(this.str)
+    },
     loadcolor(){
         this.color=[];
         this.chipItems=[];
@@ -247,36 +279,25 @@ methods:{
             // this.chipItems[i].text = item.domain_name
         })
     },
-    loaddomain(){
-        console.log(this.domain)
+    loadneoepitope(){
+        console.log(this.neoepitope)
         this.tabItems[0].list=[];
-        let obj = {
-            title:this.domain.domain_name,
-            start:this.domain.domain_start,
-            end:this.domain.domain_end
-        }
-        this.tabItems[0].list.push(obj)
+        this.neoepitope.map((item)=>{
+            let obj = {
+                title:item['neo-epitope'],
+                start:item.start,
+                end:item.end
+            }
+            this.tabItems[0].list.push(obj)
+        })
+        
         console.log(this.tabItems)
     },
-    loadseq(){
-        // console.log(this.data)
-        // let data = this.data[this.id];
-        // console.log(data)
-        // Object.keys(data).map((item)=>{
-        //     let obj = {title:item}
-        //     this.tabItems[0].list.push(obj)
-        // })
-        
-        console.log(this.seq)
-        
-        this.str='';
-        
-        this.str = this.seq.seq;
-        
-        console.log(this.str)
-    },
+    
     load(){
-        if(!this.str) return
+        $('#spanBox').html(' ')
+        console.log(this.str)
+        if(this.str=='') {return}
         let str=this.str.replace(/(.{10})/g, '$1 ')
         console.log(str)
         // let brstr = str.replace(/(.{88}))/g,'$1<br>')
@@ -310,6 +331,7 @@ methods:{
         
     },
     liHover(li,e){
+        $('#spanBox').html(' ')
         let obj = {start: li.start, end: li.end, color: "black", underscore: false, bgcolor: "#ffd891"}
         let hoverData =[...this.color]
         hoverData.push(obj)
@@ -332,12 +354,13 @@ methods:{
             // let searchStr  = strArr.slice(item.start,item.end).join('');
             console.log(searchStr)
             var reg=searchStr.split('').reduce((total,next)=>{
-                return total+'[<span>|</span>]*?'+next
+                return total+'(<[^>]+>)?'+next
             })
             console.log(reg)
             var m = str.match(reg)
             console.log(m)
-            let search = m.reduce((p,n)=>p+n)
+            if(!m){return}
+            let search = m[0]
             console.log(search)
             
             var regs = /<[^>]+>/g
@@ -351,7 +374,10 @@ methods:{
             // let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
             // let srtStartIndex = str.indexOf(searchStr);
             console.log(srtStartIndex,srtEndIndex)
-            let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);   
+            var spanH = span?span[0]:"";
+            console.log(spanH)
+            let newStr = str.substring(0, srtEndIndex) + "</span>" +spanH + str.substring(srtEndIndex);   
+            // let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);   
             console.log(newStr)     
             let replace = newStr.substring(srtStartIndex,srtEndIndex)
             console.log(replace)
@@ -361,9 +387,10 @@ methods:{
             let replaceL = replacestr.length;
             console.log(replaceL)
             console.log(newStr.substring(srtStartIndex+replaceL+spanCount))
-            console.log(newStr.substring(srtStartIndex+replaceL+spanCount))
-            if(span){
-                newStr = newStr.substring(0, srtStartIndex) + '</span>'+(item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ replacestr+newStr.substring(srtStartIndex+replaceL+spanCount);          
+
+            if(span){ 
+                newStr = newStr.substring(0, srtStartIndex) + '</span>' +(item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ replacestr+newStr.substring(srtStartIndex+replaceL+spanCount);
+                //newStr = newStr.substring(0, srtStartIndex) + '</span>'+(item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ replacestr+newStr.substring(srtStartIndex+replaceL+spanCount);          
             }else{
                 newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
             }

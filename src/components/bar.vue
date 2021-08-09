@@ -41,7 +41,7 @@ created() {
 },
 mounted() {
 
-    this.load()
+    // this.load()
     // this.antv()
 },
 methods:{

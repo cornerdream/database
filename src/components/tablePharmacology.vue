@@ -423,8 +423,8 @@ watch:{
   }
 },
 created() {
-  console.log('初始化')
-  this.load();
+  // console.log('初始化')
+  // this.load();
 },
 mounted() {
  

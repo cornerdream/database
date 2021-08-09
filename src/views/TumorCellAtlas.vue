@@ -8,8 +8,6 @@
   </div>
 </template>
 <script>
-// import { mapGetters } from 'vuex'
-
 import Overview from './TumorOverview.vue'
 import Omics from './TumorOmics.vue'
 import Pathways from './TumorPathways.vue'
@@ -31,16 +29,8 @@ export default {
     Pharmacology,
     Analysis
   },
-  // computed: {
-  //   ...mapGetters(['cmp_id'])
-  // },
   data(){
     return {
-      
-      // loading: false,
-      // search: null,
-      // select: null,
-      
     }  
       
   },

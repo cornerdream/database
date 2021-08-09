@@ -141,9 +141,11 @@ return {
 }
 },
 created() {
+    // this.load()
+},
+mounted() {
     this.load()
 },
-mounted() {},
 methods:{
     load(){
         if(this.chem){
@@ -222,6 +224,7 @@ methods:{
         this.chem.setHydrogens(isShow)
     },
     changeModel(value){
+        console.log(value)
         if(value!=='Ball and Stick'){this.resetShow=true}
         // if(isCheck){
             this.chem.setModel(value)
@@ -241,7 +244,9 @@ methods:{
     position: relative;
 }
 #canvas{
-    touch-action: none; width: 100%; height: 100%;
+    touch-action: none; 
+    width: 100%; 
+    height: 100%;
 }
 #btnBox{
     position: absolute;

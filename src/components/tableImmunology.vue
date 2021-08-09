@@ -14,7 +14,7 @@
     @item-expanded="onexpanded"
     :single-expand="singleExpand"
     :expanded.sync="expanded"
-    item-key="gene"
+    item-key="id"
     show-expand
     
   >
@@ -92,7 +92,7 @@
     <template v-slot:expanded-item="{ headers,item}" >
       
         <td :colspan="headers.length" class="order-last">
-          <Sequence :seq="seq" :cov="cov" :gene="item.gene"></Sequence>
+          <Sequence :seq="seq" :cov="cov" :neoepitope="neoepitope" :gene="item.gene"></Sequence>
         </td>
     </template>
     
@@ -194,13 +194,14 @@
 </div>
 </template>
 <script>
+import baseUrl from '../utils/baseurl'
 import Sequence from '../components/sequence.vue'
 export default {
 name: 'tab',
 components:{
   Sequence,
 },
-props:['data'],
+props:['data','cmp_id'],
 computed: {
   numberOfPages () {
     return Math.ceil(this.newItems.length / this.itemsPerPage)
@@ -431,7 +432,7 @@ return {
     expanded: [],
     singleExpand: true,
     seq:{},
-    domain:[],
+    neoepitope:[],
     cov:[],
     switchTable:false,
     // data:{},
@@ -439,15 +440,14 @@ return {
 }
 },
 watch:{
-  data(newv){
+  data(){
     console.log('监听')
-    console.log(newv)
     this.load()
   }
 },
 created() {
-  console.log('初始化')
-  Object.keys(this.data).length!==0&&this.load();
+  // console.log('初始化')
+  // Object.keys(this.data).length!==0&&this.load();
 },
 mounted() {
   
@@ -495,11 +495,11 @@ methods: {
       }
       let expand = { text: '', value: 'data-table-expand' }
       this.newHeaders.push(expand) 
-        console.log(this.newHeaders)
-       
-        this.newItems = newData
-       
-        console.log(this.newItems)
+      console.log(this.newHeaders)
+      
+      this.newItems = newData
+      
+      console.log(this.newItems)
     
       
       
@@ -509,32 +509,42 @@ methods: {
       console.log(o.value)
       let flag = o.value,data = o.item.gene,id = o.item.id;
       if(flag){
-        this.onseq(data,id);
-        this.oncolor(data);
+        fetch(baseUrl+'/api/immunity/gene_seq/?neoepitope_id='+id+'&gene_symbol='+data+'&cmp_id='+this.cmp_id).then((res)=>{
+          return res.json()
+        }).then((data)=>{
+          if(data.code==200){
+            this.seq = data.data_info.seq;
+            this.cov = data.data_info.domain;
+            this.neoepitope = data.data_info.neoepitope;
+            console.log(this.neoepitope)
+          }else{
+          this.$alert.error(data.message)
+          }
+        })
       }
     },
-    onseq(data,id){
-      fetch('http://192.168.1.128:8000/api/immunity/gene_seq/?neoepitope_id='+id).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        if(data.code==200){
-          this.seq = data.data_info;
-        }else{
-         this.$alert.error(data.message)
-        }
-      })
-    },
-    oncolor(data){
-      fetch('http://192.168.1.128:8000/api/immunity/genedomain/?gene_symbol='+data).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        if(data.code==200){
-          this.cov = data.data_info;
-        }else{
-         this.$alert.error(data.message)
-        }
-      })
-    }
+    // onseq(data,id){
+    //   fetch('http://192.168.1.128:8000/api/immunity/gene_seq/?neoepitope_id='+id).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.seq = data.data_info;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    // },
+    // oncolor(data){
+    //   fetch('http://192.168.1.128:8000/api/immunity/genedomain/?gene_symbol='+data).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.cov = data.data_info;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    // }
   },
 }
 </script>

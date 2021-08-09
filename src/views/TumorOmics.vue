@@ -9,8 +9,8 @@
         :loading="loading"
         :items="cmp_id"   
         :search-input.sync="search"
-        @change="onsearch"
-        @keyup.enter="onsearch"
+        @change="onsearch(select)"
+        @keyup.enter="onsearch(search)"
         cache-items
         flat
         hide-no-data
@@ -23,7 +23,7 @@
         rounded
         color="#2477a8"
         dark
-        @click="onsearch"
+        @click="onsearch(search)"
         >
           SEARCH
         </v-btn>
@@ -38,7 +38,7 @@
             <v-tab
             v-for="item in tabItems"
             :key="item.text"
-            @change="onchange"
+            
             >
             {{ item.text }}
             </v-tab>
@@ -115,7 +115,8 @@ return {
       value2:'',
       disabled2:false,
       select3: 'Mutation',
-      items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      // items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      items3: ['Mutation', 'CNV', 'Fusion', 'gene expression'], 
     },
     tab: 0,
     tabItems:[
@@ -131,28 +132,33 @@ return {
 created() {
   console.log('omics')
   console.log(this.current)
+  
   this.$EventBus.$on(this.current, (msg) => {
-      console.log(msg)
-      this.source = msg;  
-      if(this.search||this.select||this.Omics.select1){
-        if(this.tab==0){
-          this.onselect();
-        }else{
-          this.onselectTable()
-        }
+    console.log(msg)
+    this.source = msg;  
+    if(this.search||this.select||this.Omics.select1){
+      if(this.tab==0){
+        console.log('scatter')
+        this.onselect(this.select);
+      }else{
+        console.log('table')
+        this.onselectTable(this.select)
       }
+    }
   })
+  
+  
 },
 mounted() {
   
 },
 methods:{
-    onsearch(){
+    onsearch(cmp_id){
       if(this.Omics.select1){
         if(this.tab==0){
-          this.onselect()
+          this.onselect(cmp_id)
         }else{
-          this.onselectTable()
+          this.onselectTable(cmp_id)
         }
       }
     },
@@ -160,9 +166,9 @@ methods:{
       this.Omics.disabled2 = true;
       if(this.search||this.select){
         if(this.tab==0){
-          this.onselect();
+          this.onselect(this.select);
         }else{
-          this.onselectTable()
+          this.onselectTable(this.select)
         }
       }
       
@@ -171,9 +177,9 @@ methods:{
       this.Omics.disabled1 = true;
       if(this.search||this.select){
         if(this.tab==0){
-          this.onselect();
+          this.onselect(this.select);
         }else{
-          this.onselectTable()
+          this.onselectTable(this.select)
         }
         
       }
@@ -181,15 +187,16 @@ methods:{
     OmicschangeArr3(){
       if(this.search||this.select){
         if(this.tab==0){
-          this.onselect();
+          this.onselect(this.select);
         }else{
-          this.onselectTable()
+          this.onselectTable(this.select)
         }
         
       }
     },
-    onselect(){
-      fetch(baseUrl+'/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
+    onselect(cmp_id){
+      console.log(cmp_id)
+      fetch(baseUrl+'/api/omics/ccl/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -201,8 +208,9 @@ methods:{
       this.Omics.disabled1 = false;
       this.Omics.disabled2 = false;
     },
-    onselectTable(){
-      fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'&source='+(this.source)).then((res)=>{
+    onselectTable(cmp_id){
+      console.log(cmp_id)
+      fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -215,12 +223,13 @@ methods:{
       this.Omics.disabled2 = false;
     },
     onchange(){
+      console.log('change')
       if(this.source){
         if(this.select||this.search){
           if(this.tab==0){
-            this.onselectTable()
+            this.onselectTable(this.select)
           }else{
-            this.onselect();
+            this.onselect(this.select);
           }
         }
       }
