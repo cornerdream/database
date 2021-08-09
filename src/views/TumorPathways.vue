@@ -9,8 +9,8 @@
         :loading="loading"
         :items="cmp_id"   
         :search-input.sync="search"
-        @change="onsearch"
-        @keyup.enter="onsearch"
+        @change="onsearch(select)"
+        @keyup.enter="onsearch(search)"
         cache-items
         flat
         hide-no-data
@@ -23,7 +23,7 @@
         rounded
         color="#2477a8"
         dark
-        @click="onsearch"
+        @click="onsearch(search)"
         >
           SEARCH
         </v-btn>
@@ -118,11 +118,14 @@ created() {
       console.log(msg)
       this.source = msg;  
       if(this.search||this.select||this.Pathways.select1){
-        if(this.tab==0){
-          this.onselectPathwaysTable()
-        }else{
-          this.onselectPathways()
+        if(this.tab!=0){
+          this.onselectPathways(this.select)
         }
+        // if(this.tab==0){
+        //   this.onselectPathwaysTable()
+        // }else{
+        //   this.onselectPathways()
+        // }
       }
   })
 },
@@ -131,12 +134,12 @@ mounted() {
 },
 methods:{
     
-    onsearch(){
+    onsearch(cmp_id){
       if(this.Pathways.select1){
         if(this.tab==0){
-          this.onselectPathwaysTable()
+          this.onselectPathwaysTable(cmp_id)
         }else{
-          this.onselectPathways()
+          this.onselectPathways(cmp_id)
         }
         
       }
@@ -144,9 +147,9 @@ methods:{
     PathwayschangeArr(){    
       if(this.select||this.search){
         if(this.tab==0){
-          this.onselectPathwaysTable()
+          this.onselectPathwaysTable(this.select)
         }else{
-          this.onselectPathways()
+          this.onselectPathways(this.select)
         } 
       } 
       
@@ -154,14 +157,14 @@ methods:{
     PathwayschangeArr3(){
       if(this.select||this.search){
         if(this.tab==0){
-          this.onselectPathwaysTable()
+          this.onselectPathwaysTable(this.select)
         }else{
-          this.onselectPathways()
+          this.onselectPathways(this.select)
         }
       }  
     },
-    onselectPathwaysTable(){
-      fetch(baseUrl+'/api/pathway/pathwaytable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
+    onselectPathwaysTable(cmp_id){
+      fetch(baseUrl+'/api/pathway/pathwaytable/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -171,8 +174,8 @@ methods:{
         }
       })
     },
-    onselectPathways(){
-      fetch(baseUrl+'/api/pathway/pathway/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
+    onselectPathways(cmp_id){
+      fetch(baseUrl+'/api/pathway/pathway/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
         if(data.code==200){
@@ -185,11 +188,14 @@ methods:{
     onchange(){
       if(this.source){
         if(this.select||this.search){
-          if(this.tab==0){
-            this.onselectPathways()
-          }else{
-            this.onselectPathwaysTable() 
+          if(this.tab!=0){
+           this.onselectPathwaysTable(this.select) 
           }
+          // if(this.tab==0){
+          //   this.onselectPathways()
+          // }else{
+          //   this.onselectPathwaysTable() 
+          // }
         }
       }  
     }

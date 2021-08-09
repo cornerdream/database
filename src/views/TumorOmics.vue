@@ -38,7 +38,7 @@
             <v-tab
             v-for="item in tabItems"
             :key="item.text"
-            
+            @change="onchange"
             >
             {{ item.text }}
             </v-tab>
@@ -137,13 +137,16 @@ created() {
     console.log(msg)
     this.source = msg;  
     if(this.search||this.select||this.Omics.select1){
-      if(this.tab==0){
-        console.log('scatter')
-        this.onselect(this.select);
-      }else{
-        console.log('table')
+      if(this.tab!=0){
         this.onselectTable(this.select)
       }
+    //   if(this.tab==0){
+    //     console.log('scatter')
+    //     this.onselect(this.select);
+    //   }else{
+    //     console.log('table')
+    //     this.onselectTable(this.select)
+    //   }
     }
   })
   
@@ -226,9 +229,7 @@ methods:{
       console.log('change')
       if(this.source){
         if(this.select||this.search){
-          if(this.tab==0){
-            this.onselectTable(this.select)
-          }else{
+          if(this.tab!=0){
             this.onselect(this.select);
           }
         }
