@@ -16,7 +16,7 @@ module.exports = {
 
   // configureWebpack: config => {
   //   // 生产环境相关配置
-  //   if (isProduction) {
+    // if (isProduction) {
   //     //gzip压缩
   //     const productionGzipExtensions = ['html', 'js', 'css']
   //     config.plugins.push(
@@ -33,21 +33,22 @@ module.exports = {
   //     )
       
   //     // 代码压缩
-  //     config.plugins.push(
-  //       new UglifyJsPlugin({
-  //           uglifyOptions: {
-  //               //生产环境自动删除console
-  //               compress: {
-  //                   drop_debugger: true,
-  //                   drop_console: true,
-  //                   pure_funcs: ['console.log']
-  //               }
-  //           },
-  //           sourceMap: false,
-  //           parallel: true
-  //       })
-  //     )    
-  //   }
+    //   config.plugins.push(
+    //     new UglifyJsPlugin({
+    //         uglifyOptions: {
+    //             //生产环境自动删除console
+    //             compress: {
+    //                 drop_debugger: true,
+    //                 drop_console: true,
+    //                 pure_funcs: ['console.log']
+    //             }
+    //         },
+    //         sourceMap: false,
+    //         parallel: true, // 并行
+   //         cache: true   // 缓存
+    //     })
+    //   )    
+    // }
     
   //   // 公共代码抽离
   //   config.optimization = {

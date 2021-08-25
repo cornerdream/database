@@ -16,35 +16,35 @@ return {
       {
         id: 'a',
         x: 150,
-        y: 150,
+        y: 250,
         label:'a',
         style: { fill: '#5B8FF9', stroke: null },
       },
       {
         id: 'b',
         x: 50,
-        y: 250,
+        y: 350,
         label:'b',
         style: { fill: '#5AD8A6', stroke: null },
       },
       {
         id: 'c',
         x: 200,
-        y: 250,
+        y: 350,
         label:'c',
         style: { fill: '#5D7092', stroke: null },
       },
       {
         id: 'd',
         x: 50,
-        y: 50,
+        y: 150,
         label:'d',
         style: { fill: '#D50000', stroke: null },
       },
       {
         id: 'e',
         x: 200,
-        y: 50,
+        y: 150,
         label:'e',
         // style: { fill: '#6200EA', stroke: null },
         size: 50,
@@ -1937,13 +1937,13 @@ if (typeof window !== 'undefined')
     graph.data(data);
     graph.render();
 
-    setInterval(() => {
-      data.nodes.forEach((node) => {
-        node.x += Math.random() * 10 - 5;
-        node.y += Math.random() * 10 - 5;
-      });
-      graph.changeData(data);
-    }, 600);
+    // setInterval(() => {
+    //   data.nodes.forEach((node) => {
+    //     node.x += Math.random() * 10 - 5;
+    //     node.y += Math.random() * 10 - 5;
+    //   });
+    //   graph.changeData(data);
+    // }, 600);
   }
 
 }

@@ -15,13 +15,32 @@ html {
   font-size:62.5%;
   
 }
-
+@media only screen and (min-width: 320px){
+html {
+  font-size: 12.5% !important;
+}
+}
+@media only screen and (min-width: 640px){
+ html {
+  font-size: 25% !important;
+}
+}
+@media only screen and (min-width: 750px){
+html {
+  font-size: 29.3% !important;
+}
+}
+@media only screen and (min-width: 1242px){
+html {
+  font-size: 48.5% !important;
+ }
+}
 body {
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 1.4rem;
   background-color: $mode-white;
-  min-width: 1290px;
+  // min-width: 129rem;
 }
 body[theme-mode=dark] {
   background-color: $mode-dark;
@@ -128,14 +147,14 @@ color:#a0a0a0;
   padding:0;
 }
 #search .v-text-field.v-text-field--solo .v-input__control{
-min-height: 38px;
+min-height: 3.8rem;
 }
 #search .v-btn:not(.v-btn--round).v-size--default{
-padding:0 26px;
-margin-left: 90px;
+padding:0 2.6rem;
+margin-left: 9rem;
 }
 #select{
-width: 200px;
+width: 20rem;
 height: 100%;
 position: absolute;
 right: 0;
@@ -143,9 +162,9 @@ bottom: 0;
 z-index: 9999;
 }
 .select{
-width: 200px;
+width: 20rem;
 position: absolute;
-right: 10px;
+right: 1rem;
 top: 50%;
 transform: translateY(-50%);
 }
@@ -159,11 +178,65 @@ transform: translateY(-50%);
   color:#429fd5;
 }
 .component{
-padding:0 200px 0 0;
-min-height: 520px;
+padding:0 20rem 0 0;
+min-height: 52rem;
+position: relative;
 }
-
+//loading
+.loading{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+//alert
+.alert{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
 //switch
 .v-input--selection-controls .v-input__slot > .v-label, .v-input--selection-controls .v-radio > .v-label{
   color: #000;
+}
+
+//table
+#tabFooter{
+  padding:1.8rem;
+  background: #7695b1;
+  color: #fff;
+}
+#tabSearch .v-input{
+  height: 30px;
+}
+.tabSearch.v-text-field.v-text-field--solo .v-input__control{
+  min-height: 30px;
+  border: 1px solid #fff;
+}
+#tabDown{
+  color: #296893;
+  box-shadow: 0px 0.2rem 0.4rem -1px #296893;
+  background:linear-gradient(to bottom right, #fff, #c6c6c4);
+}
+.color{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+.v-toolbar .tabSwitch.v-input{
+  margin-top: 1.6rem;
+  padding-top: 0.4rem;
+}
+
+//tab
+.v-tab{
+  min-width: 9rem;
+  max-width: 36rem;
+}
+
+//select
+.v-list-item--dense .v-list-item__title, .v-list-item--dense .v-list-item__subtitle, .v-list--dense .v-list-item .v-list-item__title, .v-list--dense .v-list-item .v-list-item__subtitle{
+  line-height: 1.2;
 }

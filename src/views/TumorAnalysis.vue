@@ -45,7 +45,61 @@
         </v-tabs> -->
         <!-- <Table :data="pathwaysTableData" v-if="tab==0"></Table>
         <Pathway :data="pathwaysData" v-else></Pathway> -->
-        <Boxplot></Boxplot>
+        <!-- <Boxplot></Boxplot> -->
+        <Img></Img>
+        <!-- <canvas id="galaxyCanvas" width="600" height="300"></canvas>
+        <div id="btnBox">
+                    <div class="my-2" v-show="this.resetShow">
+                        <v-btn
+                            class="mx-2"
+                            fab
+                            dark
+                            small
+                            color="primary"
+                            id="btnReset"
+                            
+                            @click="reset"
+                        >
+                            <v-icon dark>
+                            mdi-undo-variant
+                            </v-icon>
+                        </v-btn>  
+                    </div>  
+                    <div class="my-2">  
+                        <v-btn
+                            class="mx-2"
+                            fab
+                            dark
+                            small
+                            color="primary"
+                            id="btnZoomIn"
+                            
+                            @click="zoomIn"
+                        >
+                            <v-icon dark>
+                            mdi-plus
+                            </v-icon>
+                        </v-btn>
+                    </div>    
+                    <div class="my-2">    
+                        <v-btn
+                            class="mx-2"
+                            fab
+                            dark
+                            small
+                            color="primary"
+                            id="btnZoomOut"
+                            
+                            @click="zoomOut"
+                        >
+                            <v-icon dark>
+                            mdi-minus
+                            </v-icon>
+                        </v-btn>
+                    </div>
+                </div> -->
+        <!-- <Heatmap></Heatmap> -->
+
       </div>
       <div class="select">
         <v-combobox
@@ -113,11 +167,17 @@
 </div>
 </template>
 <script>
-import Boxplot from '../components/boxplot.vue'
+// import {ImageLoader} from '../utils/imageloader'
+// import {CanvasZoom} from '../utils/canvaszoom'
+// import Boxplot from '../components/boxplot.vue'
+import Img from '../components/image.vue'
+// import Heatmap from '../components/heatmap.vue'
 export default {
 name: 'TumorAnalysis',
 components:{
-    Boxplot
+    // Boxplot,
+    Img,
+    // Heatmap,
 },
 data() {
 return {
@@ -139,11 +199,27 @@ return {
         items5: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
       },
       scatterData:[],
+      galaxy:null
 }
 },
-created() {},
-mounted() {},
+created() {
+  
+},
+mounted() {
+  // this.load()
+},
 methods:{
+  load(){
+    // window.checkComplete()
+    //  this.galaxy = new CanvasZoom( document.getElementById('galaxyCanvas'), './helloworld_file', 15723, 14815 );
+     console.log(this.galaxy)
+  },
+  zoomIn(){
+    this.galaxy.zoomInCentre()
+  },
+  zoomOut(){
+    this.galaxy.zoomOutCentre()
+  },
     onsearch(){
       
     },

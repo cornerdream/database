@@ -22,15 +22,15 @@ Message.install  = function(Vue){
         instance.isShow = true;
     }
     Vue.prototype.$confirm = (msg, success, cancel) => {
-    instance.type = 'confirm';
-    instance.msg = msg;
-    instance.isShow = true;
-    if(typeof success !== 'undefined') {
-        instance.success = success;
-    }
-    if(typeof cancel !== 'undefined') {
-        instance.cancel = cancel;
-    }
+        instance.type = 'confirm';
+        instance.msg = msg;
+        instance.isShow = true;
+        if(typeof success !== 'undefined') {
+            instance.success = success;
+        }
+        if(typeof cancel !== 'undefined') {
+            instance.cancel = cancel;
+        }
     }
   
 }

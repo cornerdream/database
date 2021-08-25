@@ -194,11 +194,11 @@
     color="#7695b1"
     class="mb-1"
   > 
-    <v-row
+    <!-- <v-row
       align="center"
       justify="center"
     >
-            
+      <v-col cols="7">        -->
       <div class="text-center">
         Legend
         <v-chip
@@ -251,8 +251,10 @@
         </v-chip>
         silent
       </div>
+      <!-- </v-col>  -->
       <v-spacer></v-spacer>
-  
+      <!-- <v-col cols="5"> -->
+      <div class="page">  
       <span
         class="mr-4"
       >
@@ -278,7 +280,10 @@
       >
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
-    </v-row>
+      </div>
+      <!-- </v-col> 
+    </v-row> -->
+  
   </v-toolbar>
 </div>
 </template>
@@ -553,7 +558,7 @@ methods: {
       else return '#aae0da'
     },
     load(){
-      if(this.data==undefined||this.data.length==0) return 
+      // if(this.data==undefined||this.data.length==0){return } 
       this.newItems=[];
       this.newHeaders=[];
 
@@ -592,6 +597,7 @@ methods: {
        
       //   console.log(this.newItems)
       let newData = this.data;
+      if(newData==undefined||newData.length==0){return } 
       this.newItems = newData
       let newKeys = Object.keys(newData[0]);
       newKeys = newKeys.filter((item)=>item!='id')
@@ -640,31 +646,5 @@ methods: {
 }
 </script>
 <style scoped>
-#tabFooter{
-  padding:18px;
-  background: #7695b1;
-  color: #fff;
-}
-.tabSearch >>>.v-input{
-  height: 30px;
-}
-.tabSearch >>>.v-input__control{
-  min-height: 30px;
-  border: 1px solid #fff;
-}
-#tabDown{
-  color: #296893;
-  box-shadow: 0px 2px 4px -1px #296893;
-  background:linear-gradient(to bottom right, #fff, #c6c6c4);
-}
-.color{
-  height: 100%;
-  display: flex;
-  align-items: center;
-  /* justify-content: center; */
-}
-.v-toolbar .tabSwitch.v-input{
-  margin-top: 16px;
-  padding-top: 4px;
-}
+
 </style>

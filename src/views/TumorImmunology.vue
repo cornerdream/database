@@ -48,7 +48,7 @@
         <v-select
           v-model="menuselect"
           :items="selectitems"
-          label="Outlined style"
+          label="Chart type"
           dense
           outlined
           @change="onchange"
@@ -58,26 +58,60 @@
           <v-card
             :loading="loading"
             class="mx-auto my-12"
-            
+            color="rgba(0, 129, 204, 0.2)"
           >
             <!-- <v-row
               align="center"
               justify="center"
             > -->
               <!-- <v-col class="col-2"> -->
-                <v-card-title>Cell line:{{info['model_name']}}</v-card-title>
+                <!-- <v-card-title>Cell line:{{info['model_name']}}</v-card-title>
                 <v-card-title>MSI:{{info['msi_status']}}</v-card-title>
-                <v-card-title>TMB:{{info['mutational_burden']}}</v-card-title>
+                <v-card-title>TMB:{{info['mutational_burden']}}</v-card-title> -->
+                <v-card-title>Cell line:
+                  <v-chip
+                    class="ma-2"
+                    color="primary"
+                    label
+                  >
+                    <v-icon left>
+                      mdi-label
+                    </v-icon>
+                    {{cell_info['model_name']}}
+                  </v-chip>
+                  <v-chip
+                    class="ma-2"
+                    color="primary"
+                    label
+                  >
+                    <v-icon left>
+                      mdi-label
+                    </v-icon>
+                    {{cell_info['msi_status']}}
+                  </v-chip>
+                  <v-chip
+                    class="ma-2"
+                    color="primary"
+                    label
+                  >
+                    <v-icon left>
+                      mdi-label
+                    </v-icon>
+                    {{cell_info['mutational_burden']}}
+                  </v-chip>
+                </v-card-title>
               <!-- </v-col> -->
               <!-- <v-col class="col-10"> -->
                 <TableImmunology :data="ImmunologyDataTable" :cmp_id="select||search"></TableImmunology>
+                
               <!-- </v-col> -->
             <!-- </v-row> -->
             
             <!-- <Sequence :data="ImmunologyData" :id="search" v-else></Sequence> -->
           </v-card>
         </div>
-        
+        <loading v-if="loading"></loading>
+        <alert v-if="alertShow" :info="info" :type="type"></alert>
         <!-- <TableImmunology :data="ImmunologyDataTable" v-if="tab==0"></TableImmunology> -->
         <!-- <SimpleTable :data="ImmunologyDataTable" v-if="tab==0"></SimpleTable> -->
         
@@ -86,7 +120,7 @@
         <v-combobox
         v-model="Immunology.select1"
         :items="gene_class"
-        label="Gene set"
+        :label="Immunology.label1"
         outlined
         dense
         solo
@@ -94,7 +128,7 @@
         :disabled="Immunology.disabled1"
         ></v-combobox>
         <v-text-field 
-        placeholder="Gene list"
+        :placeholder="Immunology.label2"
         :value="Immunology.value2"
         @keyup.enter="ImmunologychangeArr2"
         :disabled="Immunology.disabled2"
@@ -109,7 +143,7 @@
         <v-combobox
           v-model="Immunology.select3"
           :items="hla_allele"
-          label="HLA locus"
+          :label="Immunology.label3"
           multiple
           outlined
           dense
@@ -125,6 +159,8 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
+import loading from '../components/loading.vue'
+import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 // import Table from '../components/table.vue'
@@ -134,6 +170,8 @@ import TableImmunology from '../components/tableImmunology.vue'
 export default {
 name: 'TumorImmunology',
 components:{
+  loading,
+  alert,
   Scatter,
   // Table,
   TableImmunology,
@@ -141,20 +179,26 @@ components:{
     // SimpleTable
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','hla_allele']),
+  ...mapGetters(['cmp_id','gene_class','hla_allele','loading']),
 },
 data() {
 return {
-    loading: false,
+    alertShow:false,
+    info:'',
+    type:'',
+    // loading: false,
     search: null,
     select: null,
     states: [],
     Immunology:{
+      label1:'Gene set',
       select1: '',
       items1: [],
       disabled1:false,
+      label2:'Gene list',
       value2:'',
       disabled2:false,
+      label3:'HLA locus',
       select3: ['HLA-C*07:01'],
       items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
     },
@@ -165,7 +209,7 @@ return {
     ],
     menuselect:'scatter',
     selectitems:['scatter','table'],
-    info:{},
+    cell_info:{},
     ImmunologyData:[],
     ImmunologyDataTable:[],
       
@@ -175,15 +219,37 @@ created() {
 },
 mounted() {},
 methods:{
-    
-    loadImmunologyInfo(cmp_id){
-      fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+cmp_id).then((res)=>{
+    alert(type,data){
+      var _this = this;
+      this.alertShow = true;
+      this.type = type
+      this.info = data
+      setTimeout(function(){
+        _this.alertShow = false
+      },2000)
+    },
+    async loadImmunologyInfo(cmp_id){
+      // var _this = this;
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+cmp_id).then((res)=>{
         return res.json()
       }).then((data)=>{
-        this.info = data.data_info;        
+        // data.code==200?this.cell_info = data.data_info:this.$alert.error(data.message); 
+        if(data.code==200){          
+          this.cell_info = data.data_info
+        }else{
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
+        }       
       })
     },
     onsearch(cmp_id){
+      // var _this = this;
       if(this.Immunology.select1){
         if(this.menuselect=='scatter'){
           this.onselect(cmp_id)
@@ -191,72 +257,122 @@ methods:{
           this.loadImmunologyInfo(cmp_id)
           this.onselectTable(cmp_id) 
         }
-      }
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择'+this.Immunology.label1||this.Immunology.label2||this.Immunology.label3)
+      } 
     },
     ImmunologychangeArr(){
+      // var _this = this;
       this.Immunology.disabled2 = true;
-      if(this.search||this.select){
+      if(this.select){
         if(this.menuselect=='scatter'){
             this.onselect(this.select)
           }else{
             this.loadImmunologyInfo(this.select)
             this.onselectTable(this.select) 
           }
-      }   
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择cmp_id')
+      }     
     },
     ImmunologychangeArr2(){
+      // var _this = this;
       this.Immunology.disabled1 = true;
-      if(this.search||this.select){
+      if(this.select){
         if(this.menuselect=='scatter'){
           this.onselect(this.select)
         }else{
           this.loadImmunologyInfo(this.select)
           this.onselectTable(this.select) 
         }
-      }  
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择cmp_id')
+      }    
     },
     ImmunologychangeArr3(){
-      if(this.search||this.select){
+      // var _this = this;
+      if(this.select){
         if(this.menuselect=='scatter'){
           this.onselect(this.select)
         }else{
           this.loadImmunologyInfo(this.select)
           this.onselectTable(this.select) 
         }
-      }  
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择cmp_id')
+      }    
     },
-    onselect(cmp_id){
-      console.log(this.search)
-      console.log(this.select)
-      fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+    async onselect(cmp_id){
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
-        if(data.code==200){
-          this.ImmunologyData = data.data_info;
+        // data.code==200?this.ImmunologyData = data.data_info:this.$alert.error(data.message)
+        if(data.code==200){          
+          this.ImmunologyData = data.data_info
         }else{
-         this.$alert.error(data.message)
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
         }
       })
+      this.$store.dispatch('HideLoading')
       this.Immunology.disabled1 = false;
       this.Immunology.disabled2 = false;
     },
-    onselectTable(cmp_id){
-      console.log(this.search)
-      console.log(this.select)
-      fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
+
+    async onselectTable(cmp_id){
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
         return res.json()
       }).then((data)=>{
-        if(data.code==200){
-          this.ImmunologyDataTable = data.data_info;
+        //data.code==200?this.ImmunologyDataTable = data.data_info:this.$alert.error(data.message)
+        if(data.code==200){          
+          this.ImmunologyDataTable = data.data_info
         }else{
-         this.$alert.error(data.message)
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
         }
       })
+      this.$store.dispatch('HideLoading')
       this.Immunology.disabled1 = false;
       this.Immunology.disabled2 = false;
     },
     onchange(){
-      if(this.search||this.select){
+      if(this.select){
         if(this.menuselect=='scatter'){
           this.onselect(this.select)
         }else{

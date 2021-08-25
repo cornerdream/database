@@ -105,11 +105,11 @@
     color="#7695b1"
     class="mb-1"
   > 
-    <v-row
+    <!-- <v-row
       align="center"
       justify="center"
     >
-            
+      <v-col cols="7">         -->
       <div class="text-center">
         Legend
         <v-chip
@@ -162,8 +162,10 @@
         </v-chip>
         silent
       </div>
+      <!-- </v-col>  -->
       <v-spacer></v-spacer>
-  
+      <!-- <v-col cols="5">  -->
+      <div class="page">  
       <span
         class="mr-4"
       >
@@ -189,7 +191,9 @@
       >
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
-    </v-row>
+      </div>
+      <!-- </v-col>  -->
+    <!-- </v-row> -->
   </v-toolbar>
 </div>
 </template>
@@ -549,7 +553,7 @@ methods: {
 }
 </script>
 <style scoped>
-#tabFooter{
+/* #tabFooter{
   padding:18px;
   background: #7695b1;
   color: #fff;
@@ -570,10 +574,9 @@ methods: {
   height: 100%;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
 }
 .v-toolbar .tabSwitch.v-input{
   margin-top: 16px;
   padding-top: 4px;
-}
+} */
 </style>

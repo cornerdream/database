@@ -22,7 +22,7 @@
           :key="link"
           color="white"
           text
-          rounded
+          rounded                                                  
           class="my-2"
         >
         {{ link }}
@@ -63,9 +63,9 @@
           >
             <v-list-item
               class="menuListItem"
-              v-for="(item, i) in Menuitems"
-              :key="i"
-              
+              v-for="(item) in ($route.name=='ModelAtlas'?items:Menuitems)"
+              :key="item.title"
+             
               @click="toggleTab(item.title)"
             >
               
@@ -78,7 +78,7 @@
         </v-list>
      
       </div>
-       
+
       <router-view  :view="currentTab" />
      
         
@@ -122,6 +122,12 @@ export default {
         icon:'mdi-home'
       },
     ],
+    items:[
+      { title: 'Overview'},
+      { title: 'Omics' },
+      { title: 'Pathways'},
+      { title: 'Analysis'}
+    ],
     Menuitems: [
       { title: 'Overview'},
       { title: 'Omics' },
@@ -141,6 +147,7 @@ export default {
     
   },
   created(){
+
     this.load();
     // this.$nextTick(()=>{
     //   $(document).on('scroll',function(){
@@ -165,7 +172,12 @@ export default {
       }).on('mouseleave',function(){
         $('.menuList').hide();
       })
-      
+      this.$EventBus.$on("menu", (msg) => {
+        // A发送来的消息
+        console.log(msg)
+        this.Menuitems=msg
+      })
+     
     },
     load(){
       console.log(this.$route)
@@ -188,7 +200,7 @@ export default {
 <style scoped>
 #logo{
     position: absolute;
-    left:40px;
+    left:4rem;
     top:0;
 }
 .tab{
@@ -196,11 +208,11 @@ export default {
   bottom: 0;
 }
 .bread{
-  padding:0 30px;
+  padding:0 3rem;
 }
 
 #menu{
-  width:100px;
+  width:10rem;
   height: 100%;
   position: absolute;
   left: 0;
@@ -214,16 +226,18 @@ export default {
   top:50%;
   /* transform: translateY(-50%); */
   padding:0;
-  width:200px;
+  width:20rem;
   color: #03588a;
   text-shadow: 0 1px 0 #03588a;
   background: transparent;
+  font-size: 16px;
 }
+
 body[theme-mode='dark'] .menuList{
   color: #fff;
 }
 #menu >>>.menuList.v-sheet.v-list:not(.v-sheet--outlined){
-  box-shadow: 0px 2px 4px -1px #000;
+  box-shadow: 0px 0.2rem 0.4rem -1px #000;
 }
 #menu >>>.menuListItem.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled){
   color: #03588a !important;
@@ -233,15 +247,19 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
   color: #fff !important;
   
 }
+.menuListItem >>>.v-list-item--dense .v-list-item__title, .v-list-item--dense .v-list-item__subtitle, .v-list--dense .v-list-item .v-list-item__title, .v-list--dense .v-list-item .v-list-item__subtitle{
+  line-height: 1.2;
+}
+
 /* #menu >>>.menuListItemActive.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled){
   color: #fff !important;
 } */
 .menuListItemActive{
-  width:220px;
+  width:22rem;
   background: rgba(36, 119, 168,0.6);
   color: #fff;
   text-shadow: 0 1px 0 #fff;
-  box-shadow: 0px 2px 4px -1px #2477a8;
+  box-shadow: 0px 0.2rem 0.4rem -1px #2477a8;
 }
 .content{
   position: relative;

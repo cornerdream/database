@@ -227,14 +227,11 @@ watch:{
   }
 },
 created() {
-  // this.load()
 },
 mounted() {
   console.log('mount')
   this.emit()
-  // this.load()
   this.legend()
-  // this.onaclick()
 },
 methods:{
     
@@ -281,6 +278,8 @@ methods:{
       // .attr('style','position:absoulte;left:50%')
       // .attr("transform","translate(-50%,0)");        
       // this.rectItem.forEach((item)=>{
+      console.log(this.valueColor)    
+      console.log(this.pathway)  
       var max = this.valueColor[this.pathway].max;
       var point = this.valueColor[this.pathway].point;
       var red = this.valueColor[this.pathway].red ;
@@ -434,7 +433,8 @@ methods:{
           
    g.append('image')
        .attr('xlink:href', 'http://'+this.map) 
-       .attr('style',"mix-blend-mode:multiply")
+       .style('mix-blend-mode','multiply')
+      //  .attr('style',"mix-blend-mode:multiply")
        .attr("width", boxW)
       .attr("height", boxH)   
         
@@ -487,7 +487,7 @@ methods:{
               .append('div')
               .html(str)
               .attr("id", "colorData")
-              .attr("style", "z-index:9999;width: 150px;height: auto;padding: 5px;background-color: white;border: 1px solid #ccc;border-radius: 10px;box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);position:absolute;left:" + (d3.event.layerX) + "px" + ";top:" +(d3.event.layerY)+ "px")    
+              .attr("style", "padding:6px;background-color:white;border:1px solid #ccc;border-radius:10px;box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);position:absolute;left:" + (d3.event.layerX) + "px" + ";top:" +(d3.event.layerY)+ "px")    
           }else{
             d3.select(this)
             .append("title").text(function (d) {
@@ -748,7 +748,7 @@ methods:{
     width: 200px;
     height: 200px;
 }
-#colorData{
+svg #colorData{
   position: absolute;
   width: 150px;
   height: auto;
@@ -765,8 +765,8 @@ methods:{
   pointer-events: none;
 }
 
-#colorData.hidden {
+/* #colorData.hidden {
   display: none;
-}
+} */
 
 </style>

@@ -1,6 +1,7 @@
 <!-- -->
 <template>
 <div class="TumorOverview">
+
     <div class="container" >
       <v-toolbar flat id="search">
         <v-autocomplete
@@ -30,26 +31,37 @@
       </v-toolbar>
       <div class="component">
         <SimpleTable  :data="tableData"></SimpleTable>
+        <loading v-if="loading"></loading>
+        <alert v-if="alertShow" :info="info" :type="type"></alert>
       </div>
       
     </div>
+    
 </div>
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
+import loading from '../components/loading.vue'
+import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
 import SimpleTable from '../components/simpleTable.vue'
 export default {
 name: 'TumorOverview',
 components:{
+  loading,
+  alert,
   SimpleTable,
+
 },
 computed: {
-  ...mapGetters(['cmp_id']),
+  ...mapGetters(['cmp_id','loading']),
 },
 data() {
 return {
-    loading: false,
+    alertShow:false,
+    info:'',
+    type:'',
+    // loading: false,
     search: null,
     select: null,
     states: [],
@@ -66,14 +78,32 @@ mounted() {
   // })
 },
 methods:{
-    onsearch(data){
+    alert(type,data){
+      var _this = this;
+      this.alertShow = true;
+      this.type = type
+      this.info = data
+      setTimeout(function(){
+        _this.alertShow = false
+      },2000)
+    },
+    async onsearch(data){
+      
       console.log(baseUrl)
-      fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+data).then((res)=>{
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+data).then((res)=>{
         return res.json()
       }).then((data)=>{
-        this.tableData = data.data_info;
+        // data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)
+        if(data.code==200){          
+          this.tableData = data.data_info
+        }else{
+          this.alert('error',data.message)
+        }
       })
+      this.$store.dispatch('HideLoading')
     },  
+    
 }
 }
 </script>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 // const Layout = () => import(/* webpackChunkName: "layout" */ '../layout/default.vue')
+//const ModelLayout = () => import(/* webpackChunkName: "layout" */ '../layout/modelLayout.vue')
 const SelectLayout = () => import(/* webpackChunkName: "layout" */ '../layout/selectLayout.vue')
 
 const Home = () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
@@ -34,17 +35,16 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home,
-    
   },
   // {
   //   path: '',
-  //   name: 'Layout',
-  //   component: Layout,
+  //   name: 'ModelLayout',
+  //   component: ModelLayout,
   //   children:[        
   //     {
-  //       path: '/search',
-  //       name: 'Search',
-  //       component: Search
+  //       path: '/ModelAtlas',
+  //       name: 'ModelAtlas',
+  //       component: ModelAtlas
   //     },       
   //   ]
   // },

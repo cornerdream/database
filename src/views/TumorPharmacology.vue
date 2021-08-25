@@ -33,7 +33,7 @@
         <v-select
           v-model="menuselect"
           :items="selectitems"
-          label="Outlined style"
+          label="Chart type"
           dense
           outlined
           @change="onchange"
@@ -45,21 +45,22 @@
           align="center"
           justify="center"
           >
-            <v-col cols="4">
+            <!-- <v-col cols="3">
               <Network></Network>
-            </v-col>
-            <v-col cols="8">
+            </v-col> -->
+            <v-col cols="12">
               <TablePharmacology :data="tableData"></TablePharmacology>
             </v-col>
           </v-row>
         </div>
- 
+        <loading v-if="loading"></loading>
+        <alert v-if="alertShow" :info="info" :type="type"></alert>
       </div>
       <div class="select">
         <v-combobox
         v-model="Pharmacology.select1"
         :items="drugclass"
-        label="Drug set"
+        :label="Pharmacology.label1"
         outlined
         dense
         solo
@@ -69,7 +70,7 @@
         <v-combobox
         v-model="Pharmacology.select2"
         :items="gene_class"
-        label="Gene set"
+        :label="Pharmacology.label2"
         outlined
         dense
         solo
@@ -77,7 +78,7 @@
         :disabled="Pharmacology.disabled2"
         ></v-combobox>
         <v-text-field 
-        placeholder="Drug list"
+        :placeholder="Pharmacology.label3"
         :value="Pharmacology.value1"
         @keyup.enter="PharmacologychangeArr3"
         :disabled="Pharmacology.disabled3"
@@ -90,7 +91,7 @@
           </v-icon>
         </v-text-field>
         <v-text-field 
-        placeholder="Gene list"
+        :placeholder="Pharmacology.label4"
         :value="Pharmacology.value2"
         @keyup.enter="PharmacologychangeArr4"
         :disabled="Pharmacology.disabled4"
@@ -105,7 +106,7 @@
         <v-combobox
           v-model="Pharmacology.select3"
           :items="Pharmacology.items3"
-          label="drug response indicator"
+          :label="Pharmacology.label5"
           outlined
           dense
           solo
@@ -124,38 +125,49 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
+import loading from '../components/loading.vue'
+import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-import Network from '../components/network.vue'
+// import Network from '../components/network.vue'
 import TablePharmacology from '../components/tablePharmacology.vue'
 export default {
 name: 'TumorPharmacology',
 components:{
-  
+  loading,
+  alert,
   Scatter,
-  Network,
+  // Network,
   TablePharmacology
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','drugclass']),
+  ...mapGetters(['cmp_id','gene_class','drugclass','loading']),
 },
 data() {
 return {
-    loading: false,
+    alertShow:false,
+    info:'',
+    type:'',
+    // loading: false,
     search: null,
     select: null,
     states: [],
     Pharmacology:{
+      label1:'Drug set',
       select1: '',
       items1: [],
       disabled1:false,
+      label2:'Gene set',
       select2: '',
       items2: [],
       disabled2:false,
+      label3:'Drug list',
       value1:'',
       disabled3:false,
+      label4:'Gene list',
       value2:'',
       disabled4:false,
+      label5:'drug response indicator',
       select3: 'LN_IC50',
       items3: ['LN_IC50','AUC'], 
     },
@@ -169,79 +181,117 @@ created() {
 },
 mounted() {},
 methods:{
+    alert(type,data){
+      var _this = this;
+      this.alertShow = true;
+      this.type = type
+      this.info = data
+      setTimeout(function(){
+        _this.alertShow = false
+      },2000)
+    },
     onsearch(){
       if(this.Pharmacology.select1){
-        if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+        this.menuselect=='scatter'?this.onselect():this.onselectTable() 
+      }else{
+        this.alert('warning','请选择'+this.Pharmacology.label1||this.Pharmacology.label2||this.Pharmacology.label3||this.Pharmacology.label4||this.Pharmacology.label5)
       }  
     },
     PharmacologychangeArr(){
       this.Pharmacology.disabled2 = true;
       this.Pharmacology.disabled3 = true;
       this.Pharmacology.disabled4 = true;
-      if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+      if(this.select){
+        this.menuselect=='scatter'?this.onselect():this.onselectTable() 
+      }else{
+        this.alert('warning','请选择cmp_id')
+      }
+      
     },
     PharmacologychangeArr2(){
       this.Pharmacology.disabled1 = true;
       this.Pharmacology.disabled3 = true;
       this.Pharmacology.disabled4 = true;
-      if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+      if(this.select){
+        this.menuselect=='scatter'?this.onselect():this.onselectTable() 
+      }else{
+        this.alert('warning','请选择cmp_id')
+      }
+      
     },
     PharmacologychangeArr3(){
       this.Pharmacology.disabled1 = true;
       this.Pharmacology.disabled2 = true;
       this.Pharmacology.disabled4 = true;  
-      if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+      if(this.select){
+        this.menuselect=='scatter'?this.onselect():this.onselectTable()
+      }else{
+        this.alert('warning','请选择cmp_id')
+      }
+      
     },
     PharmacologychangeArr4(){
       this.Pharmacology.disabled1 = true;
       this.Pharmacology.disabled2 = true;
       this.Pharmacology.disabled3 = true;  
-      if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+      if(this.select){
+        this.menuselect=='scatter'?this.onselect():this.onselectTable() 
+      }else{
+        this.alert('warning','请选择cmp_id')
+      }
+      
     },
     PharmacologychangeArr5(){
-        if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+      if(this.select){
+        this.menuselect=='scatter'?this.onselect():this.onselectTable() 
+      }else{
+        this.alert('warning','请选择cmp_id')
+      }
+      
     },
-    onselect(){
-      fetch(baseUrl+'/api/drug/drug_info/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+    async onselect(){
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/drug/drug_info/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
         return res.json()
       }).then((data)=>{
-        this.PharmacologyData = data.data_info;
+        //data.code==200?this.PharmacologyData = data.data_info:this.$alert.error(data.message);
+        if(data.code==200){          
+          this.PharmacologyData = data.data_info
+        }else{
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
+        }
       })
+      this.$store.dispatch('HideLoading')
       this.Pharmacology.disabled1 = false;
       this.Pharmacology.disabled2 = false;
       this.Pharmacology.disabled3 = false;  
       this.Pharmacology.disabled4 = false;  
     },
-    onselectTable(){
-      fetch(baseUrl+'/api/drug/drugtable/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
+    async onselectTable(){
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/drug/drugtable/?drug_class='+(this.Pharmacology.select1||this.Pharmacology.select2||this.Pharmacology.value1||this.Pharmacology.value2)).then((res)=>{
         return res.json()
       }).then((data)=>{
-        this.tableData = data.data_info;
+        //data.code==200?this.tableData = data.data_info:this.$alert.error(data.message);
+        if(data.code==200){          
+          this.tableData = data.data_info
+        }else{
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
+        }
       })
+      this.$store.dispatch('HideLoading')
       this.Pharmacology.disabled1 = false;
       this.Pharmacology.disabled2 = false;
       this.Pharmacology.disabled3 = false;  
@@ -249,11 +299,7 @@ methods:{
     },
     onchange(){
       if(this.search||this.select){
-        if(this.menuselect=='scatter'){
-          this.onselect()
-        }else{
-          this.onselectTable() 
-        }
+        this.menuselect=='scatter'?this.onselect():this.onselectTable(); 
       }  
     }
 }

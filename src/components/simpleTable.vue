@@ -1,7 +1,7 @@
 <!-- -->
 <template>
 <div class="simpleTable">
-    <v-simple-table height="500px" id="simpleTable">
+    <v-simple-table height="500px" id="simpleTable" v-show="data.length!=0">
       <template v-slot:default>
         <thead>
           <tr>
@@ -41,7 +41,6 @@ watch:{
     }
 },
 created() {
-  // this.load()
 },
 mounted() {
   
@@ -51,6 +50,7 @@ methods:{
     console.log(this.data)
     this.desserts = []
     if(Array.isArray(this.data)){
+      this.data = this.data.filter((item)=>item!='id')
       this.data.forEach((item)=>{
         let name = Object.keys(item);
         name.map((n)=>{
@@ -59,10 +59,17 @@ methods:{
         })
       })
     }else{
-      for(var item in this.data){
+      console.log(this.data)
+      var data = Object.keys(this.data).filter((item)=>item!='id')
+      console.log(data)
+      data.forEach((item)=>{
         let obj = {name:item,calories:this.data[item]}
         this.desserts.push(obj)
-      }
+      })
+      // for(var item in this.data){
+      //   let obj = {name:item,calories:this.data[item]}
+      //   this.desserts.push(obj)
+      // }
     }
     console.log(this.desserts)
   }

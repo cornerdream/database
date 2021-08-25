@@ -20,9 +20,8 @@
 				</div>
 				<v-card
 				height="186"
-				class="mx-auto"       
+				class="mx-auto card"       
 				outlined
-				id="card"
 				>
 				</v-card>	
 				<p class="itemTitle">{{item}}</p>
@@ -73,7 +72,8 @@ return {
 	white_c:imgC,
 	dark_c:imgC2,
 	img:[img1,img2,img3,img1,img1,img1,img1,img1],
-    items:['Tumor Cell Atlas','Immune Cell Atlas','Model Atlas','Atrain Atlas','Drug Atlas','Biosample Atlas','Biomarker Atlas','Target Atlas']
+    items:['Tumor Cell Atlas','Immune Cell Atlas','Model Atlas','Atrain Atlas','Drug Atlas','Biosample Atlas','Biomarker Atlas','Target Atlas'],
+	ableLink:['Tumor Cell Atlas','Model Atlas','Target Atlas']
 }
 },
 created() {
@@ -159,9 +159,16 @@ methods:{
 	});
   },
   liClick(item){
+	console.log(item)
+	console.log(this.ableLink.indexOf(item))
 	// this.$router.push({path:'/'+item.replace(/\s/g,''),query:{view:'Overview'}})
-	let routeUrl = this.$router.resolve({path: '/'+item.replace(/\s/g,''),query: {view:'Overview'}});
-	window.open(routeUrl.href, '_blank');
+	if(this.ableLink.indexOf(item)!=-1){
+		let routeUrl = this.$router.resolve({path: '/'+item.replace(/\s/g,''),query: {view:'Overview'}});
+		window.open(routeUrl.href, '_blank');
+	}else{
+		this.$alert.error('在开发中，敬请期待')
+	}
+	
   }
 }
 }
@@ -172,7 +179,7 @@ methods:{
 	position: relative;
 }
 
-#card{
+.card{
     top:50%;
     transform: translateY(-50%);
 	color: #fff;
@@ -185,14 +192,14 @@ methods:{
     transform: translateX(-50%);
 }
 #card-link {
-    min-width: 300px;
-    max-width: 700px;
+    min-width: 30rem;
+    max-width: 70rem;
     padding: 0;
 }
 #card-link li{
     float: left;
     line-height: 3rem;
-    width: 150px;
+    width: 15rem;
     text-align: left;
 	
 }
@@ -247,7 +254,7 @@ body[theme-mode='dark'] .wrapper .slide{
 }
 .item{
 	position: absolute;
-	left: 70px;
+	left: 7rem;
 	/* top: 20px; */
 	/* margin-top: -20px; */
 	color: #fff;
@@ -294,7 +301,7 @@ body[theme-mode='dark'] .wrapper .slide{
 .pagination li {
   cursor: pointer;
   float: left;
-  line-height: 2.4rem;
+  line-height: 24px;
   width: 200px;
   text-align: left;
 }
@@ -309,17 +316,17 @@ body[theme-mode='dark'] .pagination li{
 	position: absolute;
 	z-index: 999;
 	top: 50%;
-	margin-top: -30px;
+	margin-top: -3rem;
   font-size: 4rem;
   color: #fff;
 }
 
 .arrow.changeLeft {
-	left: 20px;
+	left: 2rem;
 }
 
 .arrow.changeRight {
-	right: 20px;
+	right: 2rem;
 }
 
 </style>

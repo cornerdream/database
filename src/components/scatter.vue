@@ -175,7 +175,7 @@ methods:{
         // 配置图表第一次加载时的入场动画
         appear: {
           animation: 'wave-in', // 动画效果
-          duration: 5000,  // 动画执行时间
+          duration: 1000,  // 动画执行时间
         },
       }
     });

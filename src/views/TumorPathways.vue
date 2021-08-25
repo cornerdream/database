@@ -45,12 +45,14 @@
         </v-tabs>
         <Table :data="pathwaysTableData" :msg="current" v-if="tab==0"></Table>
         <Pathway :data="pathwaysData" :msg="current" :pathway="Pathways.select3" v-else></Pathway>
+        <loading v-if="loading"></loading>
+        <alert v-if="alertShow" :info="info" :type="type"></alert>
       </div>
       <div class="select">
           <v-combobox
           v-model="Pathways.select1"
           :items="pathway_list"
-          label="Pathways list"
+          :label="Pathways.label1"
           outlined
           dense
           solo
@@ -59,7 +61,7 @@
           <v-combobox
             v-model="Pathways.select3"
             :items="Pathways.items3"
-            label="Gene data"
+            :label="Pathways.label3"
             outlined
             dense
             solo
@@ -72,29 +74,38 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
+import loading from '../components/loading.vue'
+import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
 import Table from '../components/table.vue'
 import Pathway from '../components/pathway.vue'
 export default {
 name: 'TumorPathways',
 components:{ 
+  loading,
+  alert,
     Table,
     Pathway,
 },
 computed: {
-  ...mapGetters(['cmp_id','pathway_list']),
+  ...mapGetters(['cmp_id','pathway_list','loading']),
 },
 props:['current'],
 data() {
 return {
-    loading: false,
+    alertShow:false,
+    info:'',
+    type:'',
+    // loading: false,
     search: null,
     select: null,
     items:[],
     states: [],
     Pathways:{
+        label1:'Pathways list',
         select1: '',
         items1: [],
+        label3:'Gene data',
         select3: 'Mutation',
         // items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'],
         items3: ['Mutation', 'CNV', 'Fusion', 'gene expression'],
@@ -114,18 +125,12 @@ return {
 created() {
   console.log(this.current)
   this.$EventBus.$on(this.current, (msg) => {
-    console.log(1)
       console.log(msg)
       this.source = msg;  
-      if(this.search||this.select||this.Pathways.select1){
+      if(this.search||this.Pathways.select1){
         if(this.tab!=0){
           this.onselectPathways(this.select)
         }
-        // if(this.tab==0){
-        //   this.onselectPathwaysTable()
-        // }else{
-        //   this.onselectPathways()
-        // }
       }
   })
 },
@@ -133,69 +138,105 @@ mounted() {
   
 },
 methods:{
-    
+    alert(type,data){
+      var _this = this;
+      this.alertShow = true;
+      this.type = type
+      this.info = data
+      setTimeout(function(){
+        _this.alertShow = false
+      },2000)
+    },
     onsearch(cmp_id){
+      // var _this = this;
       if(this.Pathways.select1){
-        if(this.tab==0){
-          this.onselectPathwaysTable(cmp_id)
-        }else{
-          this.onselectPathways(cmp_id)
-        }
-        
+        this.tab==0?this.onselectPathwaysTable(cmp_id):this.onselectPathways(cmp_id)
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择'+this.Pathways.label1||this.Pathways.label3
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择'+this.Pathways.label1||this.Pathways.label3)
       }
     },
-    PathwayschangeArr(){    
-      if(this.select||this.search){
-        if(this.tab==0){
-          this.onselectPathwaysTable(this.select)
-        }else{
-          this.onselectPathways(this.select)
-        } 
+    PathwayschangeArr(){   
+      // var _this = this; 
+      if(this.select){
+        this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择cmp_id')
       } 
-      
     },
     PathwayschangeArr3(){
-      if(this.select||this.search){
-        if(this.tab==0){
-          this.onselectPathwaysTable(this.select)
-        }else{
-          this.onselectPathways(this.select)
-        }
+      // var _this = this;
+      if(this.select){
+        this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
+      }else{
+        // this.alertShow = true;
+        // this.type = 'warning'
+        // this.info = '请选择cmp_id'
+        // setTimeout(function(){
+        //   _this.alertShow = false
+        // },3000)
+        this.alert('warning','请选择cmp_id')
       }  
     },
-    onselectPathwaysTable(cmp_id){
-      fetch(baseUrl+'/api/pathway/pathwaytable/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
+    async onselectPathwaysTable(cmp_id){
+      // var _this = this;
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/pathway/pathwaytable/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
-        if(data.code==200){
-          this.pathwaysTableData = data.data_info;
+        // data.code==200?this.pathwaysTableData = data.data_info:this.$alert.error(data.message)
+        if(data.code==200){          
+          this.pathwaysTableData = data.data_info
         }else{
-         this.$alert.error(data.message)
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
         }
       })
+      this.$store.dispatch('HideLoading')
     },
-    onselectPathways(cmp_id){
-      fetch(baseUrl+'/api/pathway/pathway/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
+    async onselectPathways(cmp_id){
+      // var _this = this;
+      this.$store.dispatch('ShowLoading')
+      await fetch(baseUrl+'/api/pathway/pathway/?cmp_id='+cmp_id+'&omics_type='+this.Pathways.select3+'&pathway_id='+this.Pathways.select1+'&source='+(this.source)).then((res)=>{
         return res.json()
       }).then((data)=>{
-        if(data.code==200){
-          this.pathwaysData = data.data_info;
+        // data.code==200?this.pathwaysData = data.data_info:this.$alert.error(data.message)
+        if(data.code==200){          
+          this.pathwaysData = data.data_info
         }else{
-         this.$alert.error(data.message)
+          // this.alertShow = true;
+          // this.type = 'error'
+          // this.info = data.message
+          // setTimeout(function(){
+          //   _this.alertShow = false
+          // },3000)
+          this.alert('error',data.message)
         }
       })
+      this.$store.dispatch('HideLoading')
     },
     onchange(){
       if(this.source){
-        if(this.select||this.search){
+        if(this.select){
           if(this.tab!=0){
            this.onselectPathwaysTable(this.select) 
           }
-          // if(this.tab==0){
-          //   this.onselectPathways()
-          // }else{
-          //   this.onselectPathwaysTable() 
-          // }
         }
       }  
     }

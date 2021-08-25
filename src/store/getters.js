@@ -5,5 +5,6 @@ const getters = {
   pathway_list: (state) => state.tumor.pathway_list, 
   hla_allele: (state) => state.tumor.hla_allele, 
   drugclass: (state) => state.tumor.drugclass, 
+  loading: (state) => state.load.loading, 
 }
 export default getters

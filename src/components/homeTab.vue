@@ -3,7 +3,7 @@
 <div id="homeTab">
   <v-card >
     <v-img
-    height="44rem"
+    height="440px"
     :src="bg"
     ></v-img>
     
@@ -89,7 +89,7 @@ methods:{
 <style scoped>
 #logo{
     position: absolute;
-    left:40px;
+    left:4rem;
     top:0;
 }
 .tab{
