@@ -1,6 +1,7 @@
 <!-- -->
 <template>
 <div id="tab">
+  <!-- 下拉扩展面板 -->
   <v-data-table
     :headers="newHeaders"
     :items="newItems"
@@ -199,7 +200,7 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import Sequence from '../components/sequence.vue'
+import Sequence from './sequence.vue'
 export default {
 name: 'tab',
 components:{

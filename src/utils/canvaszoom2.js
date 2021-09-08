@@ -31,10 +31,20 @@ Version:        1.0
 
 global ImageLoader, window  (for JSLint) 
 */
+import $ from 'jquery'
 import {ImageLoader} from './imageloader'
-function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,eventBus,s)
+function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,eventBus,s,img)
 {
-	// var _event = eventBus;
+	
+	window.onresize=function(){
+
+		imageWidth = $('#img').width();
+		if(imageWidth<500) imageWidth=500;
+		$(canvas).width(imageWidth)
+		$('.card').width(imageWidth)
+	
+	}
+
 	//var t = this; // make "this" accessible when out of "this" scope and minify
 	
 	//var _tileOverlap = 1; // assumed
@@ -84,13 +94,13 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		paint;
             
 	getTileFile = function( zoom, column, row ) {
-		return tilesFolder + "/" + zoom + "/" + column + "_" + row + ".jpg";
+		return tilesFolder + "/" + zoom + "/" + column + "_" + row + "."+img;
 	};
 
 	initialTilesLoaded = function() {
 		
 		var tileZoomLevel = _tileZoomArray[_zoomLevel];
-		console.log(tileZoomLevel)
+
 		var columns = tileZoomLevel.length;
 		var rows = tileZoomLevel[0].length;
  
@@ -101,20 +111,19 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 			for( iRow = 0; iRow < rows; iRow++ )
 			{
 				tileZoomLevel[iColumn][iRow][_aGetTile] = _imageLoader.getImageById( imageId++ );
+				
 			}
 		}
-		console.log(tileZoomLevel)
+		
 		_tileZoomArray[_zoomLevelFull][0][0][_aGetTile] = _imageLoader.getImageById( imageId );
-		console.log(_tileZoomArray)
+
 		//
 		// Centre image
 		//
-		console.log(canvas.width,tileZoomLevel[_aGetWidth])
-		console.log(canvas.height,tileZoomLevel[_aGetHeight])
-		console.log(_offsetX,_offsetY)
+		
 		_offsetX = (canvas.width - tileZoomLevel[_aGetWidth]) / 2;
 		_offsetY = (canvas.height - tileZoomLevel[_aGetHeight]) / 2;
-		console.log(_offsetX,_offsetY)
+		
 		// 
 		// Add mouse listener events
 		//
@@ -135,6 +144,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		_ctx = canvas.getContext('2d');
 		
 		paint();
+		
 	};
     
 	// Helper function
@@ -151,7 +161,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		
 		// _mouseDownX = mousePosX(event);
 		// _mouseDownY = mousePosY(event); 
-		console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
+		//console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
 		_mouseDownX = windowToCanvas(event.clientX,event.clientY).x;
 		_mouseDownY = windowToCanvas(event.clientX,event.clientY).y; 
 		
@@ -165,7 +175,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		
 		// _mouseX = mousePosX(event);
 		// _mouseY = mousePosY(event); 
-		console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
+		//console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
 		_mouseX = windowToCanvas(event.clientX,event.clientY).x;
 		_mouseY = windowToCanvas(event.clientX,event.clientY).y;
 		
@@ -179,7 +189,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 	mouseMove = function(event) {
 		// _mouseX = mousePosX(event);
 		// _mouseY = mousePosY(event); 
-		console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
+		//console.log(windowToCanvas(event.clientX,event.clientY).x,windowToCanvas(event.clientX,event.clientY).y)
 		_mouseX = windowToCanvas(event.clientX,event.clientY).x;
 		_mouseY = windowToCanvas(event.clientX,event.clientY).y; 
 
@@ -187,8 +197,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		{
 			var newOffsetX = _offsetX + (_mouseX - _mouseMoveX);
 			var newOffsetY = _offsetY + (_mouseY - _mouseMoveY);
-			console.log(newOffsetX,newOffsetY)
-			console.log(_zoomLevel)
+			
 			calculateNeededTiles( _zoomLevel, newOffsetX, newOffsetY );
 			
 			_mouseMoveX = _mouseX;
@@ -246,7 +255,7 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 	var scale=[1,2,4,10,20,40];
 	function windowToCanvas(x,y) {
         var box = canvas.getBoundingClientRect();  //这个方法返回一个矩形对象，包含四个属性：left、top、right和bottom。分别表示元素各边与页面上边和左边的距离
-        console.log(box)
+        //console.log(box)
 		return {
             x: x - box.left - (box.width - canvas.width) / 2,
             y: y - box.top - (box.height - canvas.height) / 2
@@ -267,17 +276,15 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 				if(wheelNumber==scale.length){return}
 				wheelNumber++;
 				if(wheelNumber>=scale.length){wheelNumber=scale.length}
-				var insize = scale[wheelNumber];
-				console.log(insize)
+				var insize = scale[wheelNumber];			
 				eventBus.$EventBus.$emit('fruits', wheelNumber)
 				zoomIn(insize); 
-				// zoomIn(40);   
+			// zoomIn(40);   
 			}else{
 				if(wheelNumber==0){return}
 				wheelNumber--;
 				if(wheelNumber<=0){wheelNumber=0}
-				var outsize = scale[wheelNumber];
-				console.log(outsize)
+				var outsize = scale[wheelNumber];			
 				eventBus.$EventBus.$emit('fruits', wheelNumber)	
 				zoomOut(outsize);  
 			}
@@ -338,16 +345,15 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		zoomOut(size);
 	};
 	
-	// this.zoom = zoom
+	
 	// Change the zoom level and update.
 	zoom = function(zoomLevel) {
-		console.log(zoomLevel,_zoomLevel)
-		console.log(_zoomLevelMin,_zoomLevelMax)
-
+		
+		
 		if( zoomLevel >= _zoomLevelMin && zoomLevel <= _zoomLevelMax )
 		{
 			var newZoom = zoomLevel,
-					currentZoom = _zoomLevel;
+			currentZoom = _zoomLevel;
 										
 			//
 			// Calculate new offset
@@ -356,90 +362,80 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 			var zoomY = _mouseY;
 			
 			// TODO: restrict zoom position to within (close?) area of image.
-			console.log(zoomX,zoomY)
-			console.log(_offsetX,_offsetY)
-			var currentImageX = zoomX - _offsetX,
-					currentImageY = zoomY - _offsetY;
-			console.log(currentImageX,currentImageY)		
-			console.log(_tileZoomArray[newZoom][_aGetWidth],_tileZoomArray[currentZoom][_aGetWidth])
+			
+			var currentImageX = zoomX - _offsetX,currentImageY = zoomY - _offsetY;
+			
 			var scale = _tileZoomArray[newZoom][_aGetWidth] / _tileZoomArray[currentZoom][_aGetWidth];
-			console.log(scale)
-			var newImageX = currentImageX * scale,
-					newImageY = currentImageY * scale;
-			console.log(newImageX,currentImageX,_offsetX)
-			console.log(newImageY,currentImageY,_offsetY)
-			var newOffsetX = _offsetX - (newImageX - currentImageX),
-					newOffsetY = _offsetY - (newImageY - currentImageY);
-			//var newOffsetX = _offsetX + (_tileZoomArray[newZoom][_aGetWidth]-_tileZoomArray[currentZoom][_aGetWidth]),newOffsetY = _offsetY + (_tileZoomArray[newZoom][_aGetHeight]-_tileZoomArray[currentZoom][_aGetHeight]);
-			// var newOffsetX = _mouseX + (newImageX - currentImageX),
-			// 		newOffsetY = _mouseY + (newImageY - currentImageY);
-		
-			console.log(newZoom, newOffsetX, newOffsetY)
+			
+			var newImageX = currentImageX * scale,newImageY = currentImageY * scale;
+			
+			var newOffsetX = _offsetX - (newImageX - currentImageX),newOffsetY = _offsetY - (newImageY - currentImageY);
+			
+			
+			_zoomLevelFull =_zoomLevel;
+
 			calculateNeededTiles( newZoom, newOffsetX, newOffsetY );
-			// calculateNeededTiles( newZoom, 0, 0 );
+			
 			
 			_zoomLevel = newZoom;
 			_offsetX = newOffsetX;
 			_offsetY = newOffsetY;
 		}
 	};
+
 	
+
 	// Work out which of the tiles we need to download 
 	calculateNeededTiles = function( zoom, offsetX, offsetY ) {
 		//
 		// Calculate needed tiles
 		//
+		
 		var tileZoomLevelArray = _tileZoomArray[zoom];
-		console.log(tileZoomLevelArray)
+		
+		
 		var canvasLeft = -offsetX, 
 				canvasTop = -offsetY; 
-		// var canvasLeft = offsetX, 
-		// 		canvasTop = offsetY; 
-		console.log(canvasLeft,canvasTop)	
-		console.log(canvas.width,canvas.height)		
+
 		var canvasRight = canvasLeft + canvas.width,
 				canvasBottom = canvasTop + canvas.height;
-		console.log(canvasRight,canvasLeft,canvasBottom,canvasTop)
+		
 		var tileLeft = 0, tileRight = 0, tileTop = 0, tileBottom = 0;
 		var tile = null;
 	
-		var zoomWidth = tileZoomLevelArray[_aGetWidth],
-				zoomHeight = tileZoomLevelArray[_aGetHeight];
-		console.log(zoomWidth,zoomHeight)
-		var columns = tileZoomLevelArray.length,
-			rows = tileZoomLevelArray[0].length;
-		console.log(columns,rows)
+		var zoomWidth = tileZoomLevelArray[_aGetWidth],zoomHeight = tileZoomLevelArray[_aGetHeight];
+
+		var columns = tileZoomLevelArray.length,rows = tileZoomLevelArray[0].length;
+
         var iColumn = 0, iRow = 0;
 		var tileList = []; //new Array();
+		
 		for( iColumn = 0; iColumn < columns; iColumn++ )
 		{
 			for( iRow = 0; iRow < rows; iRow++ )
 			{
 				tile = tileZoomLevelArray[iColumn][iRow];
-				console.log(tile)
 				if( tile[_aGetTile] === null && tile[_aGetWaiting] === false )
 				{
-					console.log('jin')
+					
 					tileLeft = iColumn * _tileSize;
 					tileRight = tileLeft + Math.min( _tileSize, zoomWidth - tileLeft );
 					tileTop = iRow * _tileSize;
 					tileBottom = tileTop + Math.min( _tileSize, zoomHeight - tileTop );
-					console.log(tileLeft,tileRight,tileTop,tileBottom)
-					console.log(canvasRight,canvasLeft,canvasBottom,canvasTop)
+
 					if( !( tileLeft > canvasRight || tileRight < canvasLeft || tileTop > canvasBottom || tileBottom < canvasTop ) )
-					// if( ( tileLeft< canvasRight || tileRight > canvasLeft || tileTop < canvasBottom || tileBottom > canvasTop ) )
 					{
-						console.log('request')
+						
 						// request tile!
-						console.log(zoom, iColumn, iRow)
 						tile[_aGetWaiting] = true;
-						tileList.push( { "name" : zoom + "_" + iColumn + "_" + iRow, "file" : getTileFile( zoom, iColumn, iRow ) } );
+						tileList.push( { "name" : zoom + "_" + iColumn + "_" + iRow, "file" : getTileFile( zoom, iColumn, iRow )} );
 					}
 				}
 			}
 		}
-		console.log(tileList)
+		
 		getTiles( tileList );
+		
 	};
 	
 	// Load the tiles we need with ImageLoader
@@ -448,25 +444,28 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		{
 			_imageLoader = new ImageLoader( {
 				"images": tileList,
-				"onImageLoaded":function( name, tile ) { tileLoaded( name, tile ); }
+				"onImageLoaded":function( name, tile ) { 
+					tileLoaded( name, tile ); 
+				}
 			} );
-			// _imageLoader.setLoaded()
 		}
 	};
 	
 	// Tile loaded, save it.
 	tileLoaded = function ( name, tile ) {
 		var tileDetails = name.split("_");
-		console.log(tileDetails)
 		if( tileDetails.length === 3 )
 		{
+		
 			var tileInfo = _tileZoomArray[tileDetails[0]][tileDetails[1]][tileDetails[2]];
 			tileInfo[_aGetTile] = tile;
 			tileInfo[_aGetWaiting] = false;
-			console.log(tileInfo)
+			
 			paint();
+			
 		}
 	};
+	
 	
 	paint = function () {
 		
@@ -476,48 +475,59 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		//
 		_ctx.fillStyle = _ctx.strokeStyle = "#fff";
 		_ctx.clearRect( 0, 0, canvasWidth, canvasHeight );
-		
+		// 
 		//
 		// Show images
 		//
 		var tileZoomLevelArray = _tileZoomArray[_zoomLevel];
-		console.log(tileZoomLevelArray)
+		var oldtileZoomLevelArray = _tileZoomArray[_zoomLevelFull];
+
 		var columns = tileZoomLevelArray.length,
 				rows = tileZoomLevelArray[0].length;
-		console.log(columns,rows)
+		var oldcolumns = oldtileZoomLevelArray.length,
+				oldrows = oldtileZoomLevelArray[0].length;
+
 		var canvasLeft = -_offsetX,canvasTop = -_offsetY;
-		// var canvasLeft = _offsetX,canvasTop = _offsetY;
+		
 		var canvasRight = canvasLeft + canvasWidth,
 				canvasBottom = canvasTop + canvasHeight;
-		console.log(canvasLeft,canvasRight,canvasBottom)
-		var tileLeft = 0, tileRight = 0, tileTop = 0, tileBottom = 0; 
+
+		var tileLeft = 0, 
+		tileRight = 0, 
+		tileTop = 0,
+		tileBottom = 0; 
 		var tileCount = 0;
 		var tile = null;
+		var oldtile = null;
 		
 		var zoomWidth = tileZoomLevelArray[_aGetWidth];
 		var zoomHeight = tileZoomLevelArray[_aGetHeight];
-		console.log(zoomWidth,zoomHeight)
+
 		// TODO: This pastes a low resolution copy on the background (It's a bit of a hack and quite slow. A better solution is to find a nearer zoom)
-		var fullTile = _tileZoomArray[_zoomLevelFull][0][0][_aGetTile];
-        console.log(fullTile)
+		// var fullTile = _tileZoomArray[_zoomLevelFull][0][0][_aGetTile];
+
         var iColumn = 0, iRow = 0 ;
+		
+		
 		// TODO: Improve this by working out the start / end column and row using the image position instead of looping through them all (still pretty fast though!)
+		
+		
 		for( iColumn = 0; iColumn < columns; iColumn++ )
 		{
 			for( iRow = 0; iRow < rows; iRow++ )
 			{
-				console.log(iColumn,_tileSize,iRow)
+				
 				tileLeft = iColumn * _tileSize;
 				tileRight = tileLeft + Math.min( _tileSize, zoomWidth - tileLeft );
 				tileTop = iRow * _tileSize;
 				tileBottom = tileTop + Math.min( _tileSize, zoomHeight - tileTop ); 
-				console.log(tileLeft,tileRight,tileTop,tileBottom)
+				
 				if( !( tileLeft > canvasRight || tileRight < canvasLeft || tileTop > canvasBottom || tileBottom < canvasTop ) )
-				// if( ( tileLeft< canvasRight || tileRight > canvasLeft || tileTop < canvasBottom || tileBottom > canvasTop ) )
 				{
 					tile = tileZoomLevelArray[iColumn][iRow][_aGetTile];
-					console.log(tile)
-					console.log(_offsetX,_offsetY)
+					if(iColumn<oldcolumns&&iRow<oldrows){
+						oldtile = oldtileZoomLevelArray[iColumn][iRow][_aGetTile]
+					}
 					tileLeft += _offsetX;
 					tileRight += _offsetX;
 					tileTop += _offsetY;
@@ -525,12 +535,11 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 					
 					if( tile !== null )
 					{
-						console.log('tile')
-						console.log(tile)
-						console.log(tileLeft,tileRight,tileTop,tileBottom)
+						
 						// Draw tile
 						_ctx.drawImage( tile, tileLeft, tileTop );
-						// _ctx.drawImage( tile, 0, 0 );
+						
+						// canvas.toDataURL("image/png");
 
 						if( _debug )
 						{
@@ -543,28 +552,29 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 						//
 						// Tile still loading
 						//
-						console.log('still')
+						
 						if( !_debugShowRectangle )
 						{
-							console.log('draw')
-							// _ctx.save();
-							// _ctx.beginPath();
+							
+							_ctx.save();
+							_ctx.beginPath();
 						
-							// _ctx.moveTo( tileLeft, tileTop );
-							// _ctx.lineTo( tileRight, tileTop );
-							// _ctx.lineTo( tileRight, tileBottom );
-							// _ctx.lineTo( tileLeft, tileBottom );
-							// _ctx.closePath();
+							_ctx.moveTo( tileLeft, tileTop );
+							_ctx.lineTo( tileRight, tileTop );
+							_ctx.lineTo( tileRight, tileBottom );
+							_ctx.lineTo( tileLeft, tileBottom );
+							_ctx.closePath();
 
-							// _ctx.clip();
+							_ctx.clip();
 
-							console.log(fullTile)
-							console.log(_offsetX,_offsetY,zoomWidth,zoomHeight)
+							
 							// TODO: Fill with a lower zoom image. (or possible use combination of higher zooms??)
 							// but scaling images in canvas still VERY SLOW.
 							// THIS NOTABLY SLOWS DOWN PANNING WHEN IMAGES ARE NOT YET LOADED ON SOME BROWSERS.
-							_ctx.drawImage( fullTile, _offsetX, _offsetY, zoomWidth, zoomHeight );
-							// _ctx.drawImage( fullTile, 0, 0, zoomWidth, zoomHeight );
+							//_ctx.drawImage( fullTile, _offsetX, _offsetY, zoomWidth, zoomHeight );
+							if(oldtile!==null){
+								_ctx.drawImage(oldtile,_offsetX,_offsetY,zoomWidth,zoomHeight)
+							}
 							
 							_ctx.restore();
 						}
@@ -606,13 +616,12 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		}
 	};
 	
-
+	
 
     (function() { // setup
 
 		// _zoomLevelMax = Math.ceil( Math.log( Math.max( imageWidth, imageHeight ))/Math.LN2 );
-		// _zoomLevelMin = Math.ceil( canvas.width/_tileSize );
-		console.log(_zoomLevelMax,_zoomLevelMin)
+		
 		_tileZoomArray = [];    //new Array( _zoomLevelMax );
 
 		var reducingWidth = imageWidth;
@@ -620,20 +629,17 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		var zoomLevelStart = -1;
 		var iZoom = 0, iColumn = 0, iRow = 0;
         var columns = -1, rows = -1;
-        console.log(reducingWidth,reducingHeight)
+        
 		var izoomN = scale.length-1;
 		// for( iZoom = _zoomLevelMax;  iZoom >= _zoomLevelMin; iZoom-- )
 		for( iZoom = _zoomLevelMax;  iZoom >= _zoomLevelMin; iZoom=scale[--izoomN] )
 		{
 			var newiZoom = scale[izoomN],currentiZoom = scale[izoomN-1];
 			var scalew = newiZoom/currentiZoom
-			console.log(newiZoom,currentiZoom,scalew)
-
-			console.log(iZoom,izoomN)
-			console.log(reducingWidth,_tileSize)
+			
 			columns = Math.ceil( reducingWidth / _tileSize );
 			rows = Math.ceil( reducingHeight / _tileSize );
-			console.log(columns,rows)
+
 			if( _zoomLevelFull === -1 && reducingWidth <= _tileSize && reducingHeight <= _tileSize ){
 				// Largest full image inside single tile.
 				_zoomLevelFull = iZoom;
@@ -646,9 +652,11 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 
 			// Create array for tiles
 			_tileZoomArray[iZoom] = []; //new Array(columns);
+			// _tileZoomArray[iZoom] = {}
 			for( iColumn = 0; iColumn < columns; iColumn++ )
 			{
 				_tileZoomArray[iZoom][iColumn] = []; //new Array(rows); 
+				// _tileZoomArray[iZoom][iColumn] = {};
 			}
 			
 			// Set defaults
@@ -667,24 +675,14 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 			
 			reducingWidth /= scalew;
 			reducingHeight /= scalew;
-			// console.log(Math.pow(2, iZoom))
-			// reducingWidth /= Math.pow(2, iZoom);
-			// reducingHeight /= Math.pow(2, iZoom);
-			// console.log(2*iZoom)
-			// reducingWidth /= 2*(iZoom);
-			// reducingHeight /= 2*(iZoom);
-			// console.log(iZoom)
-			// console.log(Math.pow(2, iZoom-1))
-			// reducingWidth = reducingWidth/Math.pow(2, iZoom-1);
-			// reducingHeight = reducingHeight/Math.pow(2, iZoom-1);
+			
 			currentiZoom = scale[izoomN];
 		}
-		console.log(_tileZoomArray)
-		console.log(reducingWidth,reducingHeight)
-		console.log(_zoomLevelFull,zoomLevelStart)
-		// _zoomLevel = zoomLevelStart;
-		// _zoomLevelMin = zoomLevelStart
-		_zoomLevel = _zoomLevelFull;
+
+		
+		_zoomLevel = zoomLevelStart;
+		
+		// _zoomLevel = _zoomLevelFull;
 
 		//
 		// Initial tile load
@@ -694,17 +692,17 @@ function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,
 		
 		columns = _tileZoomArray[_zoomLevel].length;
 		rows = _tileZoomArray[_zoomLevel][0].length;
-		console.log(columns,rows)
+		
 		for( iColumn = 0; iColumn < columns; iColumn++ )
 		{
 			for( iRow = 0; iRow < rows; iRow++ )
 			{
-				imageList.push( { "id" : imageId++, "file": getTileFile( _zoomLevel, iColumn, iRow  ) } );
+				imageList.push( { "id" : imageId++, "file": getTileFile( _zoomLevel, iColumn, iRow  )} );
 			}
 		}
 		
-		imageList.push( { "id" : imageId, "file": getTileFile( _zoomLevelFull, 0, 0  ) } );
-		console.log(imageList)
+		imageList.push( { "id" : imageId, "file": getTileFile( _zoomLevelFull, 0, 0  )} );
+
 		_imageLoader = new ImageLoader( {
 			"images": imageList,
 			"onAllLoaded":function() { initialTilesLoaded(); }

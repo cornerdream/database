@@ -1,4 +1,5 @@
 import baseUrl from '../../utils/baseurl'
+// import { getCmpId } from '../../api/tumor';
 const theme = {
     state: {
       cmp_id:[],  
@@ -33,7 +34,11 @@ const theme = {
             return res.json()
         }).then((data)=>{
             commit('SET_CMPID', data.data_info.cmp_id)
-        })        
+        })   
+        // getCmpId().then((res)=>{
+        //   console.log(res)
+        //   commit('SET_CMPID', res.data_info.cmp_id)
+        // })     
       },
       GetGeneClass({commit}){
         fetch(baseUrl+'/api/omics/gene_class/').then((res)=>{

@@ -3,6 +3,7 @@
 <div class="TumorOverview">
 
     <div class="container" >
+
       <v-toolbar flat id="search">
         <v-autocomplete
         append-icon="mdi-pencil"
@@ -31,8 +32,8 @@
       </v-toolbar>
       <div class="component">
         <SimpleTable  :data="tableData"></SimpleTable>
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <Loading v-if="loading"></Loading>
+        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
       </div>
       
     </div>
@@ -41,15 +42,15 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import SimpleTable from '../components/simpleTable.vue'
 export default {
 name: 'TumorOverview',
 components:{
-  loading,
-  alert,
+  // loading,
+  // alert,
   SimpleTable,
 
 },
@@ -87,11 +88,11 @@ methods:{
         _this.alertShow = false
       },2000)
     },
-    async onsearch(data){
-      
+    async onsearch(cmp_id){
+      console.log(cmp_id)
       console.log(baseUrl)
       this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+data).then((res)=>{
+      await fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+cmp_id).then((res)=>{
         return res.json()
       }).then((data)=>{
         // data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)

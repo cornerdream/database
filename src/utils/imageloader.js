@@ -6,7 +6,7 @@
 		// Constructor
 		// {
 			var thatImageLoader = this;
-			console.log(this)
+			
 			this.imageCount = settings.images.length;
 			this.images = new Array( this.imageCount );
 			
@@ -29,7 +29,7 @@
 					name = settings.images[i].name;
 				if( settings.images[i].id != undefined )
 					id = settings.images[i].id;
-					
+				
 				this.images[i] = new LoadImage( name, id, i, settings.images[i].file, this );
 			}
 			
@@ -147,6 +147,7 @@
 			this.loaded = false;
 			
 			this.image = new Image();
+			// this.image.setAttribute("crossOrigin",'Anonymous')
 			this.image.onload = function() { thisImageLoader.setLoaded( position ); };
 
 			this.image.src = this.file; // Set last.

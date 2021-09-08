@@ -1,6 +1,7 @@
 <!-- -->
 <template>
 <div class="TumorPharmacology">
+  
     <div class="container">
       <v-toolbar flat id="search">
         <v-autocomplete
@@ -53,8 +54,8 @@
             </v-col>
           </v-row>
         </div>
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <Loading v-if="loading"></Loading>
+        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
       </div>
       <div class="select">
         <v-combobox
@@ -125,17 +126,17 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 // import Network from '../components/network.vue'
-import TablePharmacology from '../components/tablePharmacology.vue'
+import TablePharmacology from '../components/table.vue'
 export default {
 name: 'TumorPharmacology',
 components:{
-  loading,
-  alert,
+  // loading,
+  // alert,
   Scatter,
   // Network,
   TablePharmacology

@@ -1,20 +1,8 @@
 <!-- -->
 <template>
 <div id="tab">
-  
-  <v-data-table
-    :headers="newHeaders"
-    :items="newItems"
-    :items-per-page.sync="itemsPerPage"
-    :page.sync="page"
-    :search="search"
-    :sort-by="sortBy.toLowerCase()"
-    :sort-desc="sortDesc"
-    class="elevation-1"
-    hide-default-footer
-  >
-    <template v-slot:top>
-      <v-toolbar
+  <!-- 切换参数按钮 -->
+  <v-toolbar
     id="tabHeader"
     dark
     color="#7695b1"
@@ -56,7 +44,7 @@
       :value="false"
     >
       DOWNLOAD
-      
+      <!-- <v-icon>mdi-download</v-icon> -->
     </v-btn>
     <v-spacer></v-spacer>
     <v-text-field
@@ -69,40 +57,58 @@
       prepend-inner-icon="mdi-magnify"
       label="Search"
     ></v-text-field>
-    
-      </v-toolbar>
-    </template>  
-    <template v-slot:item.chr="{ item }" >
+    <v-spacer></v-spacer>
+
+    <v-switch
+     v-model="switchTable"
+    :label="switchTable ? 'ccle' : 'cosmic'"
+    class="tabSwitch"
+    @change="onchange"
+    ></v-switch>        
+  </v-toolbar>
+  <v-data-table
+    :headers="newHeaders"
+    :items="newItems"
+    :items-per-page.sync="itemsPerPage"
+    :page.sync="page"
+    :search="search"
+    :sort-by="sortBy.toLowerCase()"
+    :sort-desc="sortDesc"
+    class="elevation-1"
+    hide-default-footer
+  >
+    <template v-slot:item.COSMIChsCnt="{ item }" v-if="switchTable">
       <!-- <v-chip
         :color="getColor(item.COSMIChsCnt)"
         dark
       >
        {{ item.COSMIChsCnt }}
       </v-chip> -->
-        <div class="color" :style="{'background':getColor(item.chr)}" >
-          {{ item.chr }}
+        <div class="color" :style="{'background':getColor(item.COSMIChsCnt)}" >
+          {{ item.COSMIChsCnt }}
         </div> 
     </template>
-    
-    
-    
-    
-    
-    
-  </v-data-table>
-  <v-toolbar
-    dark
-    color="#7695b1"
-    class="mb-1"
-  > 
-    <!-- <v-row
+    <template v-slot:item.Gene_CDS_length="{ item }" v-else>
+      <!-- <v-chip
+        :color="getColor(item.COSMIChsCnt)"
+        dark
+      >
+       {{ item.COSMIChsCnt }}
+      </v-chip> -->
+        <div class="color" :style="{'background':getColor(item.Gene_CDS_length)}" >
+          {{item.Gene_CDS_length}}
+        </div>
+         
+    </template>
+    <!-- <template v-slot:footer>
+      <v-row
+      id="tabFooter"
       align="center"
       justify="center"
-    > -->
-      <!-- <v-col cols="7">       -->
+    >
+            
       <div class="text-center">
         Legend
-        
         <v-chip
           x-small
           class="ma-2"
@@ -152,18 +158,15 @@
         >  
         </v-chip>
         silent
-        
       </div>
-      <!-- </v-col>  -->
       <v-spacer></v-spacer>
-      <!-- <v-col cols="5">  -->
-      <div class="page">
-        <span
+  
+      <span
         class="mr-4"
       >
         Page {{ page }} of {{ numberOfPages }}
-        </span>
-        <v-btn
+      </span>
+      <v-btn
         x-small
         fab
         dark
@@ -172,8 +175,8 @@
         @click="formerPage"
       >
         <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-        <v-btn
+      </v-btn>
+      <v-btn
         x-small
         fab
         dark
@@ -182,19 +185,112 @@
         @click="nextPage"
       >
         <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
+      </v-btn>
+    </v-row>
+    </template>     -->
+  </v-data-table>
+  <v-toolbar
+    dark
+    color="#7695b1"
+    class="mb-1"
+  > 
+    <!-- <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col cols="7">        -->
+      <div class="text-center">
+        Legend
+        <v-chip
+          x-small
+          class="ma-2"
+          color="#aae0da"
+          label
+          text-color="white"
+        >
+                            
+        </v-chip>
+        Frame Shift   
+        <v-chip
+          x-small
+          class="ma-2"
+          color="#e0c3aa"
+          label
+          text-color="white"
+        >
+          
+        </v-chip>
+        In Frame
+        <v-chip
+          x-small
+          class="ma-2"
+          color="#93afcd"
+          label
+          text-color="white"
+        >
+          
+        </v-chip>
+        Missens
+        <v-chip
+          x-small
+          class="ma-2"
+          color="#acddf2"
+          label
+          text-color="white"
+        >
+          
+        </v-chip>
+        Nonsense
+        <v-chip
+          x-small
+          class="ma-2"
+          color="#96a7f3"
+          label
+          text-color="white"
+        >  
+        </v-chip>
+        silent
       </div>
-      
       <!-- </v-col>  -->
-    <!-- </v-row> -->
+      <v-spacer></v-spacer>
+      <!-- <v-col cols="5"> -->
+      <div class="page">  
+      <span
+        class="mr-4"
+      >
+        Page {{ page }} of {{ numberOfPages }}
+      </span>
+      <v-btn
+        x-small
+        fab
+        dark
+        color="blue darken-3"
+        class="mr-1"
+        @click="formerPage"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+      <v-btn
+        x-small
+        fab
+        dark
+        color="blue darken-3"
+        class="ml-1"
+        @click="nextPage"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
+      </div>
+      <!-- </v-col> 
+    </v-row> -->
+  
   </v-toolbar>
 </div>
 </template>
 <script>
-
 export default {
 name: 'tab',
-props:['data'],
+props:['data','msg'],
 computed: {
   numberOfPages () {
     return Math.ceil(this.newItems.length / this.itemsPerPage)
@@ -211,7 +307,7 @@ return {
     sortDesc: false,
     page: 1,
     itemsPerPage: 8,
-    sortBy: 'gene',
+    sortBy: 'Gene_name',
     // keys: [
     //   'Name',
     //   'Calories',
@@ -422,19 +518,27 @@ return {
     newkeys:[],
     newItems:[],
     newHeaders:[],
+    switchTable:false,
+    // data:{},
+    newData:[]
 }
 },
 watch:{
-  data(){
+  data(newv){
+    console.log('监听')
+    console.log(newv)
     this.load()
+    
   }
 },
 created() {
-  // console.log('初始化')
+  console.log('初始化')
+  console.log(this.data)
+  this.data&&this.emit();
   // this.load();
 },
 mounted() {
- 
+  
 },
 methods: {
     nextPage () {
@@ -447,61 +551,100 @@ methods: {
       this.itemsPerPage = number
     },
     getColor (calories) {
-      if (calories > 20) return '#96a7f3'
-      else if(calories > 15) return '#acddf2'
-      else if (calories > 10) return '#93afcd'
-      else if (calories > 5) return '#e0c3aa'
+      if (calories > 9000) return '#96a7f3'
+      else if(calories > 7000) return '#acddf2'
+      else if (calories > 5000) return '#93afcd'
+      else if (calories > 3000) return '#e0c3aa'
       else return '#aae0da'
     },
     load(){
+      // if(this.data==undefined||this.data.length==0){return } 
       this.newItems=[];
       this.newHeaders=[];
-      console.log(this.data)
-      console.log(this.data)
-      if(!this.data) return 
-      let newData = this.data
-      if(newData!==undefined&&newData.length>0){
-        let newKeys = Object.keys(newData[0]);
-        newKeys = newKeys.filter((item)=>item!='id')
-        console.log(newKeys)
-          newKeys.forEach((key)=>{
-            let obj = {text:key,value:key};  
-            this.newHeaders.push(obj)           
-          })
-      }
-      console.log(this.newHeaders)
-      this.newItems = newData    
+
+    //   console.log(this.data)
+    //   console.log(this.switchTable)
+    //  console.log(this.data.ccl_mutation_from_ccle)
+    //  console.log(this.data.ccl_mutation_from_cosmic)
+    //  let newData;
+    //  if(this.switchTable){
+    //    console.log('ccl_mutation_from_ccle')
+    //    newData = this.data.ccl_mutation_from_ccle
+    //  }else{
+    //    console.log('ccl_mutation_from_cosmic')
+    //    newData = this.data.ccl_mutation_from_cosmic
+    //  }
+      // let newData = this.switchTable?this.data.ccl_mutation_from_ccle:this.data.ccl_mutation_from_cosmic
+
+      // console.log(newData)
+      // if(!newData) return 
+      // if(newData!==undefined&&newData.length>0){
+      //   let newKeys = Object.keys(newData[0]);
+      //   newKeys = newKeys.filter((item)=>item!='id')
+      //   console.log(newKeys)
+      //     newKeys.forEach((key)=>{
+      //       let obj = {text:key,value:key};  
+
+      //       this.newHeaders.push(obj) 
+      //     })
+        
+          
+      // }
+  
+      //   console.log(this.newHeaders)
+       
+      //   this.newItems = newData
+       
+      //   console.log(this.newItems)
+      let newData = this.data;
+      if(newData==undefined||newData.length==0){return } 
+      this.newItems = newData
+      let newKeys = Object.keys(newData[0]);
+      newKeys = newKeys.filter((item)=>item!='id')
+      newKeys.forEach((key)=>{
+        let obj = {text:key,value:key};  
+        this.newHeaders.push(obj) 
+      })
+      
       console.log(this.newItems)
+      console.log(this.newHeaders)
     },
-    
+    // onselect(){
+    //   fetch(this.baseUrl+'/api/omics/ccl/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'source='+(this.switchTable?'ccle':'cosmic')).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.scatterData = data.datainfo;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    //   this.Omics.disabled1 = false;
+    //   this.Omics.disabled2 = false;
+    // },
+    // onselectTable(){
+    //   fetch(this.baseUrl+'/api/omics/ccltable/?cmp_id='+(this.select||this.search)+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'source='+(this.switchTable?'ccle':'cosmic')).then((res)=>{
+    //     return res.json()
+    //   }).then((data)=>{
+    //     if(data.code==200){
+    //       this.scatterData = data.datainfo;
+    //     }else{
+    //      this.$alert.error(data.message)
+    //     }
+    //   })
+    //   this.Omics.disabled1 = false;
+    //   this.Omics.disabled2 = false;
+    // },
+    emit(){
+      var source = this.switchTable?'ccle':'cosmic'
+      this.$EventBus.$emit(this.msg, source)
+    },
+    onchange(){
+      this.emit()
+    }
   },
 }
 </script>
 <style scoped>
-/* #tabFooter{
-  padding:18px;
-  background: #7695b1;
-  color: #fff;
-}
-.tabSearch >>>.v-input{
-  height: 30px;
-}
-.tabSearch >>>.v-input__control{
-  min-height: 30px;
-  border: 1px solid #fff;
-}
-#tabDown{
-  color: #296893;
-  box-shadow: 0px 2px 4px -1px #296893;
-  background:linear-gradient(to bottom right, #fff, #c6c6c4);
-}
-.color{
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.v-toolbar .tabSwitch.v-input{
-  margin-top: 16px;
-  padding-top: 4px;
-} */
+
 </style>

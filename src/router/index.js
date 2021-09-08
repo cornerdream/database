@@ -1,18 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// const Layout = () => import(/* webpackChunkName: "layout" */ '../layout/default.vue')
-//const ModelLayout = () => import(/* webpackChunkName: "layout" */ '../layout/modelLayout.vue')
+const Layout = () => import(/* webpackChunkName: "layout" */ '../layout/default.vue')
+const ModelLayout = () => import(/* webpackChunkName: "layout" */ '../layout/modelLayout.vue')
 const SelectLayout = () => import(/* webpackChunkName: "layout" */ '../layout/selectLayout.vue')
 
 const Home = () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
 // const Login = () => import(/* webpackChunkName: "home" */ '../components/login.vue')
 
-// const Search = () => import(/* webpackChunkName: "about" */ '../views/search.vue')
+const Search = () => import(/* webpackChunkName: "search" */ '../views/search.vue')
 
 
-// const Select = () => import(/* webpackChunkName: "selectabout" */ '../views/searchSelect.vue')
-// const TableAbout = () => import(/* webpackChunkName: "tableabout" */ '../views/TableAbout.vue')
 
 const TumorCellAtlas = () => import(/* webpackChunkName: "TumorCellAtlas" */ '../views/TumorCellAtlas.vue')
 const ImmuneCellAtlas = () => import(/* webpackChunkName: "ImmuneCellAtlas" */ '../views/ImmuneCellAtlas.vue')
@@ -36,33 +34,35 @@ const routes = [
     name: 'home',
     component: Home,
   },
-  // {
-  //   path: '',
-  //   name: 'ModelLayout',
-  //   component: ModelLayout,
-  //   children:[        
-  //     {
-  //       path: '/ModelAtlas',
-  //       name: 'ModelAtlas',
-  //       component: ModelAtlas
-  //     },       
-  //   ]
-  // },
+  {
+    path: '/search',
+    name: 'search',
+    component: Layout,
+    children:[        
+      {
+        path: '',
+        name: 'Search',
+        component: Search
+      },       
+    ]
+  },
+  {
+    path: '',
+    name: 'ModelLayout',
+    component: ModelLayout,
+    children:[        
+      {
+        path: '/ModelAtlas',
+        name: 'ModelAtlas',
+        component: ModelAtlas
+      },       
+    ]
+  },
   {
     path: '',
     name: 'SelectLayout',
     component: SelectLayout,
     children:[        
-      // {
-      //   path: '/select',
-      //   name: 'Select',
-      //   component: Select
-      // },
-      // {
-      //   path: '/table',
-      //   name: 'table',
-      //   component: TableAbout
-      // },
       {
         path: '/TumorCellAtlas',
         name: 'TumorCellAtlas',
@@ -73,11 +73,11 @@ const routes = [
         name: 'ImmuneCellAtlas',
         component: ImmuneCellAtlas
       }, 
-      {
-        path: '/ModelAtlas',
-        name: 'ModelAtlas',
-        component: ModelAtlas
-      }, 
+      // {
+      //   path: '/ModelAtlas',
+      //   name: 'ModelAtlas',
+      //   component: ModelAtlas
+      // }, 
       {
         path: '/AtrainAtlas',
         name: 'AtrainAtlas',

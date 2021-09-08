@@ -71,7 +71,7 @@ watch:{
     if(newv!==oldv){
       this.load(newv)
     }
-  }
+  },
 },
 methods:{
   load(flag){

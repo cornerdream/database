@@ -64,7 +64,7 @@
                     
                 </canvas>
                 <div id="btnBox">
-                    <div class="my-2" v-show="this.resetShow">
+                    <div class="my-2" v-if="resetShow">
                         <v-btn
                             class="mx-2"
                             fab
@@ -72,7 +72,6 @@
                             small
                             color="primary"
                             id="btnReset"
-                            
                             @click="reset"
                         >
                             <v-icon dark>
@@ -149,40 +148,39 @@ mounted() {
 methods:{
     load(){
         if(this.chem){
-        this.chem.clear();
-        this.chem.destroy();
-        this.chem=null;
+            this.chem.clear();
+            this.chem.destroy();
+            this.chem=null;
 		}
         this.reset()
         fetch('../C22H18N4OS.txt')
-        .then((res)=>{
-            console.log(res)
-            return res.text()
-        })
-        .then((result)=>{
-            
-            this.data = result;
-            console.log(this.chem)
-            this.chem = new window.PubChem3D_WebGL.Molecule({
-                sdf:result,
-                showOverlay:false,
-                canvas:document.getElementById("canvas"),
-                setting:{
-                    backgroundColor:'transparent',
-                    hydrogens:true,
-                    scale:this.zoom,
-                    mousewheel:false,
-                    cylinder_size:0.2,
-                    sphere_size:1,
-                    quality:'High',
-                    nQuality:64
-                },
-                tracker:function(){
-                    $("#btnReset").removeAttr('disabled')
-                }
+            .then((res)=>{
+                return res.text()
             })
-            console.log(this.chem)
-        })
+            .then((result)=>{
+                
+                this.data = result;
+               
+                this.chem = new window.PubChem3D_WebGL.Molecule({
+                    sdf:result,
+                    showOverlay:false,
+                    canvas:document.getElementById("canvas"),
+                    setting:{
+                        backgroundColor:'transparent',
+                        hydrogens:true,
+                        scale:this.zoom,
+                        mousewheel:false,
+                        cylinder_size:0.2,
+                        sphere_size:1,
+                        quality:'High',
+                        nQuality:64
+                    },
+                    tracker:function(){
+                        $("#btnReset").removeAttr('disabled')
+                    }
+                })
+                
+            })
     },
     zoomIn(){
         if(this.zoom<20){
@@ -207,9 +205,9 @@ methods:{
         }
     },
     reset(){
+        console.log('reset')
         this.zoom = 1;
         if(this.chem){
-            console.log(this.chem)
             this.chem.resetScale();
             this.chem.setModel('Ball and Stick');
             this.primary = 'Ball and Stick'
@@ -224,7 +222,7 @@ methods:{
         this.chem.setHydrogens(isShow)
     },
     changeModel(value){
-        console.log(value)
+       
         if(value!=='Ball and Stick'){this.resetShow=true}
         // if(isCheck){
             this.chem.setModel(value)

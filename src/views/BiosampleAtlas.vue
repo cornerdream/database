@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 import Scatter from '../components/scatter.vue'
 import Area from '../components/area.vue'
 import Sunburst from '../components/sunburst.vue'

@@ -62,8 +62,8 @@
         </v-tabs>
         <Scatter :data="scatterData" v-if="tab==0"></Scatter>
         <Table :data="tableData" :msg="current" v-else></Table>
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <Loading v-if="loading"></Loading>
+        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
       </div>
       <div class="select">
         <v-combobox
@@ -111,17 +111,17 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 // import Structure from '../components/structure.vue'
 export default {
 name: 'TumorRegulation',
 components:{
-  loading,
-  alert,
+  // loading,
+  // alert,
     // Structure
 
   Scatter,

@@ -1,13 +1,28 @@
 <!-- -->
 <template>
-<div class="TumorAnalysis">
+<div class="ModelPathology">
   <div class="container">
-      <v-toolbar flat id="search">
+    
+    <div class="top">
+      <v-btn
+        
+        class="searchbtn"
+        rounded
+        color="primary"
+        @click="hidden = !hidden"
+      >
+        <v-icon>
+          mdi-magnify
+        </v-icon>
+      </v-btn>
+      <v-fab-transition>
+  
         <v-autocomplete
+        v-show="!hidden"
         append-icon="mdi-pencil"
         v-model="select"
         :loading="loading"
-        :items="states"   
+        :items="cmp_id"   
         :search-input.sync="search"
         @change="onsearch"
         @keyup.enter="onsearch"
@@ -18,87 +33,64 @@
         label="What state are you from?"
         solo-inverted
         ></v-autocomplete>
-        <v-btn
-        class="searchBtn"
-        rounded
-        color="#2477a8"
-        dark
-        @click="onsearch"
-        >
-          SEARCH
-        </v-btn>
-      </v-toolbar>
+        
+      </v-fab-transition>
+      
+    </div>
+      
+     
       <div class="component">
-        <!-- <v-tabs
-          v-model="tab"
-          background-color="transparent"
-          class="seqTab"
-          active-class="seqTabActive"
-        >
-            <v-tab
-            v-for="item in tabItems"
-            :key="item.text"
-            @change="onchange"
+        <div class="componentBox">
+          <div class="nav">
+            <v-btn
+            class="navbtn"
+            x-small
+            color="warning"
+            dark
             >
-            {{ item.text }}
-            </v-tab>
-        </v-tabs> -->
-        <!-- <Table :data="pathwaysTableData" v-if="tab==0"></Table>
-        <Pathway :data="pathwaysData" v-else></Pathway> -->
-        <!-- <Boxplot></Boxplot> -->
-        <ImgN></ImgN>
-        <!-- <canvas id="galaxyCanvas" width="600" height="300"></canvas>
-        <div id="btnBox">
-                    <div class="my-2" v-show="this.resetShow">
-                        <v-btn
-                            class="mx-2"
-                            fab
-                            dark
-                            small
-                            color="primary"
-                            id="btnReset"
-                            
-                            @click="reset"
-                        >
-                            <v-icon dark>
-                            mdi-undo-variant
-                            </v-icon>
-                        </v-btn>  
-                    </div>  
-                    <div class="my-2">  
-                        <v-btn
-                            class="mx-2"
-                            fab
-                            dark
-                            small
-                            color="primary"
-                            id="btnZoomIn"
-                            
-                            @click="zoomIn"
-                        >
-                            <v-icon dark>
-                            mdi-plus
-                            </v-icon>
-                        </v-btn>
-                    </div>    
-                    <div class="my-2">    
-                        <v-btn
-                            class="mx-2"
-                            fab
-                            dark
-                            small
-                            color="primary"
-                            id="btnZoomOut"
-                            
-                            @click="zoomOut"
-                        >
-                            <v-icon dark>
-                            mdi-minus
-                            </v-icon>
-                        </v-btn>
-                    </div>
-                </div> -->
-        <!-- <Heatmap></Heatmap> -->
+            </v-btn>
+          {{current}}
+          </div>
+          <v-row class="componentContent">
+            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__rotateInDownLeft">
+              <v-card
+                class="mx-auto"
+                max-width="344"
+                color="#E3E9EE" 
+              >
+                <v-card-text>
+                  <div>Word of the Day</div>
+                  <p class="text-h4 text--primary">
+                    be•nev•o•lent
+                  </p>
+                  <p>adjective</p>
+                  <div class="text--primary">
+                    well meaning and kindly.<br>
+                    "a benevolent smile"
+                  </div>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    text
+                    color="deep-purple accent-4"
+                  >
+                    Learn More
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__rotateInDownRight">
+              <ImgN></ImgN>
+             </v-col>
+          </v-row>
+        </div>
+        
+         
+        
+        
+        
+        
+        
 
       </div>
       <div class="select">
@@ -158,30 +150,38 @@
         
       </div>
     </div>
-    <!-- <div class="container">
-      <div class="component">
-        <Boxplot ></Boxplot>
-      </div>
-      
-    </div> -->
+    
 </div>
 </template>
 <script>
-// import {ImageLoader} from '../utils/imageloader'
-// import {CanvasZoom} from '../utils/canvaszoom'
-// import Boxplot from '../components/boxplot.vue'
+import "animate.css"
+// import baseUrl from '../utils/baseurl'
+// import loading from '../components/loading.vue'
+// import alert from '../components/alert.vue'
+import {mapGetters} from 'vuex'
 import ImgN from '../components/imageN.vue'
-// import Heatmap from '../components/heatmap.vue'
+
 export default {
-name: 'TumorAnalysis',
+name: 'ModelPathology',
 components:{
-    // Boxplot,
+  //  loading,
+  //  alert,
     ImgN,
-    // Heatmap,
+    
 },
+computed: {
+  ...mapGetters(['cmp_id','loading']),
+},
+props:['current'],
 data() {
 return {
-  loading: false,
+
+    hidden: true,
+    
+    alertShow:false,
+    info:'',
+    type:'',
+    // loading: false,
       search: null,
       select: null,
       states: [],
@@ -242,5 +242,33 @@ methods:{
 }
 </script>
 <style scoped>
+.top{
+  margin-bottom: 50px;
+}
+.container .searchbtn{
+  position: absolute;
+  left: 16px;
+}
+.container .search.v-btn--fab.v-size--default.v-btn--absolute.v-btn--top{
+  left: 100px;
+  top: 0;
+}
 
+
+.navbtn.v-btn:not(.v-btn--round).v-size--x-small{
+  min-width: 4px;
+  padding: 0;
+}
+.nav{
+  display: flex;
+  margin-bottom: 10px;
+}
+.componentBox{
+  margin: 20px 0;
+}
+.componentContent{
+  
+  align-items: center;
+ 
+}
 </style>

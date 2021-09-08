@@ -40,7 +40,6 @@ body {
   padding: 0;
   font-size: 1.4rem;
   background-color: $mode-white;
-  // min-width: 129rem;
 }
 body[theme-mode=dark] {
   background-color: $mode-dark;
@@ -53,8 +52,6 @@ li {
 }
 img {
   border: none 0;
-  // width: 100%;
-  // height: 100%;
 }
 input {
   outline: none;
@@ -75,57 +72,15 @@ button {
 .clearfix {
   zoom: 1;
 }
-// custom element theme
-$--color-primary: $primary-color;
-$--color-success: $success-color;
-$--color-warning: $warning-color;
-$--color-danger: $danger-color;
-$--color-info: $info-color;
-// change font path, required
-// $--font-path: '~element-ui/lib/theme-chalk/fonts';
-// import element default theme
-
-// overrides
-
-// .el-menu-item, .el-submenu__title {
-//   height: 50px;
-//   line-height: 50px;
-// }
-
-.el-pagination {
-  color: #868e96;
+// fontsize
+.v-btn.v-size--default,.v-list-item--dense .v-list-item__title, .v-list-item--dense .v-list-item__subtitle, .v-list--dense .v-list-item .v-list-item__title, .v-list--dense .v-list-item .v-list-item__subtitle{
+  font-size: 12px;
 }
-
+// tab
+.v-toolbar--prominent .v-toolbar__content{
+  align-items: center;
+}
 // components
-
-.status {
-  display: inline-block;
-  cursor: pointer;
-  width: 0.875rem;
-  height: 0.875rem;
-  vertical-align: middle;
-  border-radius: 50%;
-
-  &-primary {
-    background: $--color-primary;
-  }
-
-  &-success {
-    background: $--color-success;
-  }
-
-  &-warning {
-    background: $--color-warning;
-  }
-
-  &-danger {
-    background: $--color-danger;
-  }
-
-  &-info {
-    background: $--color-info;
-  }
-}
 
 .container .v-tab{
   color: #0079b5;
@@ -167,6 +122,7 @@ position: absolute;
 right: 1rem;
 top: 50%;
 transform: translateY(-50%);
+min-width: 120px;
 }
 .select .v-text-field--outlined fieldset{
   border-color: #429fd5;
@@ -234,9 +190,15 @@ position: relative;
 .v-tab{
   min-width: 9rem;
   max-width: 36rem;
+  font-size: 12px;
 }
 
 //select
 .v-list-item--dense .v-list-item__title, .v-list-item--dense .v-list-item__subtitle, .v-list--dense .v-list-item .v-list-item__title, .v-list--dense .v-list-item .v-list-item__subtitle{
   line-height: 1.2;
+}
+//modelsearch
+.top .v-text-field.v-text-field--enclosed{
+  width: 80%;
+  margin-left: 80px;
 }

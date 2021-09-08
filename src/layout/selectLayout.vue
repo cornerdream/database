@@ -1,37 +1,7 @@
 <template>
   <div id="selectlayout">
-    <v-card class="top">
-      <v-img
-        height="280px"
-        class="bannger"
-        :src="body=='light'?white_bg:dark_bg"
-      >
-      </v-img>
-            
-      <v-card-title class="white--text mt-8" id="logo">
-       
-         <v-img :src="body=='light'?white_logo:dark_logo"></v-img>        
-      </v-card-title>
-      <v-app-bar color="rgba(0,129,204,0.6)" height="80px" class="tab">
-      <v-row
-        justify="space-between"
-        no-gutters
-      >
-        <v-btn
-          v-for="link in links"
-          :key="link"
-          color="white"
-          text
-          rounded                                                  
-          class="my-2"
-        >
-        {{ link }}
-        </v-btn>
+    <viewTab/>
 
-      </v-row>   
-    </v-app-bar>
-    </v-card>
-    
     <div class="bread">
       <v-breadcrumbs :items="breaditems">
         <template v-slot:item="{ item }">
@@ -46,10 +16,8 @@
       </v-breadcrumbs>
     </div>    
     
-    
-    
     <div class="content">
-      <div id="menu">
+      <div id="menu" >
       
         <v-list
             nav
@@ -63,7 +31,7 @@
           >
             <v-list-item
               class="menuListItem"
-              v-for="(item) in ($route.name=='ModelAtlas'?items:Menuitems)"
+              v-for="(item) in Menuitems"
               :key="item.title"
              
               @click="toggleTab(item.title)"
@@ -88,32 +56,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import white_bg from '../assets/white_detail_bg.png'
-import dark_bg from '../assets/dark_detail_bg.png'
-import white_logo from '../assets/white_detail_logo.png'
-import dark_logo from '../assets/dark_detail_logo.png'
 
+import viewTab from '../components/viewTab.vue'
 import $ from 'jquery'
 
 export default {
   name: 'selectlayout',
-  computed: {
-    ...mapGetters(['body'])
+  components:{
+    viewTab
   },
   data: () => ({
-    white_bg:white_bg,
-    dark_bg:dark_bg,
-    white_logo:white_logo,
-    dark_logo:dark_logo,
-    links: [
-      'Home',
-      'SEARCH',
-      'FAQ',
-      'PRODUCT&SERVICE',
-      'CONTACT',
-      'REGISTER&LOGIN',
-    ],
     breaditems: [
       {
         text: 'Home',
@@ -121,12 +73,6 @@ export default {
         href: '/',
         icon:'mdi-home'
       },
-    ],
-    items:[
-      { title: 'Overview'},
-      { title: 'Omics' },
-      { title: 'Pathways'},
-      { title: 'Analysis'}
     ],
     Menuitems: [
       { title: 'Overview'},
@@ -180,7 +126,7 @@ export default {
      
     },
     load(){
-      console.log(this.$route)
+      
       var obj = {text:this.$route.name,disabled:true,href:this.$route.fullPath,icon:''}
       this.breaditems.push(obj)
       let view = this.$route.query.view
@@ -198,15 +144,6 @@ export default {
 };
 </script>
 <style scoped>
-#logo{
-    position: absolute;
-    left:4rem;
-    top:0;
-}
-.tab{
-  position: absolute;
-  bottom: 0;
-}
 .bread{
   padding:0 3rem;
 }
@@ -218,6 +155,7 @@ export default {
   left: 0;
   bottom: 0;
   z-index: 9999;
+  min-width: 120px;
 }
 .menuList{
   display: none;
@@ -263,6 +201,7 @@ body[theme-mode='dark'] #menu >>>.menuListItem.v-list-item:not(.v-list-item--act
 }
 .content{
   position: relative;
+  min-height: 630px;
 }
 .content{
   background: url('../assets/white_corner.png') no-repeat;

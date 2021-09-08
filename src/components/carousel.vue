@@ -8,7 +8,7 @@
 		v-for="(item,i) in items"
 		:key="item">
 		
-			<router-link :to="{path:'/'+item.replace(/\s/g,''),query:{view:'Overview'}}" target="_blank">
+			<router-link to="/" @click.native="liClick(item)">
 				<div class="item">
 					<v-avatar size="400" class="itemImg">
 						<v-img :src="img[i]"></v-img>
@@ -159,11 +159,15 @@ methods:{
 	});
   },
   liClick(item){
-	console.log(item)
-	console.log(this.ableLink.indexOf(item))
+	
 	// this.$router.push({path:'/'+item.replace(/\s/g,''),query:{view:'Overview'}})
 	if(this.ableLink.indexOf(item)!=-1){
-		let routeUrl = this.$router.resolve({path: '/'+item.replace(/\s/g,''),query: {view:'Overview'}});
+		let routeUrl=null;
+		if(item=='Model Atlas'){
+			routeUrl = this.$router.resolve({path: '/search'});
+		}else{
+			routeUrl = this.$router.resolve({path: '/'+item.replace(/\s/g,''),query: {view:'Overview'}});
+		}
 		window.open(routeUrl.href, '_blank');
 	}else{
 		this.$alert.error('在开发中，敬请期待')
@@ -180,8 +184,9 @@ methods:{
 }
 
 .card{
-    top:50%;
-    transform: translateY(-50%);
+	margin-top:135px ;
+    /* top:50%;
+    transform: translateY(-50%); */
 	color: #fff;
 	background:rgba(0,129,204,0.4);
 }
@@ -211,12 +216,10 @@ methods:{
 	width: 100%;
 	height: 456px;
 	background: url('../assets/white_center_line.png') no-repeat;
-	/* background-position-x: 50px; */
 	background-position: 100% 50%;
 }
 body[theme-mode='dark'] .wrapper{
 	background: url('../assets/dark_center_line.png') no-repeat;
-	/* background-position-x: 50px; */
 	background-position: 100% 50%;
 }
 .wrapper .slide {
@@ -226,22 +229,13 @@ body[theme-mode='dark'] .wrapper{
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	/* background:url('../assets/white_center_line.png') no-repeat;
-	background-position: 100% 50%; */
-	/* background: url('../assets/white_center_left.png') no-repeat;
-	background-position-x: 50px; */
 	/* 初始默认样式 */
 	z-index: 0;
 	opacity: 0;
 	/* 动画 */
 	transition: opacity .3s;
 }
-body[theme-mode='dark'] .wrapper .slide{
-	/* background:url('../assets/dark_center_line.png') no-repeat;
-	background-position: 100% 50%; */
-	/* background: url('../assets/dark_center_left.png') no-repeat;
-	background-position-x: 50px; */
-}
+
 /* 默认展示第一张图片 */
 .wrapper .slide:nth-child(1) ,body[theme-mode='dark'] .slide:nth-child(1){
 	z-index: 1;
@@ -255,8 +249,6 @@ body[theme-mode='dark'] .wrapper .slide{
 .item{
 	position: absolute;
 	left: 7rem;
-	/* top: 20px; */
-	/* margin-top: -20px; */
 	color: #fff;
 	
 }
@@ -290,7 +282,6 @@ body[theme-mode='dark'] .wrapper .slide{
 }
 /* 分页器 */
 .pagination {
-	/* width: 1000px; */
 	padding: 0;
 	position: absolute;
 	z-index: 999;
@@ -302,7 +293,7 @@ body[theme-mode='dark'] .wrapper .slide{
   cursor: pointer;
   float: left;
   line-height: 24px;
-  width: 200px;
+  width: 30rem;
   text-align: left;
 }
 body[theme-mode='dark'] .pagination li{
@@ -316,7 +307,7 @@ body[theme-mode='dark'] .pagination li{
 	position: absolute;
 	z-index: 999;
 	top: 50%;
-	margin-top: -3rem;
+	margin-top: -30px;
   font-size: 4rem;
   color: #fff;
 }

@@ -5,12 +5,15 @@ import router from './router'
 import store from './store'
 
 import Message from './modules/Message'
-
+import Alert from './modules/Alert/alert'
+import Loading from './modules/Loading/loading'
 
 import './styles/index.scss'
 Vue.config.productionTip = false
 
 Vue.use(Message)
+Vue.component(Alert)
+Vue.component(Loading)
 // Vue.prototype.$message = Message
 Vue.prototype.$EventBus = new Vue()
 

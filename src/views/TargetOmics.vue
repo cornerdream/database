@@ -2,6 +2,7 @@
 <template>
 <div class="TargetOmics">
     <div class="container" >
+
       <v-toolbar flat id="search">
         <v-autocomplete
         append-icon="mdi-pencil"
@@ -102,15 +103,17 @@
 </div>
 </template>
 <script>
+
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+import loading from '../modules/Loading/loading.vue'
+import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOmics',
 components:{ 
+
   loading,
   alert,
   Scatter,

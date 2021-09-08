@@ -1,6 +1,6 @@
 <!-- -->
 <template>
-<div class="ModelPathways">
+<div class="ModelImmunology">
   <div class="container">
     
     <div class="top">
@@ -49,10 +49,10 @@
             dark
             >
             </v-btn>
-            {{current}}
+          {{current}}
           </div>
           <v-row class="componentContent">
-            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__fadeInTopLeft">
+            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__lightSpeedInLeft">
               <v-card
                 class="mx-auto"
                 max-width="344"
@@ -79,11 +79,12 @@
                 </v-card-actions>
               </v-card>
             </v-col>
-            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__fadeInTopRight">
-              <Pathway></Pathway>
+            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__lightSpeedInRight">
+              <Table></Table>
             </v-col>
           </v-row>
         </div>
+        
          
         
         
@@ -158,13 +159,13 @@ import "animate.css"
 // import loading from '../components/loading.vue'
 // import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
-import Pathway from '../components/pathway.vue'
+import Table from '../components/tableSwitch.vue'
 export default {
-name: 'ModelPathways',
+name: 'ModelImmunology',
 components:{
   //  loading,
   //  alert,
-    Pathway,
+    Table,
    
     
 },

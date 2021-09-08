@@ -1,6 +1,6 @@
 <!-- -->
 <template>
-<div class="alert">
+<div class="alert" v-show="isShow">
     <v-alert
         v-if="type=='info'"
         border="left"
@@ -34,7 +34,20 @@
 <script>
 export default {
 name: '',
-props:['type','info'],
+props:{
+  isShow: {
+    type: Boolean,
+    default: false
+  },
+  type: {
+    type: String,
+    default: ''
+  },
+  info: {
+    type: String,
+    default: ''
+  },
+},
 data() {
 return {}
 },

@@ -2,6 +2,7 @@
 <template>
 <div class="TumorOmics">
     <div class="container" >
+      
       <v-toolbar flat id="search">
         <v-autocomplete
         append-icon="mdi-pencil"
@@ -45,9 +46,9 @@
         </v-tabs>
         <Scatter :data="scatterData" v-if="tab==0"></Scatter>
         <Table :data="tableData" :msg="current" v-else></Table>
-        <!-- <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area> -->
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area>
+        <Loading v-if="loading"></Loading>
+        <!-- <Alert v-if="alertShow" :info="info" :type="type"></Alert> -->
       </div>
       <div class="select">
         <v-combobox
@@ -91,16 +92,16 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOmics',
 components:{ 
-  loading,
-  alert,
+  // loading,
+  // alert,
     Scatter,
     Table
 },
@@ -144,6 +145,8 @@ return {
 }
 },
 created() {
+  this.alert('warning','请选择')
+      // this.$$alert('error','11')
   console.log('create')
   console.log(this.current)
   this.$EventBus.$on(this.current, (msg) => {
@@ -182,6 +185,7 @@ methods:{
         //   _this.alertShow = false
         // },2000)
         this.alert('warning','请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
+        // this.$$alert('warning','请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
       }
     },
     OmicschangeArr(){
@@ -197,6 +201,7 @@ methods:{
         //   _this.alertShow = false
         // },2000)
         this.alert('warning','请选择cmp_id')
+        // this.$$alert('warning','请选择cmp_id')
       }
       
     },
@@ -213,6 +218,7 @@ methods:{
         //   _this.alertShow = false
         // },2000)
         this.alert('warning','请选择cmp_id')
+        // this.$$alert('warning','请选择cmp_id')
       }
     },
     OmicschangeArr3(){
@@ -227,9 +233,11 @@ methods:{
         //   _this.alertShow = false
         // },2000)
         this.alert('warning','请选择cmp_id')
+        // this.$$alert('warning','请选择cmp_id')
       }
     },
     async onselect(cmp_id){
+      
       //  var _this = this;
        this.$store.dispatch('ShowLoading')
       console.log(cmp_id)
@@ -247,6 +255,7 @@ methods:{
           //   _this.alertShow = false
           // },2000)
           this.alert('error',data.message)
+          // this.$$alert('error',data.message)
         }
       })
       this.$store.dispatch('HideLoading')
@@ -254,6 +263,7 @@ methods:{
       this.Omics.disabled2 = false;
     },
     async onselectTable(cmp_id){
+      
       // var _this = this;
       this.$store.dispatch('ShowLoading')
       console.log(cmp_id)
@@ -271,6 +281,7 @@ methods:{
           //   _this.alertShow = false
           // },2000)
           this.alert('error',data.message)
+          // this.$$alert('error',data.message)
         }
       })
       this.$store.dispatch('HideLoading')

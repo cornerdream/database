@@ -183,8 +183,6 @@ return {
             ]
         }
     ],
-    // str:'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD'
-    // ,
     str:'',
     color:[
         // {"color":"#1f78b4","underscore":true,"start":99,"end":290},
@@ -242,21 +240,9 @@ methods:{
         this.load()
     },
     loadseq(){
-        // console.log(this.data)
-        // let data = this.data[this.id];
-        // console.log(data)
-        // Object.keys(data).map((item)=>{
-        //     let obj = {title:item}
-        //     this.tabItems[0].list.push(obj)
-        // })
         if(this.seq==''){return}
-        console.log(this.seq)
-        
         this.str='';
-        
         this.str = this.seq;
-        
-        console.log(this.str)
     },
     loadcolor(){
         this.color=[];
@@ -269,14 +255,11 @@ methods:{
                 end:item.domain_end
             }
             this.color.push(colorObj)
-            // this.color[i].start = item.domain_start;
-            // this.color[i].end = item.domain_end;
             var chipObj = {
                 color:this.colorItems[i],
                 text:item.domain_name
             }
             this.chipItems.push(chipObj)
-            // this.chipItems[i].text = item.domain_name
         })
     },
     loadneoepitope(){
@@ -290,34 +273,18 @@ methods:{
             }
             this.tabItems[0].list.push(obj)
         })
-        
-        console.log(this.tabItems)
     },
     
     load(){
         $('#spanBox').html(' ')
-        console.log(this.str)
         if(this.str=='') {return}
         let str=this.str.replace(/(.{10})/g, '$1 ')
-        console.log(str)
-        // let brstr = str.replace(/(.{88}))/g,'$1<br>')
-        // console.log(brstr)
         let strArr = str.split('')
-        // strArr.forEach((item,i)=>{
-            
-        //     if(i%91==0){
-        //         console.log(i)
-        //         str = str.substring(0,i)+'<br>'+str.substring(i)
-        //     }
-        // })
-        console.log(str)
         this.color.map((item)=>{
             let underscore = item.underscore?'underline':'none';
             let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10); 
             let start = item.start+startCount,end = item.end+endCount                   
             let searchStr  = strArr.slice(start,end).join('');
-            
-            console.log(searchStr)
 
             let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
             let srtStartIndex = str.indexOf(searchStr);
@@ -335,58 +302,47 @@ methods:{
         let obj = {start: li.start, end: li.end, color: "black", underscore: false, bgcolor: "#ffd891"}
         let hoverData =[...this.color]
         hoverData.push(obj)
-        console.log(hoverData)
+
         let str=this.str.replace(/(.{10})/g, '$1 ')
 
         let strArr = str.split('')
         
-        console.log(strArr)
-        
         hoverData.map((item)=>{
-            console.log(str)
+            
             let underscore = item.underscore?'underline':'none';
-            console.log(item.start,item.end)
+            
             let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10);            
-            console.log(startCount,endCount)
+            
             let start = item.start+startCount,end = item.end+endCount
-            console.log(start,end)
+           
             let searchStr  = strArr.slice(start,end).join('');
-            // let searchStr  = strArr.slice(item.start,item.end).join('');
-            console.log(searchStr)
+                       
             var reg=searchStr.split('').reduce((total,next)=>{
                 return total+'(<[^>]+>)?'+next
             })
-            console.log(reg)
+           
             var m = str.match(reg)
-            console.log(m)
             if(!m){return}
             let search = m[0]
-            console.log(search)
-            
             var regs = /<[^>]+>/g
             var span = search.match(regs)
-            console.log(span)
-            
+  
             let spanCount =span?span.reduce((p,n)=>p.length+n.length).split('').length:0
-            console.log(spanCount)
+            
             let srtEndIndex = m.index+spanCount + searchStr.length;
             let srtStartIndex = m.index;
-            // let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
-            // let srtStartIndex = str.indexOf(searchStr);
-            console.log(srtStartIndex,srtEndIndex)
+            
+           
             var spanH = span?span[0]:"";
-            console.log(spanH)
+            
             let newStr = str.substring(0, srtEndIndex) + "</span>" +spanH + str.substring(srtEndIndex);   
-            // let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);   
-            console.log(newStr)     
+                
             let replace = newStr.substring(srtStartIndex,srtEndIndex)
-            console.log(replace)
-            console.log(newStr)   
+           
             let replacestr = replace.replace(/<[^>]+>/g,'')
-            console.log(replacestr)
+            
             let replaceL = replacestr.length;
-            console.log(replaceL)
-            console.log(newStr.substring(srtStartIndex+replaceL+spanCount))
+            
 
             if(span){ 
                 newStr = newStr.substring(0, srtStartIndex) + '</span>' +(item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ replacestr+newStr.substring(srtStartIndex+replaceL+spanCount);
@@ -395,13 +351,11 @@ methods:{
                 newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
             }
             //newStr = newStr.substring(0, srtStartIndex) + (item.bgcolor?'<span style="color:'+item.color+';text-decoration:'+underscore+';background:'+item.bgcolor+'">':'<span style="color:'+item.color+';text-decoration:'+underscore+'">' )+ newStr.substring(srtStartIndex);          
-            console.log(newStr)
+            
             str = newStr;
-            console.log(str)
+            
         })
         $('#spanBox').html(str)
-        
-        
         $(e.target).addClass('liactiveClass').siblings().removeClass('liactiveClass')
     },
     liLeave(){

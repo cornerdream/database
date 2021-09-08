@@ -127,7 +127,7 @@ import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 // import Network from '../components/network.vue'
-import TablePharmacology from '../components/tablePharmacology.vue'
+import TablePharmacology from '../components/table.vue'
 export default {
 name: 'TumorPharmacology',
 components:{

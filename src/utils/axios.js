@@ -11,7 +11,8 @@ switch(process.env.NODE_ENV){
         Axios.defaults.baseURL = '';
         break;
     default:
-        Axios.defaults.baseURL = 'http://192.168.1.228:3000'
+        // Axios.defaults.baseURL = 'http://192.168.1.228:3000'
+        Axios.defaults.baseURL = 'http://192.168.1.218:8001'
 }
 const redirectLogin = function redirectLogin(){
     router.push({

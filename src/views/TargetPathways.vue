@@ -96,10 +96,10 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+import loading from '../modules/Loading/loading.vue'
+import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 import Pathway from '../components/pathway.vue'
 export default {
 name: 'TumorPathways',

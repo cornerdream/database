@@ -28,10 +28,11 @@
 // import Boxplot from '../components/boxplot.vue'
 // import Network from '../components/network.vue'
 // import LineScatter from '../components/lineScatter.vue'
-import Overview from './TumorOverview.vue'
-import Omics from './TumorOmics.vue'
-import Pathways from './TumorPathways.vue'
-import Analysis from './ModelAnalysis.vue'
+import Overview from './ModelOverview.vue'
+import Omics from './ModelOmics.vue'
+import Immunology from './ModelImmunology.vue'
+import Pathways from './ModelPathways.vue'
+import Pathology from './ModelPathology.vue'
 export default {
   name:'ModelAtlas',
   props:['view','tableData'],
@@ -47,8 +48,9 @@ export default {
     // LineScatter
     Overview,
     Omics,
+    Immunology,
     Pathways,
-    Analysis
+    Pathology
   },
   data(){
     return {
@@ -76,5 +78,6 @@ export default {
 }
 </script>
 <style scoped>
+
 </style>
 

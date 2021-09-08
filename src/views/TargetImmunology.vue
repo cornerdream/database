@@ -160,7 +160,7 @@ import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 // import Table from '../components/table.vue'
-import TableImmunology from '../components/tableImmunology.vue'
+import TableImmunology from '../components/tableExpand.vue'
 // import Sequence from '../components/sequence.vue'
 // import SimpleTable from '../components/simpleTable.vue'
 export default {

@@ -78,17 +78,19 @@
 </div>
 </template>
 <script>
+
 import baseUrl from '../utils/baseurl'
-import loading from '../components/loading.vue'
-import alert from '../components/alert.vue'
+import loading from '../modules/Loading/loading.vue'
+import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 // import SimpleTable from '../components/simpleTable.vue'
 import Lollipop from '../components/lollipop.vue'
 // import seqScatter from '../components/seq-scatter.vue'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOverview',
 components:{
+
 //   SimpleTable,
 Lollipop,
 // seqScatter,

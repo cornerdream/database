@@ -111,7 +111,7 @@
 import baseUrl from '../utils/baseurl'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-import Table from '../components/table.vue'
+import Table from '../components/tableSwitch.vue'
 // import Structure from '../components/structure.vue'
 export default {
 name: 'TumorRegulation',
