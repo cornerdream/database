@@ -31,19 +31,19 @@ Version:        1.0
 
 global ImageLoader, window  (for JSLint) 
 */
-import $ from 'jquery'
+// import $ from 'jquery'
 import {ImageLoader} from './imageloader'
 function CanvasZoom2( canvas, tilesFolder, imageWidth, imageHeight,size,min,max,eventBus,s,img)
 {
 	
-	window.onresize=function(){
+	// window.onresize=function(){
 
-		imageWidth = $('#img').width();
-		if(imageWidth<500) imageWidth=500;
-		$(canvas).width(imageWidth)
-		$('.card').width(imageWidth)
+	// 	imageWidth = $('#img').width();
+	// 	if(imageWidth<500) imageWidth=500;
+	// 	$(canvas).width(imageWidth)
+	// 	$('.card').width(imageWidth)
 	
-	}
+	// }
 
 	//var t = this; // make "this" accessible when out of "this" scope and minify
 	

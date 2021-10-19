@@ -7,7 +7,7 @@
       <v-btn
         
         class="searchbtn"
-        rounded
+        fab
         color="primary"
         @click="hidden = !hidden"
       >
@@ -40,16 +40,20 @@
       
      
       <div class="component">
-        <div class="componentBox">
+        <div 
+        class="componentBox"
+        v-for="(item,i) in template"
+        :key="i"
+        >
           <div class="nav">
             <v-btn
             class="navbtn"
             x-small
-            color="warning"
+            :color="item.color"
             dark
             >
             </v-btn>
-          {{current}}
+          {{item.tab}}
           </div>
           <v-row class="componentContent">
             <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__rotateInDownLeft">
@@ -59,14 +63,13 @@
                 color="#E3E9EE" 
               >
                 <v-card-text>
-                  <div>Word of the Day</div>
+                  <div>{{item.card.title}}</div>
                   <p class="text-h4 text--primary">
-                    be•nev•o•lent
+                    {{item.card.sub}}
                   </p>
-                  <p>adjective</p>
+                  <!-- <p>adjective</p> -->
                   <div class="text--primary">
-                    well meaning and kindly.<br>
-                    "a benevolent smile"
+                    {{item.card.text}}
                   </div>
                 </v-card-text>
                 <v-card-actions>
@@ -80,7 +83,8 @@
               </v-card>
             </v-col>
             <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__rotateInDownRight">
-              <ImgN></ImgN>
+              <component :is="item.c"></component>
+              <!-- <ImgN></ImgN> -->
              </v-col>
           </v-row>
         </div>
@@ -154,7 +158,7 @@
 </div>
 </template>
 <script>
-import "animate.css"
+// import "animate.css"
 // import baseUrl from '../utils/baseurl'
 // import loading from '../components/loading.vue'
 // import alert from '../components/alert.vue'
@@ -172,10 +176,21 @@ components:{
 computed: {
   ...mapGetters(['cmp_id','loading']),
 },
-props:['current'],
 data() {
 return {
-
+    template:[
+      {
+        color:'warning',
+        tab:'b',
+        card:{
+          title:'',
+          sub:'',
+          text:''
+        },
+        c:'ImgN'
+      },
+      
+    ],
     hidden: true,
     
     alertShow:false,
@@ -242,12 +257,13 @@ methods:{
 }
 </script>
 <style scoped>
-.top{
+/* .top{
   margin-bottom: 50px;
-}
+} */
 .container .searchbtn{
   position: absolute;
-  left: 16px;
+  right: 96px;
+  top: 16px;
 }
 .container .search.v-btn--fab.v-size--default.v-btn--absolute.v-btn--top{
   left: 100px;
@@ -258,10 +274,15 @@ methods:{
 .navbtn.v-btn:not(.v-btn--round).v-size--x-small{
   min-width: 4px;
   padding: 0;
+  margin-right: 10px;
 }
 .nav{
   display: flex;
   margin-bottom: 10px;
+  color: #000;
+}
+body[theme-mode=dark] .nav{
+  color: #fff;
 }
 .componentBox{
   margin: 20px 0;

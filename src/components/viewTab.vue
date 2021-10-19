@@ -1,16 +1,16 @@
-<!-- -->
+<!-- 详情页top -->
 <template>
 <div id="viewTab">
     <v-card >
-      <!-- <v-img
+      <v-img
         height="280px"
         :src="body=='light'?white_bg:dark_bg"
       >
-      </v-img> -->
-      <v-parallax
+      </v-img>
+      <!-- <v-parallax
         height="280"
         :src="body=='light'?white_bg:dark_bg"
-      ></v-parallax>
+      ></v-parallax> -->
             
       <v-card-title class="white--text mt-8" id="logo">
         <v-img :src="body=='light'?white_logo:dark_logo"></v-img>      

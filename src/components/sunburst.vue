@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 旭日图 -->
 <template>
 <div id="sunburst">
     <div id="sequence"></div>

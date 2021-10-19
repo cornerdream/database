@@ -110,8 +110,6 @@
             <!-- <Sequence :data="ImmunologyData" :id="search" v-else></Sequence> -->
           </v-card>
         </div>
-        <Loading v-if="loading"></Loading>
-        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
         <!-- <TableImmunology :data="ImmunologyDataTable" v-if="tab==0"></TableImmunology> -->
         <!-- <SimpleTable :data="ImmunologyDataTable" v-if="tab==0"></SimpleTable> -->
         
@@ -159,34 +157,23 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-// import loading from '../modules/Loading/loading.vue'
-// import alert from '../modules/Alert/alert.vue'
+import {AselectImmunity,AselectHlatable} from '../api/tumor'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
-// import Table from '../components/table.vue'
 import TableImmunology from '../components/tableExpand.vue'
-// import Sequence from '../components/sequence.vue'
-// import SimpleTable from '../components/simpleTable.vue'
 export default {
 name: 'TumorImmunology',
 components:{
-  // loading,
-  // alert,
   Scatter,
-  // Table,
   TableImmunology,
-    // Sequence,
-    // SimpleTable
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','hla_allele','loading']),
+  ...mapGetters(['cmp_id','gene_class','hla_allele']),
 },
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
+   
+    loading: false,
     search: null,
     select: null,
     states: [],
@@ -219,38 +206,18 @@ created() {
 },
 mounted() {},
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
     async loadImmunologyInfo(cmp_id){
-      // var _this = this;
-      this.$store.dispatch('ShowLoading')
+      this.$loading();
+      // this.$store.dispatch('ShowLoading')
       await fetch(baseUrl+'/api/immunity/msi_tmb/?cmp_id='+cmp_id).then((res)=>{
         return res.json()
       }).then((data)=>{
-        // data.code==200?this.cell_info = data.data_info:this.$alert.error(data.message); 
-        if(data.code==200){          
-          this.cell_info = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }       
+        data.code==200?this.cell_info = data.data_info:this.$message.error(data.message);  
       })
     },
     onsearch(cmp_id){
-      // var _this = this;
-      if(this.Immunology.select1){
+      let select = this.Immunology
+      if(select.select1){
         if(this.menuselect=='scatter'){
           this.onselect(cmp_id)
         }else{
@@ -258,57 +225,39 @@ methods:{
           this.onselectTable(cmp_id) 
         }
       }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },3000)
-        this.alert('warning','请选择'+this.Immunology.label1||this.Immunology.label2||this.Immunology.label3)
+        this.$message.warning('请选择'+select.label1||select.label2||select.label3)
       } 
     },
     ImmunologychangeArr(){
-      // var _this = this;
+      
       this.Immunology.disabled2 = true;
-      if(this.select){
-        if(this.menuselect=='scatter'){
-            this.onselect(this.select)
-          }else{
-            this.loadImmunologyInfo(this.select)
-            this.onselectTable(this.select) 
-          }
-      }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },3000)
-        this.alert('warning','请选择cmp_id')
-      }     
+      // if(this.select){
+      //   if(this.menuselect=='scatter'){
+      //       this.onselect(this.select)
+      //     }else{
+      //       this.loadImmunologyInfo(this.select)
+      //       this.onselectTable(this.select) 
+      //     }
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }  
+      this.ImmunologychangeArr3()   
     },
     ImmunologychangeArr2(){
-      // var _this = this;
       this.Immunology.disabled1 = true;
-      if(this.select){
-        if(this.menuselect=='scatter'){
-          this.onselect(this.select)
-        }else{
-          this.loadImmunologyInfo(this.select)
-          this.onselectTable(this.select) 
-        }
-      }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },3000)
-        this.alert('warning','请选择cmp_id')
-      }    
+      // if(this.select){
+      //   if(this.menuselect=='scatter'){
+      //     this.onselect(this.select)
+      //   }else{
+      //     this.loadImmunologyInfo(this.select)
+      //     this.onselectTable(this.select) 
+      //   }
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }  
+      this.ImmunologychangeArr3()  
     },
     ImmunologychangeArr3(){
-      // var _this = this;
       if(this.select){
         if(this.menuselect=='scatter'){
           this.onselect(this.select)
@@ -317,59 +266,45 @@ methods:{
           this.onselectTable(this.select) 
         }
       }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },3000)
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }    
     },
     async onselect(cmp_id){
-      this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        // data.code==200?this.ImmunologyData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.ImmunologyData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
+      let $loading = this.$loading();
+      // this.$store.dispatch('ShowLoading')
+      let select = this.Immunology;
+      // await fetch(baseUrl+'/api/immunity/immunity/?cmp_id='+cmp_id+'&hla_type='+(select.select3.toString())+'&gene_set='+select.select1+'&gene_list='+select.value2).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.ImmunologyData = data.data_info:this.$message.error(data.message)
+
+      // })
+      AselectImmunity(cmp_id,select.select3.toString(),select.select1,select.value2).then(res=>{
+        this.ImmunologyData = res.data.data_info
       })
-      this.$store.dispatch('HideLoading')
-      this.Immunology.disabled1 = false;
-      this.Immunology.disabled2 = false;
+      $loading.close()
+      // this.$store.dispatch('HideLoading')
+      select.disabled1 = false;
+      select.disabled2 = false;
     },
 
     async onselectTable(cmp_id){
-      this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+cmp_id+'&hla_type='+(this.Immunology.select3.toString())+'&gene_set='+this.Immunology.select1+'&gene_list='+this.Immunology.value2).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        //data.code==200?this.ImmunologyDataTable = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.ImmunologyDataTable = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
+      let $loading = this.$loading();
+      // this.$store.dispatch('ShowLoading')
+      let select = this.Immunology;
+      // await fetch(baseUrl+'/api/immunity/hlatable/?cmp_id='+cmp_id+'&hla_type='+(select.select3.toString())+'&gene_set='+select.select1+'&gene_list='+select.value2).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.ImmunologyDataTable = data.data_info:this.$message.error(data.message)
+        
+      // })
+      AselectHlatable(cmp_id,select.select3.toString(),select.select1,select.value2).then(res=>{
+        this.ImmunologyDataTable = res.data.data_info
       })
-      this.$store.dispatch('HideLoading')
-      this.Immunology.disabled1 = false;
-      this.Immunology.disabled2 = false;
+      $loading.close()
+      // this.$store.dispatch('HideLoading')
+      select.disabled1 = false;
+      select.disabled2 = false;
     },
     onchange(){
       if(this.select){

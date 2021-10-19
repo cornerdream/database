@@ -10,12 +10,14 @@
       <Sequence v-else-if="view=='Regulation'"></Sequence>
       <Boxplot v-else-if="view=='Pharmacology'"></Boxplot>
       <Network v-else-if="view=='Analysis'"></Network> -->
+       <!-- <Violin></Violin> -->
     <keep-alive>
       <component :is="view" :current="view"></component>
     </keep-alive>  
   </div>
 </template>
 <script>
+// import Violin from '../components/violin.vue'
 // import Table from '../components/table.vue'
 // import Scatter from '../components/scatter.vue'
 // import Area from '../components/area.vue'
@@ -36,6 +38,7 @@ export default {
   name:'TargetAtlas',
   props:['view'],
   components:{
+    // Violin,
     Overview,
     Omics,
     Pathways,

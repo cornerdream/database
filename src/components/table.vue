@@ -1,8 +1,9 @@
-<!-- -->
+<!-- 表格 -->
 <template>
-<div id="tab">
+<div :id="id">
   <!-- 无切换 -->
   <v-data-table
+    height="500"
     :headers="newHeaders"
     :items="newItems"
     :items-per-page.sync="itemsPerPage"
@@ -15,11 +16,11 @@
   >
     <template v-slot:top>
       <v-toolbar
-    id="tabHeader"
-    dark
-    color="#7695b1"
-    class="mb-1"
-  > 
+        id="tabHeader"
+        dark
+        color="#7695b1"
+        class="mb-1"
+      > 
     <div class="page">
       <span>Items per page</span>
       <v-menu offset-y>
@@ -72,17 +73,18 @@
     
       </v-toolbar>
     </template>  
-    <template v-slot:item.chr="{ item }" >
+  
+    <!-- <template v-slot:item.JunctionReadCount="{ item }" > -->
       <!-- <v-chip
         :color="getColor(item.COSMIChsCnt)"
         dark
       >
        {{ item.COSMIChsCnt }}
       </v-chip> -->
-        <div class="color" :style="{'background':getColor(item.chr)}" >
-          {{ item.chr }}
-        </div> 
-    </template>
+        <!-- <div class="color" :style="{'background':getColor(item.JunctionReadCount)}" > -->
+          <!-- {{ item.JunctionReadCount }} -->
+        <!-- </div>  -->
+    <!-- </template> -->
     
     
     
@@ -194,10 +196,29 @@
 
 export default {
 name: 'tab',
-props:['data'],
+props:{
+  data:{
+    type:Array,
+    default:()=>[]
+  },
+  id:{
+    type:String,
+    default:'tab'
+  },
+  total:{
+    type:Number,
+    default:1
+  },
+  high:{
+    type:String,
+    default:''
+  }
+},
+// props:['high'],
 computed: {
   numberOfPages () {
-    return Math.ceil(this.newItems.length / this.itemsPerPage)
+    // return Math.ceil(this.newItems.length / this.itemsPerPage)
+    return Math.ceil(this.total / this.itemsPerPage)
   },
   filteredKeys () {
     return this.keys.filter(key => key !== 'id')
@@ -205,13 +226,13 @@ computed: {
 },
 data() {
 return {
-    itemsPerPageArray: [8, 16],
+    itemsPerPageArray: [100],
     search: '',
     filter: {},
     sortDesc: false,
     page: 1,
-    itemsPerPage: 8,
-    sortBy: 'gene',
+    itemsPerPage: 100,
+    sortBy: 'name',
     // keys: [
     //   'Name',
     //   'Calories',
@@ -439,14 +460,21 @@ mounted() {
 methods: {
     nextPage () {
       if (this.page + 1 <= this.numberOfPages) this.page += 1
+      this.$emit('loadTableFusion',this.page,this.itemsPerPage)
+      this.$emit('loadTableExpression',this.page,this.itemsPerPage)
     },
     formerPage () {
       if (this.page - 1 >= 1) this.page -= 1
+      this.$emit('loadTableFusion',this.page,this.itemsPerPage)
+      this.$emit('loadTableExpression',this.page,this.itemsPerPage)
     },
     updateItemsPerPage (number) {
       this.itemsPerPage = number
+      this.$emit('loadTableFusion',this.page,this.itemsPerPage)
+      this.$emit('loadTableExpression',this.page,this.itemsPerPage)
     },
     getColor (calories) {
+      console.log(calories)
       if (calories > 20) return '#96a7f3'
       else if(calories > 15) return '#acddf2'
       else if (calories > 10) return '#93afcd'
@@ -457,9 +485,9 @@ methods: {
       this.newItems=[];
       this.newHeaders=[];
       console.log(this.data)
-      console.log(this.data)
       if(!this.data) return 
-      let newData = this.data
+      let newData = []
+      newData = this.data
       if(newData!==undefined&&newData.length>0){
         let newKeys = Object.keys(newData[0]);
         newKeys = newKeys.filter((item)=>item!='id')

@@ -46,15 +46,6 @@ export default {
       this.$store.dispatch('GetHlaAllele')
       this.$store.dispatch('GetDrugclass')
     },
-    // onsearch(data){
-      // fetch('http://192.168.1.128:8000/api/introduction/cmp/?cmp_id='+data).then((res)=>{
-      //   return res.json()
-      // }).then((data)=>{
-      //   this.tableData = data.datainfo;
-      // })
-      // EventBus.$emit("aMsg", data);
-      // this.$EventBus.$emit("aMsg", data)
-    // },  
   }
 }
 </script>

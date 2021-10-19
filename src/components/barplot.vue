@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 联动百分比柱状图 -->
 <template>
 <div id="barplot">
 

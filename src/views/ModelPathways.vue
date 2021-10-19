@@ -7,7 +7,7 @@
       <v-btn
         
         class="searchbtn"
-        rounded
+        fab
         color="primary"
         @click="hidden = !hidden"
       >
@@ -49,38 +49,14 @@
             dark
             >
             </v-btn>
-            {{current}}
+             pathways
           </div>
           <v-row class="componentContent">
-            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__fadeInTopLeft">
-              <v-card
-                class="mx-auto"
-                max-width="344"
-                color="#E3E9EE" 
-              >
-                <v-card-text>
-                  <div>Word of the Day</div>
-                  <p class="text-h4 text--primary">
-                    be•nev•o•lent
-                  </p>
-                  <p>adjective</p>
-                  <div class="text--primary">
-                    well meaning and kindly.<br>
-                    "a benevolent smile"
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    text
-                    color="deep-purple accent-4"
-                  >
-                    Learn More
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+            <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="animate__animated animate__fadeInTopLeft">
+              <Bubble id="pathwaysbubble1" :data="bubbleLeftData" x='kegg_pathway_id' y="ssgsea_score"></Bubble>
             </v-col>
-            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__fadeInTopRight">
-              <Pathway></Pathway>
+            <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="animate__animated animate__fadeInTopRight">
+              <Bubble id="pathwaysbubble2" :data="bubbleRightData" x='kegg_pathway_id' y="normalized_ssgsea_score"></Bubble>
             </v-col>
           </v-row>
         </div>
@@ -94,20 +70,20 @@
       </div>
       <div class="select">
         <v-combobox
-        v-model="Analysis.select1"
-        :items="Analysis.items1"
+        v-model="Pathways.select1"
+        :items="Pathways.items1"
         label="Gene set"
         outlined
         dense
         solo
-        @input="AnalysischangeArr"
-        :disabled="Analysis.disabled1"
+        @input="PathwayschangeArr"
+        :disabled="Pathways.disabled1"
         ></v-combobox>
         <v-text-field 
         placeholder="Gene list"
-        :value="Analysis.value2"
-        @keyup.enter="AnalysischangeArr2"
-        :disabled="Analysis.disabled2"
+        :value="Pathways.value2"
+        @keyup.enter="PathwayschangeArr2"
+        :disabled="Pathways.disabled2"
         >
           <v-icon
             slot="append"
@@ -116,36 +92,36 @@
           mdi-pencil
           </v-icon>
         </v-text-field>
-        <v-combobox
-          v-model="Analysis.select3"
-          :items="Analysis.items3"
+        <!-- <v-combobox
+          v-model="Pathways.select3"
+          :items="Pathways.items3"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr3"
+          @input="PathwayschangeArr3"
           allow-overflow
         ></v-combobox>
         <v-combobox
-          v-model="Analysis.select4"
-          :items="Analysis.items4"
+          v-model="Pathways.select4"
+          :items="Pathways.items4"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr4"
+          @input="PathwayschangeArr4"
           allow-overflow
         ></v-combobox>
         <v-combobox
-          v-model="Analysis.select5"
-          :items="Analysis.items5"
+          v-model="Pathways.select5"
+          :items="Pathways.items5"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr5"
+          @input="PathwayschangeArr5"
           allow-overflow
-        ></v-combobox>
+        ></v-combobox> -->
         
       </div>
     </div>
@@ -153,100 +129,103 @@
 </div>
 </template>
 <script>
-import "animate.css"
+import {AgetScatter} from '../api/model'
+// import "animate.css"
 // import baseUrl from '../utils/baseurl'
 // import loading from '../components/loading.vue'
 // import alert from '../components/alert.vue'
 import {mapGetters} from 'vuex'
-import Pathway from '../components/pathway.vue'
+// import Pathway from '../components/pathway.vue'
+import Bubble from '../components/bubble.vue'
+// import Scatter from '../components/scatter.vue'
 export default {
 name: 'ModelPathways',
 components:{
   //  loading,
   //  alert,
-    Pathway,
-   
+    Bubble,
+  //  Scatter
     
 },
 computed: {
-  ...mapGetters(['cmp_id','loading']),
+  ...mapGetters(['cmp_id']),
 },
-props:['current'],
 data() {
 return {
-
     hidden: true,
-    
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
-      search: null,
-      select: null,
-      states: [],
-      Analysis:{
-        select1: '',
-        items1: [],
-        disabled1:false,
-        value2:'',
-        disabled2:false,
-        select3: 'Mutation',
-        items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-        select4: 'Mutation',
-        items4: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-        select5: 'Mutation',
-        items5: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-      },
-      scatterData:[],
-      galaxy:null
+    loading: false,
+    search: null,
+    select: null,
+    states: [],
+    Pathways:{
+      select1: 'human',
+      items1: ['human','mouse'],
+      disabled1:false,
+      value2:'',
+      disabled2:false,
+      select3: 'Mutation',
+      items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      select4: 'Mutation',
+      items4: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      select5: 'Mutation',
+      items5: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+    },
+    scatterData:[],
+    bubbleLeftData:[],
+    bubbleRightData:[]
 }
 },
 created() {
-  
+  this.PathwayschangeArr()
 },
 mounted() {
   // this.load()
 },
 methods:{
-  load(){
-    // window.checkComplete()
-    //  this.galaxy = new CanvasZoom( document.getElementById('galaxyCanvas'), './helloworld_file', 15723, 14815 );
-     console.log(this.galaxy)
-  },
-  zoomIn(){
-    this.galaxy.zoomInCentre()
-  },
-  zoomOut(){
-    this.galaxy.zoomOutCentre()
-  },
+    load(){
+      
+    },
     onsearch(){
       
     },
-    AnalysischangeArr(){
+    onSelectBubble(){
+      let options={
+        species:this.Pathways.select1,
+      }
+      let loading = this.$loading()
+      AgetScatter(options).then(res=>{
+        let data = res.data.data_info;
+        this.bubbleLeftData = data.ssgsea_score;
+        this.bubbleRightData = data.normalized_ssgsea_score;
+      })
+      loading.close()
+    },
+    PathwayschangeArr(){
+      this.onSelectBubble()
+    },
+    PathwayschangeArr2(){
 
     },
-    AnalysischangeArr2(){
-
-    },
-    AnalysischangeArr3(){
+    PathwayschangeArr3(){
         
     },
-    AnalysischangeArr4(){
+    PathwayschangeArr4(){
         
     },
-    AnalysischangeArr5(){
+    PathwayschangeArr5(){
         
     }
 }
 }
 </script>
 <style scoped>
-.top{
+/* .top{
   margin-bottom: 50px;
-}
+} */
 .container .searchbtn{
   position: absolute;
-  left: 16px;
+  right: 96px;
+  top: 16px;
 }
 .container .search.v-btn--fab.v-size--default.v-btn--absolute.v-btn--top{
   left: 100px;
@@ -257,10 +236,15 @@ methods:{
 .navbtn.v-btn:not(.v-btn--round).v-size--x-small{
   min-width: 4px;
   padding: 0;
+  margin-right: 10px;
 }
 .nav{
   display: flex;
   margin-bottom: 10px;
+  color: #000;
+}
+body[theme-mode=dark] .nav{
+  color: #fff;
 }
 .componentBox{
   margin: 20px 0;

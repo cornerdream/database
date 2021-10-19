@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 点线箱型图 -->
 <template>
 <div id="linescatter">
 
@@ -191,7 +191,7 @@ methods:{
               .append("div")
               .style("opacity", 0)
               .attr("class", "tooltip")
-              .style('width','100px')
+              .style('width','150px')
               .style("background-color", "white")
               .style("border", "solid")
               .style("border-width", "2px")
@@ -208,14 +208,15 @@ methods:{
               d3.select(this).attr("stroke", "black")  
             }
             var mousemove = function(d) {
-              Tooltip.html("Exact value: " + d.value)  
+              Tooltip.html("low value:"+d.min+"</br>median value: " + d.value+"</br>high value:"+d.max)  
                     
                     .style("left", function(){
                       console.log(d3.event)
                       console.log(d3.event.layerX)
                       console.log(d3.mouse(this))
                       console.log(d3.mouse(this)[0]+70)
-                      return (d3.event.pageX+20) + "px"
+                      // return (d3.event.pageX+20) + "px"
+                      return (d3.event.layerX+20) + "px"
                     })
                     .style("top", function(){
                       console.log(d3.event.layerY)

@@ -1,17 +1,32 @@
-<!-- -->
+<!-- 基础或堆叠柱状图 -->
 <template>
-<div id="bar">
 
-</div>
+<div :id="id"></div>
+
 </template>
 <script>
-import { Chart } from '@antv/g2';
+import $ from 'jquery'
+import { Column } from '@antv/g2plot';
 export default {
 name: 'bar',
-props:['data'],
+props:{
+  id:{
+    default:'bar'
+  },
+  data:{
+    default:()=>[]
+  },
+  x:{
+    default:''
+  },
+  y:{
+    default:''
+  },
+},
+// props:['data','id','x','y'],
 data() {
 return {
-    
+    boxId:'',
     chartData:[
       { time: '03-19', type: '101-1000', value: 32000 },
       { time: '03-19', type: '31-100', value: 30000 },
@@ -45,66 +60,57 @@ return {
 }
 },
 watch:{
-  data(){
-    // this.load()
-  }
+  data(newv,oldv){
+    
+    if(newv!==oldv){
+      this.antv2()
+    }
+    
+  },
+  
 },
 created() {
   
 },
 mounted() { 
-    this.antv()
+    this.antv2()
 },
 methods:{
-    
-   
-    antv(){
-      var data = this.chartData
-      const chart = new Chart({
-        container: 'bar',
-        autoFit: true,
-        height: 500,
-      });
-      chart.data(data);
-      chart.scale('value', {
-        alias: '金额(元)'
-      });
-      chart.axis('time', {
-        tickLine: null,
-      });
-
-      chart.axis('value', {
-        label: {
-          formatter: text => {
-            return text.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-          }
-        },
-        title: {
-          offset: 80,
-          style: {
-            fill: '#aaaaaa'
-          },
-        }
-      });
-      chart.legend({
-        position: 'right',
+    antv2(){
+      $('#'+this.id).html('');
+      let data = []
+      data = this.data;
+      console.log(data)
+      if(data.length==0) return
+      let stackedColumnPlot = new Column(this.id, {
+        data,
+        // isStack: true,
+        xField: this.x,
+        yField: this.y,
+        seriesField: this.x,
+        // label: {
+          // 可手动配置 label 数据标签位置
+          // position: 'middle', // 'top', 'bottom', 'middle'
+          // 可配置附加的布局方法
+          // layout: [
+          //   // 柱形图数据标签位置自动调整
+          //   { type: 'interval-adjust-position' },
+          //   // 数据标签防遮挡
+          //   { type: 'interval-hide-overlap' },
+          //   // 数据标签文颜色自动调整
+          //   { type: 'adjust-color' },
+          // ],
+        // },
       });
 
-      chart.tooltip({
-        shared: true,
-        showMarkers: false,
-      });
-      chart.interaction('active-region');
-
-      chart
-        .interval()
-        .adjust('stack')
-        .position('time*value')
-        .color('type', ['#40a9ff', '#1890ff', '#096dd9', '#0050b3']);
-
-      chart.render();
+      stackedColumnPlot.render();
+      
     }
 }
 }
 </script>
-<style scoped></style>
+<style scoped>
+#bar{
+  height: 500px;
+}
+</style>

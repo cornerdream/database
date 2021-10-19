@@ -1,14 +1,13 @@
 <template>
-  <!-- <div id="app">
-    <router-view/>
-  </div> -->
   <v-app>
       <router-view/>
   </v-app>
 </template>
+
 <script>
 import $ from 'jquery'
 import { mapGetters } from 'vuex'
+
 export default {
   name:'app',
   computed: {
@@ -48,7 +47,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss">
@@ -59,14 +57,11 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 #nav {
   padding: 30px;
-
   a {
     font-weight: bold;
     color: #2c3e50;
-
     &.router-link-exact-active {
       color: #42b983;
     }

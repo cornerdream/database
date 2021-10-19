@@ -1,8 +1,22 @@
 <template>
   <div id="modellayout">
     <viewTab/>
-
+    
     <div class="content">
+      <div class="bread">
+        <v-breadcrumbs :items="breaditems">
+          <template v-slot:item="{ item }">
+            <v-breadcrumbs-item
+              :to="{path: item.href}"
+              target="_blank"
+              :disabled="item.disabled"
+            >
+              <v-icon>{{item.icon}}</v-icon>
+              {{ item.text}}
+            </v-breadcrumbs-item>
+          </template>
+        </v-breadcrumbs>
+      </div>
       <v-speed-dial
         v-model="fab"
         :top="top"
@@ -57,11 +71,17 @@ export default {
     viewTab
   },
   data: () => ({
+    breaditems: [
+      {
+        text: 'Model Atlas',
+        disabled: false,
+        href: '/',
+        icon:'mdi-home'
+      }
+    ],
     direction: 'bottom',
     fab: false,
-    fling: false,
     hover: true,
-    tabs: null,
     top: true,
     right: true,
     bottom: false,
@@ -100,12 +120,29 @@ export default {
   },
   methods: {
     load(){
-      let view = this.$route.query.view
+      let query = this.$route.query
+      console.log(query)
+      let view = query.view
+      let bread2 = {
+        text: query.type,
+        disabled: false,
+        href: '/search',
+        icon:'mdi-apple-icloud'
+      }
+      let bread3 = {
+        text: query.name,
+        disabled: true,
+        href: '/search',
+        icon:'mdi-all-inclusive'
+      }
+      this.breaditems.push(bread2,bread3);
       this.currentTab = view;
     },
     toggleTab(tab){
+      let query = this.$route.query
       this.currentTab = tab
-      this.$router.replace({query:{view:tab}})
+      console.log({query:{view:tab,type:query.type,name:query.name}});
+      this.$router.replace({query:{view:tab,type:query.type,name:query.name}})
       
     },
   },
@@ -114,7 +151,7 @@ export default {
 <style scoped>
 .content{
   position: relative;
-  min-height: 630px;
+  min-height: 520px;
 }
 .content .v-speed-dial {
   position: absolute;
@@ -123,5 +160,8 @@ export default {
 
 .content .v-btn--floating {
   position: relative;
+}
+.bread .v-breadcrumbs{
+  padding: 26px 12px 26px 26px;
 }
 </style>

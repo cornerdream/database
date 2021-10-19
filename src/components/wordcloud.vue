@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 词图 -->
 <template>
 <div id="wordcloud">
 

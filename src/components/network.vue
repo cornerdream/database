@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 网络图 -->
 <template>
 <div id="network"></div>
 </template>

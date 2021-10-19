@@ -70,8 +70,8 @@
                
             </v-tabs>
         </v-card>
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <!-- <loading v-if="loading"></loading> -->
+        <!-- <alert v-if="alertShow" :info="info" :type="type"></alert> -->
       </div>
 
     </div>
@@ -80,8 +80,8 @@
 <script>
 
 import baseUrl from '../utils/baseurl'
-import loading from '../modules/Loading/loading.vue'
-import alert from '../modules/Alert/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 // import SimpleTable from '../components/simpleTable.vue'
 import Lollipop from '../components/lollipop.vue'
@@ -95,17 +95,17 @@ components:{
 Lollipop,
 // seqScatter,
 Table,
-loading,
-alert
+// loading,
+// alert
 },
 computed: {
-  ...mapGetters(['cmp_id','loading']),
+  ...mapGetters(['cmp_id']),
 },
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
+    // alertShow:false,
+    // info:'',
+    // type:'',
     // loading: false,
     search: null,
     select: null,
@@ -125,26 +125,28 @@ mounted() {
 },
 methods:{
     async onsearch(data){
-      var _this = this;
-      console.log(baseUrl)
-      this.$store.dispatch('ShowLoading')
+      // var _this = this;
+      // console.log(baseUrl)
+      // this.$store.dispatch('ShowLoading')
+      let loading = this.$loading()
       await fetch(baseUrl+'/api/gene/genedomain/?gene_symbol='+data).then((res)=>{
         return res.json()
       }).then((data)=>{
-        // data.code==200?this.scatterData = data.data_info.domain:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.scatterData = data.data_info.domain
-        }else{
-          this.alertShow = true;
-          this.type = 'error'
-          this.info = data.message
-          setTimeout(function(){
-            _this.alertShow = false
-          },2000)
-        }
+        data.code==200?this.scatterData = data.data_info.domain:this.$msgbox.error(data.message)
+        // if(data.code==200){          
+        //   this.scatterData = data.data_info.domain
+        // }else{
+        //   this.alertShow = true;
+        //   this.type = 'error'
+        //   this.info = data.message
+        //   setTimeout(function(){
+        //     _this.alertShow = false
+        //   },2000)
+        // }
 
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      loading.close()
     },  
 }
 }

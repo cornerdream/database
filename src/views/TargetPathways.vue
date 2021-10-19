@@ -45,8 +45,8 @@
         </v-tabs>
         <Table :data="pathwaysTableData" :msg="current" v-if="tab==0"></Table>
         <Pathway :data="pathwaysData" :msg="current" :pathway="Pathways.select4" v-else></Pathway>
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        <!-- <loading v-if="loading"></loading> -->
+        <!-- <alert v-if="alertShow" :info="info" :type="type"></alert> -->
       </div>
       <div class="select">
           <v-combobox
@@ -96,28 +96,28 @@
 </template>
 <script>
 import baseUrl from '../utils/baseurl'
-import loading from '../modules/Loading/loading.vue'
-import alert from '../modules/Alert/alert.vue'
+// import loading from '../modules/Loading/loading.vue'
+// import alert from '../modules/Alert/alert.vue'
 import {mapGetters} from 'vuex'
 import Table from '../components/tableSwitch.vue'
 import Pathway from '../components/pathway.vue'
 export default {
 name: 'TumorPathways',
 components:{ 
-    loading,
-    alert,
+    // loading,
+    // alert,
     Table,
     Pathway,
 },
 computed: {
-  ...mapGetters(['cmp_id','pathway_list','loading']),
+  ...mapGetters(['cmp_id','pathway_list']),
 },
 props:['current'],
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
+    // alertShow:false,
+    // info:'',
+    // type:'',
     // loading: false,
     search: null,
     select: null,
@@ -169,20 +169,20 @@ mounted() {
   
 },
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
+    // alert(type,data){
+    //   var _this = this;
+    //   this.alertShow = true;
+    //   this.type = type
+    //   this.info = data
+    //   setTimeout(function(){
+    //     _this.alertShow = false
+    //   },2000)
+    // },
     onsearch(cmp_id){
       if(this.Pathways.select1){
         this.tab==0?this.onselectPathwaysTable(cmp_id):this.onselectPathways(cmp_id)
       }else{
-        this.alert('warning','请选择'+this.Pathways.label1||this.Pathways.label2||this.Pathways.label3)
+        this.$message.warning('请选择'+this.Pathways.label1||this.Pathways.label2||this.Pathways.label3)
       }
     },
     PathwayschangeArr(){    
@@ -190,7 +190,7 @@ methods:{
       if(this.select){
         this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       } 
     },
     PathwayschangeArr2(){   
@@ -198,64 +198,68 @@ methods:{
       if(this.select){
         this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       } 
     },
     PathwayschangeArr3(){
       if(this.select){
         this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }  
     },
     PathwayschangeArr4(){    
       if(this.select){
         this.tab==0?this.onselectPathwaysTable(this.select):this.onselectPathways(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       } 
     },
     async onselectPathwaysTable(){
-      this.$store.dispatch('ShowLoading')
+      // this.$store.dispatch('ShowLoading')
+      let loading = this.$loading()
       await fetch(baseUrl+'/api/gene/pathwaytable/?cancer_type='+this.Pathways.select1+'&cell_lines='+this.Pathways.select2+'&pathway_id='+this.Pathways.select3+'&omics_type='+this.Pathways.select4).then((res)=>{
         return res.json()
       }).then((data)=>{
-        //data.code==200?this.pathwaysTableData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.pathwaysTableData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
+        data.code==200?this.pathwaysTableData = data.data_info:this.$msgbox.error(data.message)
+        // if(data.code==200){          
+        //   this.pathwaysTableData = data.data_info
+        // }else{
+        //   // this.alertShow = true;
+        //   // this.type = 'error'
+        //   // this.info = data.message
+        //   // setTimeout(function(){
+        //   //   _this.alertShow = false
+        //   // },3000)
+        //   this.alert('error',data.message)
+        // }
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      loading.close()
       this.Pathways.disabled1 = false;
       this.Pathways.disabled2 = false;
     },
     async onselectPathways(){
-      this.$store.dispatch('ShowLoading')
+      // this.$store.dispatch('ShowLoading')
+      let loading = this.$loading()
       await fetch(baseUrl+'/api/gene/pathwaydata/?cancer_type='+this.Pathways.select1+'&cell_lines='+this.Pathways.select2+'&pathway_id='+this.Pathways.select3+'&omics_type='+this.Pathways.select4).then((res)=>{
         return res.json()
       }).then((data)=>{
-        //data.code==200?this.pathwaysData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.pathwaysData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
+        data.code==200?this.pathwaysData = data.data_info:this.$msgbox.error(data.message)
+        // if(data.code==200){          
+        //   this.pathwaysData = data.data_info
+        // }else{
+        //   // this.alertShow = true;
+        //   // this.type = 'error'
+        //   // this.info = data.message
+        //   // setTimeout(function(){
+        //   //   _this.alertShow = false
+        //   // },3000)
+        //   this.alert('error',data.message)
+        // }
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      loading.close()
       this.Pathways.disabled1 = false;
       this.Pathways.disabled2 = false;
     },

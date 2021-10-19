@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 病理图 -->
 <template>
 <div id="img" >
 
@@ -46,10 +46,15 @@ import {CanvasZoom2} from '../utils/canvaszoom2'
 
 export default {
 name: '',
+props:{
+  canvasWidth:{
+    default:1000
+  }
+},
 data() {
 return {
     file:'http://192.168.1.62:89/images/webp_file',
-    canvasWidth: 1000, // 画布大小
+    //canvasWidth: 1000, // 画布大小
     canvasHeight: 500,
     imgWidth:16384,
     imgHeight:15360,
@@ -83,9 +88,9 @@ mounted() {
     this.load()
 },
 methods:{
-    season (val) {
-      return this.icons[val]
-    },
+    // season (val) {
+    //   return this.icons[val]
+    // },
     sliderEnd(n){
       console.log(n)
       // let v = n[1]

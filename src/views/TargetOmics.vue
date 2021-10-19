@@ -46,9 +46,7 @@
         </v-tabs>
         <Scatter :data="scatterData" v-if="tab==0"></Scatter>
         <Table :data="tableData" :msg="current" v-else></Table>
-        <!-- <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area> -->
-        <loading v-if="loading"></loading>
-        <alert v-if="alertShow" :info="info" :type="type"></alert>
+        
       </div>
       <div class="select">
         
@@ -105,30 +103,24 @@
 <script>
 
 import baseUrl from '../utils/baseurl'
-import loading from '../modules/Loading/loading.vue'
-import alert from '../modules/Alert/alert.vue'
+
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOmics',
 components:{ 
-
-  loading,
-  alert,
   Scatter,
   Table
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','loading']),
+  ...mapGetters(['cmp_id','gene_class']),
 },
 props:['current'],
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
+   
+    loading: false,
     search: null,
     select: null,
     states: [],
@@ -159,8 +151,6 @@ return {
     scatterData:[], 
     tableData:[],
     source:'',
-    //msg:'',
-    highlight:'',
     value:1000,
 }
 },
@@ -183,20 +173,11 @@ mounted() {
   
 },
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
     onsearch(cmp_id){
       if(this.Omics.select1){
         this.tab==0?this.onselect(cmp_id):this.onselectTable(cmp_id)
       }else{
-        this.alert('warning','请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
+        this.$message.warning('请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
       }
     },
     OmicschangeArr(){
@@ -205,7 +186,7 @@ methods:{
       if(this.select){
         this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }
       
     },
@@ -215,7 +196,7 @@ methods:{
       if(this.select){
         this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }
     },
     OmicschangeArr3(){
@@ -224,7 +205,7 @@ methods:{
       if(this.select){
         this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }
     },
     OmicschangeArr4(){
@@ -234,48 +215,52 @@ methods:{
     },
     async onselect(cmp_id){
       console.log(cmp_id)
-      this.$store.dispatch('ShowLoading')
+      // this.$store.dispatch('ShowLoading')
+      let loading = this.$loading();
       await fetch(baseUrl+'/api/gene/genedomain/?cancer_type='+this.Omics.select1+'&cell_lines='+this.Omics.select2+'&omics_type='+this.Omics.select3).then((res)=>{
         return res.json()
       }).then((data)=>{
-        //data.code==200?this.scatterData = data.datainfo:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.scatterData = data.datainfo
-        }else{
+        data.code==200?this.scatterData = data.datainfo:this.$msgbox.error(data.message)
+        // if(data.code==200){          
+          // this.scatterData = data.datainfo
+        // }else{
           // this.alertShow = true;
           // this.type = 'error'
           // this.info = data.message
           // setTimeout(function(){
           //   _this.alertShow = false
           // },3000)
-          this.alert('error',data.message)
-        }
+          // this.alert('error',data.message)
+        // }
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      loading.close()
       this.Omics.disabled1 = false;
       this.Omics.disabled2 = false;
       this.Omics.disabled3 = false;
     },
     async onselectTable(cmp_id){
       console.log(cmp_id)
-      this.$store.dispatch('ShowLoading')
+      // this.$store.dispatch('ShowLoading')
+      let loading = this.$loading()
       await fetch(baseUrl+'/api/gene/omicsdata/?cancer_type='+this.Omics.select1+'&cell_lines='+this.Omics.select2+'&omics_type='+this.Omics.select3).then((res)=>{
         return res.json()
       }).then((data)=>{
-        //data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.tableData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
+        data.code==200?this.tableData = data.data_info:this.$msgbox.error(data.message)
+        // if(data.code==200){          
+        //   this.tableData = data.data_info
+        // }else{
+        //   // this.alertShow = true;
+        //   // this.type = 'error'
+        //   // this.info = data.message
+        //   // setTimeout(function(){
+        //   //   _this.alertShow = false
+        //   // },3000)
+        //   this.alert('error',data.message)
+        // }
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      loading.close()
       this.Omics.disabled1 = false;
       this.Omics.disabled2 = false;
       this.Omics.disabled3 = false;

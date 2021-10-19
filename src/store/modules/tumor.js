@@ -1,5 +1,5 @@
 import baseUrl from '../../utils/baseurl'
-// import { getCmpId } from '../../api/tumor';
+import { AgetCmpId,AgetGeneClass,AgetPathwayid,AgetHlaAllele,AgetDrugClass } from '../../api/tumor';
 const theme = {
     state: {
       cmp_id:[],  
@@ -30,43 +30,59 @@ const theme = {
     actions: {   
       GetCmpId({commit}){
         console.log(baseUrl)
-        fetch(baseUrl+'/api/introduction/get_cmp_id/').then((res)=>{
-            return res.json()
-        }).then((data)=>{
-            commit('SET_CMPID', data.data_info.cmp_id)
-        })   
-        // getCmpId().then((res)=>{
+        
+        // fetch(baseUrl+'/api/introduction/get_cmp_id/').then((res)=>{
+        //     return res.json()
+        // }).then((data)=>{
+        //     commit('SET_CMPID', data.data_info.cmp_id)
+        // }).catch(res=>{
         //   console.log(res)
-        //   commit('SET_CMPID', res.data_info.cmp_id)
-        // })     
+        //   console.log(this)
+        // })   
+        
+        AgetCmpId().then((res)=>{
+          commit('SET_CMPID', res.data.data_info.cmp_id)
+        })
       },
       GetGeneClass({commit}){
-        fetch(baseUrl+'/api/omics/gene_class/').then((res)=>{
-            return res.json()
-        }).then((data)=>{
-            commit('SET_GENECLASS', data.datainfo.gene_class)
-        })
+        // fetch(baseUrl+'/api/omics/gene_class/').then((res)=>{
+        //     return res.json()
+        // }).then((data)=>{
+        //     commit('SET_GENECLASS', data.datainfo.gene_class)
+        // })
+        AgetGeneClass().then((res)=>{
+          commit('SET_GENECLASS', res.data.datainfo.gene_class)
+        })  
       },
       GetPathwayList({commit}){
 
-        fetch(baseUrl+'/api/pathway/pathwayid/').then((res)=>{
-            return res.json()
-        }).then((data)=>{
-            commit('SET_PATHWAYLIST', data.datainfo)   
-        })
+        // fetch(baseUrl+'/api/pathway/pathwayid/').then((res)=>{
+        //     return res.json()
+        // }).then((data)=>{
+        //     commit('SET_PATHWAYLIST', data.datainfo)   
+        // })
+        AgetPathwayid().then((res)=>{
+          commit('SET_PATHWAYLIST', res.data.datainfo)
+        }) 
       },
       GetHlaAllele({commit}){
-        fetch(baseUrl+'/api/immunity/hla_allele/').then((res)=>{
-            return res.json()
-        }).then((data)=>{
-            commit('SET_HLAALLELE', data.data_info)   
+        // fetch(baseUrl+'/api/immunity/hla_allele/').then((res)=>{
+        //     return res.json()
+        // }).then((data)=>{
+        //     commit('SET_HLAALLELE', data.data_info)   
+        // })
+        AgetHlaAllele().then((res)=>{
+          commit('SET_HLAALLELE', res.data.data_info)
         })
       },
       GetDrugclass({commit}){
-        fetch(baseUrl+'/api/drug/drugclass/').then((res)=>{
-            return res.json()
-        }).then((data)=>{
-            commit('SET_DRUGCLASS', data.data_info)   
+        // fetch(baseUrl+'/api/drug/drugclass/').then((res)=>{
+        //     return res.json()
+        // }).then((data)=>{
+        //     commit('SET_DRUGCLASS', data.data_info)   
+        // })
+        AgetDrugClass().then((res)=>{
+          commit('SET_DRUGCLASS', res.data.data_info)
         })
       },
     }

@@ -4,10 +4,10 @@
   <div class="container">
     
     <div class="top">
+      
       <v-btn
-        
+        fab
         class="searchbtn"
-        rounded
         color="primary"
         @click="hidden = !hidden"
       >
@@ -39,175 +39,34 @@
     </div>
       
      
-      <div class="component">
-        <div class="componentBox">
-          <div class="nav">
-            <v-btn
-            class="navbtn"
-            x-small
-            color="warning"
-            dark
-            >
-            </v-btn>
-            {{current}}
-          </div>
-          <v-row class="componentContent">
-           
-            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__backInLeft">
-              <v-card
-                class="mx-auto"
-                max-width="344"
-                color="#E3E9EE" 
-              >
-                <v-card-text>
-                  <div>Word of the Day</div>
-                  <p class="text-h4 text--primary">
-                    be•nev•o•lent
-                  </p>
-                  <p>adjective</p>
-                  <div class="text--primary">
-                    well meaning and kindly.<br>
-                    "a benevolent smile"
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    text
-                    color="deep-purple accent-4"
-                  >
-                    Learn More
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-            
-            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__backInRight">
-              <Bar></Bar>
-            </v-col>
-          </v-row>
+      <div class="component" v-if="$route.query.type=='Model'">
+        <div class="componentBox" >
+          <SimpleTable :data="tableData"></SimpleTable>
         </div>
         
-        <div class="componentBox">
-          <div class="nav">
-            <v-btn
-            class="navbtn"
-            x-small
-            color="primary"
-            dark
-            >
-            </v-btn>
-            {{current}}
-          </div>
-          <v-row class="componentContent">
-            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__backInLeft">
-              <Pie></Pie>
-            </v-col>
-            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__backInRight">
-              <v-card
-                class="mx-auto"
-                max-width="344"
-                color="#E3E9EE"
-              >
-                <v-card-text>
-                  <div>Word of the Day</div>
-                  <p class="text-h4 text--primary">
-                    be•nev•o•lent
-                  </p>
-                  <p>adjective</p>
-                  <div class="text--primary">
-                    well meaning and kindly.<br>
-                    "a benevolent smile"
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    text
-                    color="deep-purple accent-4"
-                  >
-                    Learn More
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-            
-          </v-row>
-        </div>  
-       
-          
-        <div class="componentBox">
-          <div class="nav">
-            <v-btn
-            class="navbtn"
-            x-small
-            color="success"
-            dark
-            >
-            </v-btn>
-            {{current}}
-          </div>
-          <v-row class="componentContent">
-            <v-col cols="12" xs="12" sm="6" md="6" lg="3" xl="3" class="animate__animated animate__backInLeft">
-              <v-card
-                class="mx-auto"
-                max-width="344"
-                color="#E3E9EE"
-              >
-                <v-card-text>
-                  <div>Word of the Day</div>
-                  <p class="text-h4 text--primary">
-                    be•nev•o•lent
-                  </p>
-                  <p>adjective</p>
-                  <div class="text--primary">
-                    well meaning and kindly.<br>
-                    "a benevolent smile"
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    text
-                    color="deep-purple accent-4"
-                  >
-                    Learn More
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-            <v-col cols="12" xs="12" sm="6" md="6" lg="9" xl="9" class="animate__animated animate__backInRight">
-              <Table></Table>
-            </v-col>
-          </v-row>
-        </div>  
-          
-        <TableGroup></TableGroup>
-
-        
-        
-        
-               
-    
-        
-        
-        
-        
-
       </div>
+      <div class="component" v-else-if="$route.query.type=='Gene'">
+        <div class="componentBox" >
+          <Lollipop :data="scatterData" :width="l" :circle="circleData"></Lollipop>
+          <SimpleTable :data="tableData"></SimpleTable>
+        </div>
+      </div>  
       <div class="select">
         <v-combobox
-        v-model="Analysis.select1"
-        :items="Analysis.items1"
+        v-model="Overview.select1"
+        :items="Overview.items1"
         label="Gene set"
         outlined
         dense
         solo
-        @input="AnalysischangeArr"
-        :disabled="Analysis.disabled1"
+        @input="OverviewchangeArr"
+        :disabled="Overview.disabled1"
         ></v-combobox>
         <v-text-field 
         placeholder="Gene list"
-        :value="Analysis.value2"
-        @keyup.enter="AnalysischangeArr2"
-        :disabled="Analysis.disabled2"
+        v-model="Overview.value2"
+        @keyup.enter="OverviewchangeArr2"
+        :disabled="Overview.disabled2"
         >
           <v-icon
             slot="append"
@@ -217,169 +76,153 @@
           </v-icon>
         </v-text-field>
         <v-combobox
-          v-model="Analysis.select3"
-          :items="Analysis.items3"
+          v-model="Overview.select3"
+          :items="Overview.items3"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr3"
+          @input="OverviewchangeArr3"
           allow-overflow
         ></v-combobox>
         <v-combobox
-          v-model="Analysis.select4"
-          :items="Analysis.items4"
+          v-model="Overview.select4"
+          :items="Overview.items4"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr4"
+          @input="OverviewchangeArr4"
           allow-overflow
         ></v-combobox>
         <v-combobox
-          v-model="Analysis.select5"
-          :items="Analysis.items5"
+          v-model="Overview.select5"
+          :items="Overview.items5"
           label="Gene data"
           outlined
           dense
           solo
-          @input="AnalysischangeArr5"
+          @input="OverviewchangeArr5"
           allow-overflow
         ></v-combobox>
         
       </div>
-    </div>
+  </div>
     
 </div>
 </template>
 <script>
-import 'animate.css'
+// import 'animate.css'
 // import baseUrl from '../utils/baseurl'
-// import loading from '../components/loading.vue'
-// import alert from '../components/alert.vue'
+import {AgetGeneSequence} from '../api/model'
 import {mapGetters} from 'vuex'
-import Bar from '../components/bar.vue'
-import Pie from '../components/pie.vue'
-import Table from '../components/table.vue'
-import TableGroup from '../components/tableGroup.vue'
+import SimpleTable from '../components/simpleTable.vue'
+import Lollipop from '../components/lollipop.vue'
 export default {
 name: 'ModelOverview',
 components:{
-  //  loading,
-  //  alert,
-
-    Bar,
-    Pie,
-    Table,
-    TableGroup
+    SimpleTable,
+    Lollipop
 },
 computed: {
-  ...mapGetters(['cmp_id','loading']),
+  ...mapGetters(['cmp_id']),
 },
-props:['current'],
 data() {
 return {
-    length: [
-      {
-        color:'warning',
-        title:'overview',
-      },
-      {
-        color:'primary',
-        title:'overview2',
-      },
-      {
-        color:'success',
-        title:'overview3',
-      }
-    ],
-    window: 0,
+ 
     hidden: true,
+    loading: false,
+    search: null,
+    select: null,
+    states: [],
+    Overview:{
+      select1: '',
+      items1: [],
+      disabled1:false,
+      value2:'',
+      disabled2:false,
+      select3: 'Mutation',
+      items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      select4: 'Mutation',
+      items4: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+      select5: 'Mutation',
+      items5: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
+    },
     
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
-      search: null,
-      select: null,
-      states: [],
-      Analysis:{
-        select1: '',
-        items1: [],
-        disabled1:false,
-        value2:'',
-        disabled2:false,
-        select3: 'Mutation',
-        items3: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-        select4: 'Mutation',
-        items4: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-        select5: 'Mutation',
-        items5: ['Mutation', 'CNV', 'Fusion', 'Methylation','gene expression'], 
-      },
-      scatterData:[],
-      galaxy:null
+    tableData:[],
+    l:0,
+    scatterData:[],
+    circleData:[],
 }
 },
 created() {
-  
+  this.onSelectSequence()
 },
 mounted() {
-  // this.load()
+ 
 },
 methods:{
   load(){
-    // window.checkComplete()
-    //  this.galaxy = new CanvasZoom( document.getElementById('galaxyCanvas'), './helloworld_file', 15723, 14815 );
-     console.log(this.galaxy)
+    
   },
-  zoomIn(){
-    this.galaxy.zoomInCentre()
+  onSelectSequence(){
+    let loading = this.$loading()
+    AgetGeneSequence(1063135).then(res=>{
+      let d = res.data.data_info
+      this.l = d.aa_sequence.aa_sequence.length
+      this.scatterData = d.protein_domain_mapping;
+      this.circleData=d.HGVSp_Short
+    })
+    loading.close()
   },
-  zoomOut(){
-    this.galaxy.zoomOutCentre()
+  onsearch(){
+    
   },
-    onsearch(){
+  OverviewchangeArr(){
+
+  },
+  OverviewchangeArr2(){
+
+  },
+  OverviewchangeArr3(){
       
-    },
-    AnalysischangeArr(){
-
-    },
-    AnalysischangeArr2(){
-
-    },
-    AnalysischangeArr3(){
-        
-    },
-    AnalysischangeArr4(){
-        
-    },
-    AnalysischangeArr5(){
-        
-    }
+  },
+  OverviewchangeArr4(){
+      
+  },
+  OverviewchangeArr5(){
+      
+  }
 }
 }
 </script>
 <style scoped>
-.top{
+/* .top{
   margin-bottom: 50px;
-}
+} */
 
 .container .searchbtn{
   position: absolute;
-  left: 16px;
+  right: 96px;
+  top: 16px;
 }
 .container .search.v-btn--fab.v-size--default.v-btn--absolute.v-btn--top{
-  left: 100px;
+  right: 100px;
   top: 0;
 }
 
 .navbtn.v-btn:not(.v-btn--round).v-size--x-small{
   min-width: 4px;
   padding: 0;
+  margin-right: 10px;
 }
 .nav{
   display: flex;
   margin-bottom: 10px;
+  color: #000;
+}
+body[theme-mode=dark] .nav{
+  color: #fff;
 }
 .componentBox{
   margin: 20px 0;

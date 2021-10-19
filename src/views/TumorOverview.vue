@@ -32,8 +32,6 @@
       </v-toolbar>
       <div class="component">
         <SimpleTable  :data="tableData"></SimpleTable>
-        <Loading v-if="loading"></Loading>
-        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
       </div>
       
     </div>
@@ -41,28 +39,22 @@
 </div>
 </template>
 <script>
-import baseUrl from '../utils/baseurl'
-// import loading from '../modules/Loading/loading.vue'
-// import alert from '../modules/Alert/alert.vue'
+// import baseUrl from '../utils/baseurl'
+import {AsearchCmpId} from '../api/tumor'
 import {mapGetters} from 'vuex'
 import SimpleTable from '../components/simpleTable.vue'
 export default {
 name: 'TumorOverview',
 components:{
-  // loading,
-  // alert,
   SimpleTable,
-
 },
 computed: {
-  ...mapGetters(['cmp_id','loading']),
+  ...mapGetters(['cmp_id']),
 },
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
+    
+    loading: false,
     search: null,
     select: null,
     states: [],
@@ -70,39 +62,29 @@ return {
 }
 },
 created() {
+
+  
+  
 },
 mounted() {
-  // this.$EventBus.$on("aMsg", (msg) => {
-  //     // A发送来的消息
-  //     console.log(msg)
-  //   this.onsearch(msg);
-  // })
+  
 },
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
     async onsearch(cmp_id){
       console.log(cmp_id)
-      console.log(baseUrl)
-      this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+cmp_id).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        // data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.tableData = data.data_info
-        }else{
-          this.alert('error',data.message)
-        }
+      // console.log(baseUrl)
+      // this.$store.dispatch('ShowLoading')
+      let $loading=this.$loading();
+      // await fetch(baseUrl+'/api/introduction/cmp/?cmp_id='+cmp_id).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.tableData = data.data_info:this.$message.error(data.message)
+      // })
+      AsearchCmpId(cmp_id).then(res=>{
+        this.tableData = res.data.data_info
       })
-      this.$store.dispatch('HideLoading')
+      // this.$store.dispatch('HideLoading')
+      $loading.close();
     },  
     
 }

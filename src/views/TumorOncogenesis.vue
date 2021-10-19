@@ -64,8 +64,7 @@
         </v-tabs>
         <Scatter :data="scatterData" v-if="tab==0"></Scatter>
         <Table :data="tableData" :msg="current" v-else></Table>
-        <Loading v-if="loading"></Loading>
-        <Alert v-if="alertShow" :info="info" :type="type"></Alert>
+  
       </div>
       <div class="select">
         <v-combobox
@@ -107,37 +106,26 @@
 </div>
 </template>
 <script>
-// import Network from '../components/network.vue'
-// import HeatmapShape from '../components/heatmap-shape.vue'
-// import Heatmap from '../components/heatmap.vue'
-import baseUrl from '../utils/baseurl'
-// import loading from '../modules/Loading/loading.vue'
-// import alert from '../modules/Alert/alert.vue'
+
+// import baseUrl from '../utils/baseurl'
+import {Aselectccl,Aselectccltable} from '../api/tumor'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOncogenesis',
 components:{
-  // Network
-  // HeatmapShape,
-  // Heatmap
-  // loading,
-  // alert,
   Scatter,
   Table,
-
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','loading']),
+  ...mapGetters(['cmp_id','gene_class']),
 },
 props:['current'],
 data() {
 return {
-  alertShow:false,
-  info:'',
-  type:'',
-  // loading: false,
+  
+  loading: false,
   search: null,
   select: null,
   states: [],
@@ -161,8 +149,6 @@ return {
   scatterData:[], 
   tableData:[],
   source:'',
-  //msg:'',
-  highlight:'',
   value:1000,    
 }
 },
@@ -181,90 +167,69 @@ created() {
 },
 mounted() {},
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
     onsearch(cmp_id){
-
-      if(this.Oncogenesis.select1){
+      let select = this.Oncogenesis;
+      if(select.select1){
         this.tab==0?this.onselect(cmp_id):this.onselectTable(cmp_id)
       }else{
-        this.alert('warning','请选择'+this.Oncogenesis.label1||this.Oncogenesis.label2||this.Oncogenesis.label3)
+        this.$message.warning('请选择'+select.label1||select.label2||select.label3)
       }
 
     },
     OncogenesischangeArr(){
       this.Oncogenesis.disabled2 = true;
-      if(this.select){
-        this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
-      }else{
-        this.alert('warning','请选择cmp_id')
-      }
+      // if(this.select){
+      //   this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }
+      this.OncogenesischangeArr3()
     },
     OncogenesischangeArr2(){
       this.Oncogenesis.disabled1 = true;
-      if(this.select){
-        this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
-      }else{
-        this.alert('warning','请选择cmp_id')
-      }
+      // if(this.select){
+      //   this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }
+      this.OncogenesischangeArr3()
     },
     OncogenesischangeArr3(){
       if(this.select){
         this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
       }else{
-        this.alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }
     },
     async onselect(cmp_id){
       console.log(cmp_id)
-      this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/omics/ccl/?cmp_id='+cmp_id+'&omics_type='+this.Oncogenesis.select3+'&gene_set='+this.Oncogenesis.select1+'&gene_list='+this.Oncogenesis.value2).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        //data.code==200?this.scatterData = data.datainfo:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.scatterData = data.datainfo
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
-      })
-      this.$store.dispatch('HideLoading')
-      this.Oncogenesis.disabled1 = false;
-      this.Oncogenesis.disabled2 = false;
+      let $loading = this.$loading();
+      // this.$store.dispatch('ShowLoading')
+      let select = this.Oncogenesis;
+      // await fetch(baseUrl+'/api/omics/ccl/?cmp_id='+cmp_id+'&omics_type='+select.select3+'&gene_set='+select.select1+'&gene_list='+select.value2).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.scatterData = data.datainfo:this.$message.error(data.message)
+      // })
+      Aselectccl(cmp_id,select.select3,select.select1,select.value2).then(res=>this.scatterData = res.data.datainfo)
+      $loading.close()
+      // this.$store.dispatch('HideLoading')
+      select.disabled1 = false;
+      select.disabled2 = false;
     },
     async onselectTable(cmp_id){
       console.log(cmp_id)
-      this.$store.dispatch('ShowLoading')
-      await fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+cmp_id+'&omics_type='+this.Oncogenesis.select3+'&gene_set='+this.Oncogenesis.select1+'&gene_list='+this.Oncogenesis.value2+'&source='+(this.source)).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        //data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.tableData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },3000)
-          this.alert('error',data.message)
-        }
-      })
-      this.$store.dispatch('HideLoading')
+      let $loading = this.$loading();
+      // this.$store.dispatch('ShowLoading')
+      let select = this.Oncogenesis;
+      // await fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+cmp_id+'&omics_type='+select.select3+'&gene_set='+select.select1+'&gene_list='+select.value2+'&source='+(this.source)).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.tableData = data.data_info:this.$message.error(data.message)
+      // })
+      Aselectccltable(cmp_id,select.select3,select.select1,select.value2,this.source).then(res=>this.tableData = res.data.data_info)
+      $loading.close();
+      // this.$store.dispatch('HideLoading')
       this.Oncogenesis.disabled1 = false;
       this.Oncogenesis.disabled2 = false;
     },

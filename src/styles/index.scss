@@ -15,6 +15,7 @@ html {
   font-size:62.5%;
   
 }
+
 @media only screen and (min-width: 320px){
 html {
   font-size: 12.5% !important;
@@ -44,6 +45,8 @@ body {
 body[theme-mode=dark] {
   background-color: $mode-dark;
 }
+
+
 a {
   text-decoration: none;
 }
@@ -136,7 +139,7 @@ min-width: 120px;
 .component{
 padding:0 20rem 0 0;
 min-height: 52rem;
-position: relative;
+// position: relative;
 }
 //loading
 .loading{
@@ -199,6 +202,29 @@ position: relative;
 }
 //modelsearch
 .top .v-text-field.v-text-field--enclosed{
-  width: 80%;
-  margin-left: 80px;
+  // width: 80%;
+  // margin-left: 80px;
+  // margin-top: -48px;
+  position: absolute;
+  right: 160px;
+  top: 20px;
+}
+//chip
+.v-chip .v-chip__content{
+  color: #fff;
+}
+//element table
+.el-table__body tr.current-row>td{
+  color:#fff;
+  background: #ff7f00!important;
+}
+#elTable.el-table .el-table__cell{
+  padding: 0;
+}
+.searchli.el-input--mini .el-input__inner{
+  height: 40px;
+}
+//el-tab
+body[theme-mode=dark] .el-tabs--card>.el-tabs__header .el-tabs__item.is-active{
+  border-bottom-color: #000;
 }

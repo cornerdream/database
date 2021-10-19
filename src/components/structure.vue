@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 化学结构分子图 -->
 <template>
 <div id="structure">
 

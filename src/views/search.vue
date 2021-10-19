@@ -1,20 +1,6 @@
 <template>
   <div class="search">
-    <!-- <sunburst/> -->
-    <!-- <barplot/> -->
-    <!-- <bar/> -->
-    <!-- <boxplot/> -->
-    <!-- <violin/> -->
-    <!-- <wordcloud/> -->
-    <!-- <scatter/> -->
-    <!-- <heatmap/> -->
-    <!-- <heatmapshape/> -->
-    <!-- <network/> -->
-    <!-- <lollipop/> -->
-    <!-- <bubble/> -->
-    <!-- <lineScatter/> -->
-    <!-- <seq/> -->
-    <!-- <Structure/> -->
+    
 
     <v-row>
       <v-col
@@ -40,7 +26,7 @@
               <v-list-item
                 v-for="(list, j) in item.list"
                 :key="j"
-                @click="itemClick"
+                @click="itemClick(item.title,list.text)"
               >
                 <!-- <v-list-item-icon> -->
                   <!-- <v-icon v-text="list.icon"></v-icon> -->
@@ -74,46 +60,17 @@
   </div>
 </template>
 <script>
-// import sunburst from '../components/sunburst.vue'
-// import barplot from '../components/barplot.vue'
-// import bar from '../components/bar.vue'
-// import boxplot from '../components/boxplot.vue'
-// import violin from '../components/violin.vue'
-// import wordcloud from '../components/wordcloud.vue'
-// import Scatter from '../components/scatter.vue'
-// import heatmap from '../components/heatmap.vue'
-// import heatmapshape from '../components/heatmap-shape.vue'
-// import network from '../components/network.vue'
-// import lollipop from '../components/lollipop.vue'
-// import bubble from '../components/bubble.vue'
-// import lineScatter from '../components/lineScatter.vue'
-// import seq from '../components/sequence.vue'
-// import Structure from '../components/structure.vue'
-// import {test} from '../api/test'
+
 export default {
   name:'search',
   components:{
-    // sunburst,
-    // barplot,
-    // bar,
-    // boxplot,
-    // violin,
-    // wordcloud,
-    // Scatter,
-    // heatmap,
-    // heatmapshape,
-    // network,
-    // lollipop,
-    // bubble,
-    // lineScatter,
-    // seq,
-    // Structure
+    
   },
   data(){
     return{
       cardItems:[
         {
-          title:'Literature',
+          title:'Model',
           list:[
             {text:'Bookshelf',value:1238},
             {text:'MeSH',value:22},
@@ -123,7 +80,7 @@ export default {
           ]
         },
         {
-          title:'Genes',
+          title:'Gene',
           list:[
             {text:'Gene',value:6671},
             {text:'GEO DattaSets',value:9991},
@@ -133,7 +90,7 @@ export default {
           ]
         },
         {
-          title:'Protenis',
+          title:'Pathway',
           list:[
             {text:'Conserved Domains',value:22},
             {text:'Indentical Protein Groups',value:22},
@@ -154,8 +111,9 @@ export default {
       // console.log(data)
       
     },
-    itemClick(){
-      let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Overview'}});
+    itemClick(type,name){
+      console.log(type,name)
+      let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Overview',type:type,name:name}});
       window.open(routeUrl.href, '_blank');
     }
 

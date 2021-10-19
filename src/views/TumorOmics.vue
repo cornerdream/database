@@ -47,8 +47,6 @@
         <Scatter :data="scatterData" v-if="tab==0"></Scatter>
         <Table :data="tableData" :msg="current" v-else></Table>
         <Area :data="scatterData" v-show="Omics.select3!=='Fusion'"></Area>
-        <Loading v-if="loading"></Loading>
-        <!-- <Alert v-if="alertShow" :info="info" :type="type"></Alert> -->
       </div>
       <div class="select">
         <v-combobox
@@ -91,30 +89,24 @@
 </div>
 </template>
 <script>
-import baseUrl from '../utils/baseurl'
-// import loading from '../modules/Loading/loading.vue'
-// import alert from '../modules/Alert/alert.vue'
+// import baseUrl from '../utils/baseurl'
+import {AselectCcl,AselectCcltable} from '../api/tumor'
 import {mapGetters} from 'vuex'
 import Scatter from '../components/scatter.vue'
 import Table from '../components/tableSwitch.vue'
 export default {
 name: 'TumorOmics',
 components:{ 
-  // loading,
-  // alert,
     Scatter,
     Table
 },
 computed: {
-  ...mapGetters(['cmp_id','gene_class','loading']),
+  ...mapGetters(['cmp_id','gene_class']),
 },
 props:['current'],
 data() {
 return {
-    alertShow:false,
-    info:'',
-    type:'',
-    // loading: false,
+    loading: false,
     search: null,
     select: null,
     states: [],
@@ -139,14 +131,11 @@ return {
     scatterData:[], 
     tableData:[],
     source:'',
-    //msg:'',
-    highlight:'',
     value:1000,
 }
 },
 created() {
-  this.alert('warning','请选择')
-      // this.$$alert('error','11')
+  
   console.log('create')
   console.log(this.current)
   this.$EventBus.$on(this.current, (msg) => {
@@ -165,128 +154,76 @@ mounted() {
   
 },
 methods:{
-    alert(type,data){
-      var _this = this;
-      this.alertShow = true;
-      this.type = type
-      this.info = data
-      setTimeout(function(){
-        _this.alertShow = false
-      },2000)
-    },
     onsearch(cmp_id){
-      if(this.Omics.select1){
+      let select = this.Omics;
+      if(select.select1){
         this.tab==0?this.onselect(cmp_id):this.onselectTable(cmp_id)
       }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },2000)
-        this.alert('warning','请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
-        // this.$$alert('warning','请选择'+this.Omics.label1||this.Omics.label2||this.Omics.label3)
+        this.$message.warning('请选择'+select.label1||select.label2||select.label3)
       }
     },
     OmicschangeArr(){
-      //  var _this = this;
       this.Omics.disabled2 = true;
-      if(this.select){
-        this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
-      }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },2000)
-        this.alert('warning','请选择cmp_id')
-        // this.$$alert('warning','请选择cmp_id')
-      }
-      
+      // if(this.select){
+      //   this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }
+      this.OmicschangeArr3()
     },
     OmicschangeArr2(){
-      //  var _this = this;
       this.Omics.disabled1 = true;
-      if(this.select){
-        this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
-      }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },2000)
-        this.alert('warning','请选择cmp_id')
-        // this.$$alert('warning','请选择cmp_id')
-      }
+      // if(this.select){
+      //   this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
+      // }else{
+      //   this.$message.warning('请选择cmp_id')
+      // }
+      this.OmicschangeArr3()
     },
     OmicschangeArr3(){
-      //  var _this = this;
       if(this.select){
         this.tab==0?this.onselect(this.select):this.onselectTable(this.select)
       }else{
-        // this.alertShow = true;
-        // this.type = 'warning'
-        // this.info = '请选择cmp_id'
-        // setTimeout(function(){
-        //   _this.alertShow = false
-        // },2000)
-        this.alert('warning','请选择cmp_id')
-        // this.$$alert('warning','请选择cmp_id')
+        this.$message.warning('请选择cmp_id')
       }
     },
     async onselect(cmp_id){
-      
-      //  var _this = this;
-       this.$store.dispatch('ShowLoading')
+      let $loading=this.$loading()
+      //  this.$store.dispatch('ShowLoading')
       console.log(cmp_id)
-      await fetch(baseUrl+'/api/omics/ccl/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        // data.code==200?this.scatterData = data.datainfo:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.scatterData = data.datainfo
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },2000)
-          this.alert('error',data.message)
-          // this.$$alert('error',data.message)
-        }
+      // await fetch(baseUrl+'/api/omics/ccl/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.scatterData = data.datainfo:this.$message.error(data.message)
+      // })
+      let select = this.Omics
+      AselectCcl(cmp_id,select.select3,select.select1,select.value2).then(res=>{
+        this.scatterData = res.data.datainfo
       })
-      this.$store.dispatch('HideLoading')
-      this.Omics.disabled1 = false;
-      this.Omics.disabled2 = false;
+      $loading.close();
+      // this.$store.dispatch('HideLoading')
+      select.disabled1 = false;
+      select.disabled2 = false;
     },
     async onselectTable(cmp_id){
       
-      // var _this = this;
-      this.$store.dispatch('ShowLoading')
+      let $loading=this.$loading();
+      // this.$store.dispatch('ShowLoading')
       console.log(cmp_id)
-      await fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'&source='+(this.source)).then((res)=>{
-        return res.json()
-      }).then((data)=>{
-        // data.code==200?this.tableData = data.data_info:this.$alert.error(data.message)
-        if(data.code==200){          
-          this.tableData = data.data_info
-        }else{
-          // this.alertShow = true;
-          // this.type = 'error'
-          // this.info = data.message
-          // setTimeout(function(){
-          //   _this.alertShow = false
-          // },2000)
-          this.alert('error',data.message)
-          // this.$$alert('error',data.message)
-        }
+      // await fetch(baseUrl+'/api/omics/ccltable/?cmp_id='+cmp_id+'&omics_type='+this.Omics.select3+'&gene_set='+this.Omics.select1+'&gene_list='+this.Omics.value2+'&source='+(this.source)).then((res)=>{
+      //   return res.json()
+      // }).then((data)=>{
+      //   data.code==200?this.tableData = data.data_info:this.$message.error(data.message)
+        
+      // })
+      let select = this.Omics
+      AselectCcltable(cmp_id,select.select3,select.select1,select.value2,this.source).then(res=>{
+        this.tableData = res.data.data_info
       })
-      this.$store.dispatch('HideLoading')
-      this.Omics.disabled1 = false;
-      this.Omics.disabled2 = false;
+      $loading.close()
+      // this.$store.dispatch('HideLoading')
+      select.disabled1 = false;
+      select.disabled2 = false;
     },
     onchange(){
       console.log('change')

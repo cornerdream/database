@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 箱型图 -->
 <template>
 <div id="boxplot">
 

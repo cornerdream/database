@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 人类老鼠互切图 -->
 <template>
 <div id="human">
     <div id="homeImageContainer">

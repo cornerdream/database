@@ -1,7 +1,7 @@
-<!-- -->
+<!-- 轮播图 -->
 <template>
 <div id="carousel">
-	<!-- 轮播图 -->
+	<!-- 中间内容 -->
 	<div class="wrapper">	
 		<div 
 		class="slide" 
@@ -55,13 +55,14 @@
 </div>
 </template>
 <script>
+import $ from 'jquery'
 import { mapGetters } from 'vuex'
 import img1 from '../assets/img.png'
 import img2 from '../assets/white_bg.png'
 import img3 from '../assets/dark_bg.png'
 import imgC from '../assets/white_center_left.png'
 import imgC2 from '../assets/dark_center_left.png'
-import $ from 'jquery'
+
 export default {
 name: 'carousel',
 computed: {
@@ -113,8 +114,6 @@ methods:{
 		});
 
 		// 焦点自动对齐
-		// $paginationList.eq(step).addClass('active')
-		// 	.siblings().removeClass('active');
 		$paginationList.each((index, item) => {
 			if (index === step) {
 				$(item).addClass('active');
@@ -141,7 +140,6 @@ methods:{
 
 	// 点击焦点切换
 	$paginationList.on('mouseenter', function () {
-		//  $(this).index() 当前点击这一项的索引
 		let index = $(this).index();
 		if (index === step) return;
 		prev = step;
@@ -160,7 +158,7 @@ methods:{
   },
   liClick(item){
 	
-	// this.$router.push({path:'/'+item.replace(/\s/g,''),query:{view:'Overview'}})
+
 	if(this.ableLink.indexOf(item)!=-1){
 		let routeUrl=null;
 		if(item=='Model Atlas'){
@@ -170,7 +168,9 @@ methods:{
 		}
 		window.open(routeUrl.href, '_blank');
 	}else{
-		this.$alert.error('在开发中，敬请期待')
+		
+		this.$msgbox.alert('在开发中，敬请期待',item)
+		
 	}
 	
   }

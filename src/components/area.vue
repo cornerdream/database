@@ -1,27 +1,25 @@
 <!-- -->
 <template>
-<div id="areab">
-<!-- {{dataArea}}
------------
-{{areaData}} -->
-</div>
+<div :id="id"></div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import * as d3 from 'd3'
-import { Chart } from '@antv/g2';
 import $ from 'jquery'
+import { Chart } from '@antv/g2';
 export default {
 name: 'areab',
-props:['data','id'],
-computed: {
-  ...mapGetters(['scatterData'])
+props:{
+    id:{
+        default:'areab'
+    },
+    data:{
+        default:()=>[]
+    }
 },
+// props:['data','id'],
 data() {
 return {
     areaChart:'',
-    selectCount:0,
-    areaData:[],
+   
     antvData:[
         {"year": 2040, "type": "Imports:Canada", "value": -1.222185}, 
         // {"year": 2040, "type": "Imports:Natural", "value": -0.055}, 
@@ -154,60 +152,7 @@ return {
         //   {"year": 2015, "type": "Exports:Mexico", "value": 1.054466}, 
         //   {"year": 2015, "type": "Exports:Natural", "value": 0.028144}
     ],
-    area:{
-        data:[
-             [
     
-                { year: 1991, value: 15468 ,x:0},
-                { year: 1992, value: 16100,x:0},
-                { year: 1993, value: 15900,x:0},
-                { year: 1994, value: 17409,x:0},
-                { year: 1995, value: 17000,x:0},
-                { year: 1996, value: 31056,x:0},
-                { year: 1997, value: 31982,x:0},
-                { year: 1998,  value: 32040 ,x:0},
-        
-            ],
-            [
-                { year: 1999, value: 15468 ,x:100},
-                { year: 2000, value: 16100,x:100 },
-                { year: 2001, value: 15900 ,x:100},
-                { year: 2002, value: 17409 ,x:100},
-                { year: 2003, value: 17000 ,x:100},
-                { year: 2004, value: 31056 ,x:100},
-                { year: 2005, value: 31982 ,x:100},
-                { year: 2006, value: 32040 ,x:100},
-                { year: 2007, value: 33233 ,x:100},
-            ]
-        ],
-        color:['#F44336','#9C27B0','#3F51B5'],
-        x:['0','1000']
-    },
-    // data:[
-    //     [
-    
-    //         { year: '1991', value: 10468 ,x:0},
-    //         { year: '1992', value: 11100,x:0},
-    //         { year: '1993', value: 12900,x:0},
-    //         { year: '1994', value: 13409,x:0},
-    //         { year: '1995', value: 14000,x:0},
-    //         { year: '1996', value: 35056,x:0},
-    //         { year: '1997', value: 36982,x:0},
-    //         { year: '1998',  value: 37040 ,x:0},
-    
-    //     ],
-    //     [
-    //         { year: '1999', value: 15468 ,x:2000},
-    //         { year: '2000', value: 16100,x:2000 },
-    //         { year: '2001', value: 15900 ,x:2000},
-    //         { year: '2002', value: 17409 ,x:2000},
-    //         { year: '2003', value: 17000 ,x:2000},
-    //         { year: '2004', value: 31056 ,x:2000},
-    //         { year: '2005', value: 31982 ,x:2000},
-    //         { year: '2006', value: 32040 ,x:2000},
-    //         { year: '2007', value: 33233 ,x:2000},
-    //     ]
-    // ]
 }
 },
 watch:{
@@ -216,129 +161,39 @@ watch:{
  }
 },
 created() {
-    // this.id&&this.loadData()
+   
 },
 mounted() {
-    // this.antv()
+    this.antv();
 },
 methods:{
-    load(){
-        var margin = {top: 10, right: 30, bottom: 30, left: 50},
-            width = 460 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
-
-        const color=['#F44336','#9C27B0','#3F51B5']
-
-        
-               
-            
-            
-        // ];
-        // append the svg object to the body of the page
-        var svg = d3.select("#areab")
-                    .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    
-        this.area.data.forEach((item,i)=>{
-            console.log(margin[i])
-            svg.append("g")
-                    .attr("transform",
-                        "translate(" + margin.left + "," + margin.top + ")");
-            
-                
-
-            //Read the data
-            // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
-            // d3.json(data,
-            // When reading the csv, I must format variables:
-            
-
-            // Now I can use this dataset:
-            // function(data) {
-
-                // Add X axis --> it is a date format
-                var x = d3.scaleTime()
-                .domain(d3.extent(item, function(d) { return d.year; }))
-                .range([ 0, width ]);
-                svg.append("g")
-                .attr("transform", "translate("+this.area.x[i]+',' + height + ")")
-                .call(d3.axisBottom(x));
-
-                // Add Y axis
-                var y = d3.scaleLinear()
-                .domain([0, d3.max(item, function(d) { return +d.value; })])
-                .range([ height, 0 ]);
-                svg.append("g")
-                .call(d3.axisLeft(y));
-
-                // Add the area
-                svg.append("path")
-                .datum(item)
-                .attr("fill", function(){
-                    return color[i]
-                })
-                .attr("stroke", "#69b3a2")
-                .attr("stroke-width", 1.5)
-                .attr("d", d3.area()
-                    .x(function(d) { 
-                        console.log(d.year)
-                        return x(d.year) 
-                    })
-                    .x1(function(d){
-                        console.log(d.x)
-                        return y(d.x)
-                    })
-                    .y0(function(){ 
-                       
-                        return y(0)
-                    })
-                    .y1(function(d) { 
-                        console.log(d.value)
-                        return y(d.value) 
-                    })
-                )
-                
-            })
-        
-
-        // })
-
-
-
-    },
-    change(){
-        this.areaChart.destroy();
-        // this.antv(newData);
-        // this.antvChart.changeData(newData);
-    },
+    
     antv(){
-        $('#areab').html('') 
-        console.log('area')
+        $('#'+this.id).html('') 
         this.antvData=[];
         if(!this.data){return}
         for(var item in this.data){
-        
-        for(var obj in this.data[item]){
-        
-            let type1 = {'type':item}
-        
-            type1['year'] = obj;
-            var value1;
-            if(typeof this.data[item][obj]=='object'){
-            value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
-            }else{
-            value1 = this.data[item][obj]
-            }
-        
-            type1['value'] = value1;
-        
-            this.antvData.push(type1)
-        } 
+
+            for(var obj in this.data[item]){
+            
+                let type1 = {'type':item}
+            
+                type1['year'] = obj;
+                var value1;
+                if(typeof this.data[item][obj]=='object'){
+                value1 = Object.values(this.data[item][obj]).reduce((prev,next)=>prev+next)
+                }else{
+                value1 = this.data[item][obj]
+                }
+            
+                type1['value'] = value1;
+            
+                this.antvData.push(type1)
+            } 
         
         }
         this.areaChart = new Chart({
-            container: 'areab',
+            container: this.id,
             autoFit: true,
             height: 500,
             padding: [50, 20, 30, 30]

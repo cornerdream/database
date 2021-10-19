@@ -1,4 +1,4 @@
-<!-- -->
+<!-- 简单数据展示表格 -->
 <template>
 <div class="simpleTable">
     <v-simple-table height="500px" id="simpleTable" v-show="data.length!=0">

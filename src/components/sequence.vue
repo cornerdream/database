@@ -1,8 +1,8 @@
-<!-- -->
+<!-- 序列图 -->
 <template>
 <div id="sequence">
-    <v-row>
-        <v-col class=".col-2" id="listChange">
+    <!-- <v-row>
+        <v-col class=".col-2" id="listChange" v-if="!neoepitope">
             <v-card flat>
                 <v-tabs
                     v-model="tab"
@@ -51,13 +51,11 @@
                 </v-tabs-items>
             </v-card>
         </v-col>
-        <v-col class=".col-10" id="listContainer">
-            <v-card
-            flat
-            >
-            <v-card-title>{{gene}}</v-card-title>
+        <v-col class=".col-10" id="listContainer"> -->
+            <v-card flat>
+            <!-- <v-card-title>{{gene}}</v-card-title> -->
         
-            <!-- <v-card-text>
+            <v-card-text>
                 <v-row
                 align="center"
                 class="mx-0"
@@ -65,15 +63,15 @@
                 <v-avatar
                     color="primary"
                     size="36"
-                >393</v-avatar>
+                >{{cov.length>0?cov[0].id:'id'}}</v-avatar>
         
                 <div class="grey--text ms-4">       
-                    Protein Sequence
+                    {{cov.length>0?cov[0].domain_id:'domain_id'}}
                 </div>
                 </v-row>
         
                
-            </v-card-text> -->
+            </v-card-text>
         
             <v-divider class="mx-4"></v-divider>
         
@@ -82,10 +80,15 @@
                 align="center"
                 class="mx-0"
                 >
-                <!-- <v-col class="charNumbers"> 
-                    1<br>81<br>161<br>241<br>321<br>
-                </v-col> -->
-                <v-col class="charSeq" cols="12" id="spanBox">       
+                
+                <v-col class="charNumbers"> 
+                    <span 
+                    v-for="i in str.length!==0?Math.ceil(str.length/80):null"
+                    :key="i"
+                    >{{1+80*(i-1)}}<br></span>
+                    <!-- {{1+this.seq/80}}<br>81<br>161<br>241<br>321<br> -->
+                </v-col>
+                <v-col class="charSeq" cols="12" id="spanBox" ref="seqBox">       
                     <!-- <span style="color:black;">MEEPQS</span>
                     <span style="text-decoration:underline;color:#e31a1c;">DPSV EPPLSQETFS DLWKLLPENN V</span>
                     <span style="color:black;">LSPL</span>
@@ -104,7 +107,7 @@
             <v-card-text>
                 <v-chip-group> 
                 <v-chip 
-                v-for="(item,i) in chipItems"
+                v-for="(item,i) in str.length!==0?chipItems:null"
                 :key="item.text+i"
                color="transparent"
                >
@@ -147,8 +150,8 @@
         
             
             </v-card>
-        </v-col>
-    </v-row>
+        <!-- </v-col>
+    </v-row> -->
 </div>
 </template>
 <script>
@@ -160,99 +163,73 @@ data() {
 return {
     tab: null,
     tabItems: [
-        // {
-        //     text:'HLA',
-        //     list:[
-        //         // {title:"GSDCTTIHY","start":225,"end":234,"protein_id":"P04637","source":"UniProt","aa":"C","ptm_pos":229,"mod":"Glutathione"}
-        //     ]
-        // },
         {   
             text:'neoepitope',
             list:[
                 // {title:"KLLPENNVL",start:23,end:32,protein_id:"P04637",source:"UniProt"},
-                // {title:"MLSPDDIEQW",start:43,end:53,protein_id:"P04637",source:"UniProt"},
-                // {title:"APAPSWPL",start:85,end:93,protein_id:"P04637",source:"UniProt"},
-                // {title:"RLGFLHSGTAK",start:109,end:120,protein_id:"P04637",source:"UniProt"},
-                // {title:"GTAKSVTCTY",start:116,end:126,protein_id:"P04637",source:"UniProt"},
-                // {title:"TAKSVTCTY",start:117,end:126,protein_id:"P04637",source:"UniProt"},
-                // {title:"VTCTYSPALNK",start:121,end:132,protein_id:"P04637",source:"UniProt"},
-                // {title:"TYSPALNKMF",start:124,end:134,protein_id:"P04637",source:"UniProt"},
-                // {title:"TYSPALNK",start:124,end:132,protein_id:"P04637",source:"UniProt"},
-                // {title:"SPALNKMFCQL",start:126,end:137,protein_id:"P04637",source:"UniProt"}
-                
             ]
         }
     ],
     str:'',
+    strGroup:8,
     color:[
         // {"color":"#1f78b4","underscore":true,"start":99,"end":290},
-        // {"color":"#33a02c","underscore":true,"start":319,"end":359},
-        // {"color":"#e31a1c","underscore":true,"start":6,"end":31},
-        // {"color":"#ff7f00","underscore":true,"start":35,"end":60}
     ],
-    colorItems:[
-        '#1f78b4',
-        '#33a02c',
-        '#e31a1c',
-        '#ff7f00'
+    colorItems:['#1f78b4','#33a02c','#e31a1c','#ff7f00','#025DF4','#DB6BCF','#2498D1','#BBBDE6','#4045B2','#21A97A','#FF745A','#007E99','#FFA8A8','#2391FF','#FFC328','#A0DC2C',
+        '#946DFF',
+        '#626681',
+        '#EB4185',
+        '#CD8150',
+        '#36BCCB',
+        '#327039',
+        '#803488',
+        '#83BC99',
     ],
     chipItems:[
         // {color:'#1f78b4',text:'a'},
-        // {color:'#33a02c',text:'b'},
-        // {color:'#e31a1c',text:'c'},
-        // {color:'#ff7f00',text:'d'}
-    ]
+    ],
+    box:null,
 }
 },
 watch:{
     seq(){
-        this.loadseq()
-        this.load()
+        console.log('seq')
+        this.onchange()
+        
     },
-    cov(){
-        this.loadcolor()
-        this.load()
-    },
-    neoepitope(){
-        this.loadneoepitope()
-        this.load()
-    }
 },
 created() {
-    // console.log('create')
-    // this.loadseq()
-    // this.loadcolor()
-    // this.loadneoepitope()
-    // this.load()
+    console.log('create')
 },
 mounted() {
-    // console.log('mount')
-    // this.loadseq()
-    // this.loadcolor()
-    // this.loadneoepitope()
-    // this.load()
+    console.log('mount')
+    this.seq.length!==0&&this.onchange()
 },
 methods:{
     onchange(){
         this.loadseq()
         this.loadcolor()
-        this.loadneoepitope()
-        this.load()
+        this.loadneoepitope()  
+        this.$nextTick(()=>{
+            // this.box = this.$refs.seqBox
+            this.load()
+        })
     },
     loadseq(){
-        if(this.seq==''){return}
         this.str='';
+        if(this.seq.length==0){return} 
         this.str = this.seq;
     },
     loadcolor(){
         this.color=[];
         this.chipItems=[];
+        if(this.cov.length==0){return} 
         this.cov.map((item,i)=>{
             var colorObj = {
                 color:this.colorItems[i],
                 underscore:true,
-                start:item.domain_start,
-                end:item.domain_end
+                start:item.domain_start||item.seq_start,
+                end:item.domain_end||item.seq_end
             }
             this.color.push(colorObj)
             var chipObj = {
@@ -263,7 +240,6 @@ methods:{
         })
     },
     loadneoepitope(){
-        console.log(this.neoepitope)
         this.tabItems[0].list=[];
         this.neoepitope.map((item)=>{
             let obj = {
@@ -275,34 +251,55 @@ methods:{
         })
     },
     
-    load(){
+    load(){   
+        
+        // this.box.innerHTML = ''
         $('#spanBox').html(' ')
-        if(this.str=='') {return}
+        if(this.seq.length==0) {
+            $('.charNumbers').html(' ')
+            return 
+        }
+        let l=this.str.length/80
         let str=this.str.replace(/(.{10})/g, '$1 ')
+        // console.log(str)
+        
+        // console.log(l)
+        let p=''
+        for(var i=0;i<l;i++){
+            p += str.slice(88*i,88*(i+1))+'<br>';
+            
+        }
+        // console.log(p)
+        str = p;
         let strArr = str.split('')
+        // console.log(strArr)
         this.color.map((item)=>{
             let underscore = item.underscore?'underline':'none';
-            let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10); 
-            let start = item.start+startCount,end = item.end+endCount                   
+            let startCount = parseInt(item.start/10),endCount = parseInt(item.end/10),startBarCount = parseInt(item.start/80),endBarCount = parseInt(item.end/80);
+            // console.log(startBarCount,endBarCount)
+            // console.log(startCount,endCount)
+            // let start = item.start+startCount ,end = item.end+endCount;  
+            let start = item.start+startCount+startBarCount*4  ,end = item.end+endCount+endBarCount*4 ; 
+            // console.log(start,end)                
             let searchStr  = strArr.slice(start,end).join('');
-
+            // console.log(searchStr)
             let srtEndIndex = str.indexOf(searchStr) + searchStr.length;
             let srtStartIndex = str.indexOf(searchStr);
+            // console.log(srtEndIndex,srtStartIndex)
             let newStr = str.substring(0, srtEndIndex) + "</span>" + str.substring(srtEndIndex);           
             newStr = newStr.substring(0, srtStartIndex) + '<span style="color:'+item.color+';text-decoration:'+underscore+'">' + newStr.substring(srtStartIndex);          
             str = newStr;
             
         })
-
+        // console.log(str)
         $('#spanBox').html(str)
-        
+        // this.box.innerHTML = str;
     },
     liHover(li,e){
         $('#spanBox').html(' ')
         let obj = {start: li.start, end: li.end, color: "black", underscore: false, bgcolor: "#ffd891"}
         let hoverData =[...this.color]
         hoverData.push(obj)
-
         let str=this.str.replace(/(.{10})/g, '$1 ')
 
         let strArr = str.split('')
@@ -382,6 +379,7 @@ methods:{
 }
 .charSeq{
     flex: 1;
+    text-align: left;
 }
 .liactiveClass{
     background: #0079b5;
@@ -390,7 +388,5 @@ methods:{
 .liactiveClass.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
     color: #fff !important;
 }
-#spanbox{
-    text-align: left;
-}
+
 </style>

@@ -1,6 +1,6 @@
-<!-- -->
+<!-- 散点图 -->
 <template>
-<div id="scatter">
+<div :id="id">
  
 </div>
 </template>
@@ -10,7 +10,21 @@ import { Chart } from '@antv/g2';
 import $ from 'jquery'
 export default {
 name: 'scatter',
-props:['data','x','y'],
+props:{
+  id:{
+    default:'scatter'
+  },
+  data:{
+    default:()=>[]
+  },
+  x:{
+    default:''
+  },
+  y:{
+    default:''
+  }
+},
+// props:['id','data','x','y'],
 data() {
 return {
   scatterChart:'',
@@ -22,7 +36,7 @@ return {
 watch:{
   data(){
     // this.antv()
-    this.data&&this.antv2()
+    this.antv2()
   }
 },
 created() {
@@ -30,7 +44,7 @@ created() {
 mounted() {
  
   // this.antv()
-  this.antv2()
+  // this.antv2()
 },
 methods:{
     antv(){
@@ -97,7 +111,7 @@ methods:{
       this.scatterChart.render();
     },
     antv2(){
-      $('#scatter').html('')
+      $('#'+this.id).html('')
       this.scatterData=[];
       if(!this.data){return}
       if(Array.isArray(this.data)){
@@ -130,7 +144,8 @@ methods:{
       
         }
       }
-      const scatterPlot = new Scatter('scatter', {
+      console.log(this.scatterData)
+      const scatterPlot = new Scatter(this.id, {
         appendPadding: 10,
         data:this.scatterData,
         tooltip: {
