@@ -2,60 +2,153 @@
   <div id="layout">
     <viewTab></viewTab>
     
-    <div class="searchTool">
+    <!-- <div class="searchTool">
       <v-row>
-        <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6">
+        <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="searchCard">
           <div class="">
             wenzijieshao
           </div>
-          <v-autocomplete
-            v-model="friends"
-            :disabled="isUpdating"
-            :items="people"
-            filled
-            chips
-            color="blue-grey lighten-2"
-            item-text="name"
-            item-value="name"
-            multiple
-            @keyup.enter="enter"
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                v-bind="data.attrs"
-                :input-value="data.selected"
-                close
-                color="green"
-                label
-                @click="data.select"
-                @click:close="remove(data.item)"
+          <v-row class="searchEngine">
+            <v-col cols="12" xs="12" sm="2" md="2" lg="2" xl="2">
+
+              <v-select
+                v-model="selectType"
+                :items="selectItems"
+                label="Entity Type"
+                outlined
+                dense
+              ></v-select>
+              <p class="btnText" @click="searchChange(searchBtnText)" >
+                {{searchBtnText}}
+              </p>
+            </v-col>
+            <v-col cols="12" xs="12" sm="8" md="8" lg="8" xl="8">
+              <v-autocomplete
+                v-model="selectList"
+                :disabled="isUpdating"
+                :items="listItems"
+                filled
+                chips
+                dense
+                color="blue-grey lighten-2"
+                item-text="name"
+                item-value="name"
+                multiple
+                @keyup.enter.native="enter($event)"
               >
-                {{ data.item.name }}
-              </v-chip>
-            </template>
-            <template v-slot:item="data">
-              <!-- <template v-if="typeof data.item !== 'object'">
-                <v-list-item-content v-text="data.item"></v-list-item-content>
-              </template> -->
-              <template>
-                <v-list-item-avatar class="avatar" :color="colors[data.item.group]">
-                  {{data.item.name.slice(0,1)}}
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                  <!-- <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle> -->
-                </v-list-item-content>
-              </template>
-            </template>
-          </v-autocomplete>
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    close
+                    color="green"
+                    label
+                    @click="data.select"
+                    @click:close="remove(data.item)"
+                  >
+                    {{ data.item}}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                 
+                  <template>
+                   
+                    <v-list-item-content>
+                      <v-list-item-title v-html="data.item"></v-list-item-title>
+                      
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="12" xs="12" sm="2" md="2" lg="2" xl="2">
+              <v-btn
+                color="warning"
+                dark
+                @click="searchBtn"
+              >
+                search
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row v-if="advancedShow">
+             <v-col cols="12" xs="12" sm="2" md="2" lg="2" xl="2">
+
+              <v-select
+                v-model="selectType"
+                :items="selectItems"
+                label="Entity Type"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="12" xs="12" sm="8" md="8" lg="8" xl="8">
+              <v-autocomplete
+                v-model="selectList"
+                :disabled="isUpdating"
+                :items="listItems"
+                filled
+                chips
+                dense
+                color="blue-grey lighten-2"
+                item-text="name"
+                item-value="name"
+                multiple
+                @keyup.enter="enter"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    close
+                    color="green"
+                    label
+                    @click="data.select"
+                    @click:close="remove(data.item)"
+                  >
+                    {{ data.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                 
+                  <template>
+                    <v-list-item-avatar class="avatar" :color="colors[data.item.group]">
+                      {{data.item.name.slice(0,1)}}
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                     
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6">
           <div class="modelbrowser">
-            <ul>
-              <li><router-link to="/result" target="_blank">1</router-link></li>
-              <li><router-link to="/result" target="_blank">2</router-link></li>
-              <li><router-link to="/result" target="_blank">3</router-link></li>
-            </ul>
+            
+              <v-list dense>
+                <v-subheader class="modelbrowser_title">TOOLS</v-subheader>
+                
+               
+                  <v-list-item
+                    v-for="(item, i) in modelItems"
+                    :key="i"
+                  >
+                     <router-link to="/result" target="_blank" class="modelbrowser_link">
+                    <v-list-item-icon>
+                      <v-icon v-text="item.icon" color="#1972d6"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="item.text"></v-list-item-title>
+                    </v-list-item-content>
+                    </router-link>
+                  </v-list-item>
+                
+                
+              </v-list>
+            
           </div>
         </v-col>
       </v-row>
@@ -63,7 +156,7 @@
       
       
 
-    </div>
+    </div> -->
     <div class="content">
       <router-view/>
     </div>
@@ -71,6 +164,7 @@
 </template>
 
 <script>
+import {Agetsearch_list} from '../api/model'
 import viewTab from '../components/viewTab.vue'
 const srcs = {
   1: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
@@ -88,18 +182,20 @@ export default {
   data(){
     
     return{
+      advancedShow:false,
+      searchBtnText:"Advanced Search",
       autoUpdate: true,
       friends: ['Sandra Adams', 'Britta Holt'],
       isUpdating: false,
       name: 'Midnight Crew',
       people: [
-        { header: 'Group 1' },
+        // { header: 'Group 1' },
         { name: 'Sandra Adams', group: 'Group1', avatar: srcs[1] },
         { name: 'Ali Connors', group: 'Group1', avatar: srcs[2] },
         { name: 'Trevor Hansen', group: 'Group1', avatar: srcs[3] },
         { name: 'Tucker Smith', group: 'Group1', avatar: srcs[2] },
-        { divider: true },
-        { header: 'Group 2' },
+        // { divider: true },
+        // { header: 'Group 2' },
         { name: 'Britta Holt', group: 'Group2', avatar: srcs[4] },
         { name: 'Jane Smith ', group: 'Group2', avatar: srcs[5] },
         { name: 'John Smith', group: 'Group2', avatar: srcs[1] },
@@ -122,6 +218,12 @@ export default {
       },
       editing: null,
       editingIndex: -1,
+      selectType:'',
+      selectList:[],
+      listItems:[],
+      selectItems: ['Cancer Type', 'Model Name', 'Gene/Protein/Target', 'Mutation','Fusion','Pathway','Immume Cell','Tumor Cell','Immune Subtype','Drug'],
+      selectItems1:[],
+      selectItems2:[],
       items: [
         { header: 'Select an option or create one' },
         {
@@ -132,6 +234,11 @@ export default {
           text: 'Bar',
           color: 'red',
         },
+      ],
+      modelItems:[
+        { text: 'Real-Time', icon: 'mdi-clock' },
+        { text: 'Audience', icon: 'mdi-account' },
+        { text: 'Conversions', icon: 'mdi-flag' },
       ],
       nonce: 1,
       menu: false,
@@ -145,6 +252,7 @@ export default {
       // search: null,
       y: 0,
       box:null,
+
     }
   },
   watch: {
@@ -160,8 +268,38 @@ export default {
   },
 
   methods: {
-    enter(){
-      
+    searchChange(text){
+      if(text=='Advanced Search'){
+        this.searchBtnText = 'Basic Search'
+        this.advancedShow = true
+      }else{
+        this.searchBtnText = 'Advanced Search'
+        this.advancedShow = false
+      }
+    },
+    searchBtn(){
+      console.log(this.selectType,this.selectList)
+      // let data  = []
+      // Agetsearch_table(this.selectType,this.selectList).then((res)=>{
+      //   console.log(res)
+      //   data = res.data.data_info
+        
+      // }).finally(()=>{
+        // console.log(data)
+        // this.$EventBus.$emit('modeltable',data)
+        let routeUrl = this.$router.resolve({path: '/ModelResult',query: {type:this.selectType,value:this.selectList}});
+        window.open(routeUrl.href, '_blank');
+      // })
+
+    },
+    enter(e){
+      console.log(e,e.target.value)
+      console.log(this.selectType,this.selectList)
+      Agetsearch_list(this.selectType,e.target.value).then((res)=>{
+        console.log(res)
+        this.listItems = res.data.data_info
+        console.log(this.listItems)
+      })
     },
     edit (index, item) {
       if (!this.editing) {
@@ -205,7 +343,7 @@ export default {
 }
 .content{
   position: relative;
-  padding: 0 80px;
+  padding: 20px 80px;
   min-height: 630px;
 }
 .content{
@@ -224,5 +362,23 @@ body[theme-mode='dark'] .content{
 }
 .modelbrowser{
   text-align: left;
+}
+.modelbrowser_title{
+  border-bottom: 1px solid #1972d6;
+  color: #1972d6;
+}
+.modelbrowser_link{
+  display: flex;
+}
+.searchCard{
+  position: relative;
+}
+.searchEngine{
+  position: absolute;
+  bottom: 0;
+}
+.btnText{
+  margin:-8px 0 0;
+  cursor: pointer;
 }
 </style>

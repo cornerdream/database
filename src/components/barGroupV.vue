@@ -225,6 +225,10 @@ console.log(groups)
             color: ['#1ca9e6', '#f88c24'],
             /** 设置间距 */
             marginRatio: 0.1,
+            // 分组柱状图 组内柱子间的间距 (像素级别)
+            dodgePadding: 2,
+            // 分组柱状图 组间的间距 (像素级别)
+            intervalPadding: 20,
             // label: {
                 // 可手动配置 label 数据标签位置
                 //position: 'middle', // 'top', 'middle', 'bottom'
@@ -239,6 +243,15 @@ console.log(groups)
                 // ],
                 
             // },
+            xAxis:{
+              label:{
+                rotate:-45
+              }
+            },
+            legend: {
+              layout: 'horizontal',
+              position: 'top-right'
+            }
         });
 
         stackedColumnPlot.render();

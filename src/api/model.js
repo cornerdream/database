@@ -1,45 +1,88 @@
 import Axios from '../utils/axios'
+//search
+//单条件搜索选项提示，t是类型，v是用户输入，
+export const Agetsearch_list = (t,v) => {
+    return Axios({
+        method:'GET',
+        url:'/api/search/searchhint/?Entity_Type='+t+'&value='+v
+    })
+}
+//用户输入的是在cancer type类型下那就将用户输入的v放在cancer type字段里，请求对应的id
+export const Agetsearch_list_id = (t,v) => {
+    
+    return Axios({
+        method:'GET',
+        url:'/api/search/modelsearch/?Cancer Type='+(t=='Cancer Type'?v:'')+'&Model Name='+(t=='Model Name'?v:'')
+    })
+}
+//单条件搜索引擎结果页modelresult的根据返回id请求表格数据
+export const Agetsearch_list_id_table = ({model_id,page,page_num,order_by_field,desc}) => {
+    
+    return Axios({
+        method:'GET',
+        url:'/api/model_db/model/modelpanel/?model_id='+model_id+'&page='+page+'&page_num='+page_num+'&order_by_field='+order_by_field+'&desc='+desc,
+    
+    })
+}
+//废弃，之前的modelresult表格数据
+export const Agetsearch_table = ({Entity_Type,value,order_by_field,desc}) => {
+    return Axios({
+        method:'GET',
+        url:'/api/search/modelsearch/?Entity_Type='+Entity_Type+'&value='+value+'&order_by_field='+order_by_field+'&desc='+desc
+    })
+}
+//废弃
+export const Agetsearch_tables = ({model_Entity_Type,model_value,gene_Entity_Type,gene_value,order_by_field,desc}) => {
+    return Axios({
+        method:'GET',
+        url:'/api/search/advancedsearch/?model_Entity_Type='+model_Entity_Type+'&model_value='+model_value+'&gene_Entity_Type='+gene_Entity_Type+'&gene_value='+gene_value+'&order_by_field='+order_by_field+'&desc='+desc
+    })
+}
 //model omics
-export const Agettable_input = (v) => {
+//表格里的搜索,v是用户输入的值，k是哪个列，t是哪个表格
+export const Agettable_input = (v,k,t) => {
     return Axios({
         method:'GET',
-        url:'api/model_db/model/tableInputSeatch/?table=mutation&field=Gene Symbol&value='+v
+        url:'/api/model_db/model/tableInputSeatch/?table='+t+'&field='+k+'&value='+v
     })
 }
-export const Agettable_search = () => {
+//mutation表格获取筛选框列和下拉框列以及筛选框的选项
+export const Agettable_search = (model_id) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/Mutation/mutation_table_select/?search_data={"Variantion Type":["Frame_Shift_Ins"],"species":["mouse"]}&model_id=R21082254LR01-YK-0020,R21066457LR01-YK-0002'
+        url:'/api/model_db/model/Mutation/mutation_table_select/?search_data={"Variantion Type":[],"species":[]}&model_id='+model_id
     })
 }
-export const AgetMutation_table = ({gene_symbol,page,page_num,search_data}) => {
+//mutation表格获取数据，可搜索可筛选search_data，可排序order_by_field,正序0倒序1参数desc
+export const AgetMutation_table = ({model_id,gene_symbol,page,page_num,search_data,order_by_field,desc}) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/Mutation/mutation_table/?model_id=R21082254LR01-YK-0020&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data,
+        url:'/api/model_db/model/Mutation/mutation_table/?model_id='+model_id+'&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data+'&order_by_field='+order_by_field+'&desc='+desc,
     })
 }
-export const AgetFusion_table_search = () => {
+export const AgetFusion_table_search = (model_id) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/Fusion/fusion_table_select/?search_data={"Left Gene":[],"Right Gene":[],"Fused Gene":[]}&model_id=R21082254LR01-YK-0020,R21066457LR01-YK-0002'
+        url:'/api/model_db/model/Fusion/fusion_table_select/?search_data={"Left Gene":[],"Right Gene":[],"Fused Gene":[]}&model_id='+model_id
     })
 }
-export const AgetFusion_table = ({gene_symbol,page,page_num,search_data}) => {
+
+export const AgetFusion_table = ({model_id,gene_symbol,page,page_num,search_data,order_by_field,desc}) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/Fusion/fusion_table/?model_id=R21082254LR01-YK-0020&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data,   
+        url:'/api/model_db/model/Fusion/fusion_table/?model_id='+model_id+'&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data+'&order_by_field='+order_by_field+'&desc='+desc,   
     })
 }
-export const AgetExpression_table_search = () => {
+export const AgetExpression_table_search = (model_id) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/expression/expression_table_select/?search_data={"species":[],"gene symbol":[]}&model_id=R21082254LR01-YK-0020,R21066457LR01-YK-0002'
+        url:'/api/model_db/model/expression/expression_table_select/?search_data={"species":[],"gene symbol":[]}&model_id='+model_id
     })
 }
-export const AgetExpression_table = ({gene_symbol,page,page_num,search_data}) => {
+export const AgetExpression_table = ({model_id,gene_symbol,page,page_num,search_data,order_by_field,desc}) => {
     return Axios({
         method:'GET',
-        url:'/api/model_db/model/expression/expression_table/?model_id=R21082254LR01-YK-0020&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data,
+        url:'/api/model_db/model/expression/expression_table/?model_id='+model_id+'&gene_symbol='+gene_symbol+'&page='+page+'&page_num='+page_num+'&search_data='+search_data+'&order_by_field='+order_by_field+'&desc='+desc,
     })
 }
 

@@ -76,6 +76,7 @@ return {
 },
 watch:{
 },
+
 created() {
 
   this.$EventBus.$on('fruits', (msg) => {

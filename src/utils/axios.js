@@ -23,7 +23,7 @@ const redirectLogin = function redirectLogin(){
         }
     })
 }
-Axios.defaults.timeout = 1000;
+Axios.defaults.timeout = 50000;
 Axios.defaults.withCredentials = true;
 
 Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';

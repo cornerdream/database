@@ -137,7 +137,7 @@ min-width: 120px;
   color:#429fd5;
 }
 .component{
-padding:0 20rem 0 0;
+// padding:0 20rem 0 0;
 min-height: 52rem;
 // position: relative;
 }
@@ -228,3 +228,64 @@ min-height: 52rem;
 body[theme-mode=dark] .el-tabs--card>.el-tabs__header .el-tabs__item.is-active{
   border-bottom-color: #000;
 }
+//el-select
+// .el-select{
+
+//   .el-input{
+
+//     position: relative;
+
+//     height: 32px;
+
+//     .el-input__prefix{
+
+//       background: #F0EFFF;
+
+//       width: 80px !important;
+
+//       text-align: center;
+
+//       font-size: 14px;
+
+//       font-family: PingFang SC;
+
+//       font-weight: 400;
+
+//       color: #43425D;
+
+//       line-height: 32px;
+
+//       position: absolute;
+
+//       left: 0;
+
+//       height: 32px;
+
+//       border: 1px solid #DCDFE6;
+
+//       border-top-left-radius: 5px;
+
+//       border-bottom-left-radius: 5px;
+
+//     }
+
+//     .el-input__suffix{
+
+//       position: absolute;
+//       right:0;
+
+//     }
+
+//     .el-input__inner{
+
+//       width:180px;
+
+//       position: absolute;
+
+//       right: 0;
+
+//     }
+
+//   }
+
+// }

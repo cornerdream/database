@@ -10,7 +10,7 @@ const Home = () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
 
 const Search = () => import(/* webpackChunkName: "search" */ '../views/search.vue')
 const Result = () => import(/* webpackChunkName: "result" */ '../views/result.vue')
-
+const ModelResult = () => import(/* webpackChunkName: "result" */ '../views/ModelResult.vue')
 
 const TumorCellAtlas = () => import(/* webpackChunkName: "TumorCellAtlas" */ '../views/TumorCellAtlas.vue')
 const ImmuneCellAtlas = () => import(/* webpackChunkName: "ImmuneCellAtlas" */ '../views/ImmuneCellAtlas.vue')
@@ -43,7 +43,17 @@ const routes = [
         path: '',
         name: 'Search',
         component: Search
-      },      
+      }, 
+      {
+        path: '/result',
+        name: 'Result',
+        component: Result
+      }, 
+      {
+        path: '/modelresult',
+        name: 'ModelResult',
+        component: ModelResult
+      }, 
     ]
   },
   {
@@ -51,11 +61,16 @@ const routes = [
     name: 'ModelLayout',
     component: ModelLayout,
     children:[  
-      {
-        path: '/result',
-        name: 'Result',
-        component: Result
-      },       
+      // {
+      //   path: '/result',
+      //   name: 'Result',
+      //   component: Result
+      // }, 
+      // {
+      //   path: '/modelresult',
+      //   name: 'ModelResult',
+      //   component: ModelResult
+      // },       
       {
         path: '/ModelAtlas',
         name: 'ModelAtlas',

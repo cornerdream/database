@@ -260,7 +260,7 @@ methods:{
             return 
         }
         let l=this.str.length/80
-        let str=this.str.replace(/(.{10})/g, '$1 ')
+        let str=JSON.stringify(this.str).replace(/(.{10})/g, '$1 ')
         // console.log(str)
         
         // console.log(l)

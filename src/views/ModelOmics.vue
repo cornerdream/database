@@ -52,22 +52,12 @@
     <div class="component">
       
       <div class="componentBox" v-if="$route.query.type!=='Pathway'">
-        <!-- <div class="nav">
-          <v-btn
-          class="navbtn"
-          x-small
-          color="warning"
-          dark
-          >
-          </v-btn>
-        omics mutation
-        </div> -->
-        
-        <TableGroup  v-if="activeName=='1'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" @loadSeque="onSelectOmicsSequence" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" @loadSearch="onSelectOmicsTableInput"></TableGroup>
-        <TableEl v-else-if="activeName=='2'" :infoData="omicsTableFusionData" :total="pageFusionNumber" @loadTable="onSelectOmicsTableFusion" :selectKey="selectFusionKey" :selectData="selectFusionData" :searchKey="searchFusionKey" :searchData="searchFusionData" :s="s" @loadDraw="tableElClick"></TableEl>
-        <TableEl v-else-if="$route.query.type!=='Pathway'" :infoData="omicsTableExpressionData" :total="pageExpressionNumber" @loadTable="onSelectOmicsTableExpression" :selectKey="selectExpressionKey" :selectData="selectExpressionData" :searchKey="searchExpressionKey" :searchData="searchExpressionData" :s="s" @loadDraw="tableElClick"></TableEl>
+        <!-- tablegroup @loadSeque="onSelectOmicsSequence"  -->
+        <!-- <TableGroup  v-if="activeName=='1'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" :valuekey="valuekey" table="mutation" ></TableGroup> -->
+        <TableEl1  v-if="activeName=='1'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" :valuekey="valuekey" table="mutation" ></TableEl1>
+        <TableEl2 v-else-if="activeName=='2'" :infoData="omicsTableFusionData" :total="pageFusionNumber" @loadTable="onSelectOmicsTableFusion" :selectKey="selectFusionKey" :selectData="selectFusionData" :searchKey="searchFusionKey" :searchData="searchFusionData" :s="s" :valuekey="fusionvaluekey" table="fusion" @loadDraw="tableElClick"></TableEl2>
+        <TableEl3 v-else-if="$route.query.type!=='Pathway'" :infoData="omicsTableExpressionData" :total="pageExpressionNumber" @loadTable="onSelectOmicsTableExpression" :selectKey="selectExpressionKey" :selectData="selectExpressionData" :searchKey="searchExpressionKey" :searchData="searchExpressionData" :s="s" :valuekey="expressionvaluekey" table="expression"  @loadDraw="tableElClick"></TableEl3>
         <v-row class="componentContent">
-          <!-- <v-col cols="12" xs="12" sm="6" md="6" :lg="Omics.select3=='Mutation'?9:6" :xl="Omics.select3=='Mutation'?9:6" class="animate__animated animate__bounceInDown"> -->
           <v-col cols="12" xs="12" sm="6" md="6" :lg="activeName=='1'?9:5" :xl="activeName=='1'?9:5" class="animate__animated animate__bounceInDown">  
             <!-- <component :is="Omics.select4=='Mutation'?'Lollipop':'Bar1'"></component> -->
             <!-- <Lollipop v-if="Omics.select3=='Mutation'" :data="scatterData" :width="l" :circle="circleData"></Lollipop>
@@ -115,7 +105,34 @@
             </div>
           </v-col> -->
         </v-row>
-        <div v-if="activeName!=='1'&&selectCol" class="chartBox">   
+        <div v-if="activeName!=='1'&&selectCol" class="chartBox">  
+          <div class="chartTab">
+            <v-card
+              class="mx-auto"
+              max-width="300"
+              tile
+            >
+              <v-list dense>
+                <v-subheader>REPORTS</v-subheader>
+                <v-list-item-group
+                  v-model="selectedItem"
+                  color="primary"
+                >
+                  <v-list-item
+                    v-for="(item, i) in listItems"
+                    :key="i"
+                  >
+                    <v-list-item-icon>
+                      <v-icon v-text="item.icon"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="item.text"></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-card>
+          </div> 
           <div class="chart">
             <!-- <v-row >
               <v-col cols="12" xs="12" sm="5" md="5" lg="5" xl="5">
@@ -140,7 +157,7 @@
             <HeatmapShape v-else id="omicsheatmap" :data="heatmapData" x="x_axis" y="y_axis" z="value"></HeatmapShape>
           </div>
           
-          <div class="chartSelect">
+          <!-- <div class="chartSelect">
             <v-combobox
             v-model="Omics.select1"
             :items="Omics.items1"
@@ -161,7 +178,7 @@
             @input="OmicschangeArr"
             :disabled="Omics.disabled1"
             ></v-combobox>
-          </div>
+          </div> -->
           
         </div>
         
@@ -214,8 +231,8 @@
       
     </div>
    
-    <div class="select" v-if="activeName=='1'">
-      <v-combobox
+    <!-- <div class="select" v-if="activeName=='1'"> -->
+      <!-- <v-combobox
       v-model="Omics.select1"
       :items="Omics.items1"
       label="Species human/mouse"
@@ -237,7 +254,7 @@
         >
         mdi-pencil
         </v-icon>
-      </v-text-field>
+      </v-text-field> -->
       <!-- <v-combobox
         v-model="Omics.select3"
         :items="Omics.items3"
@@ -248,21 +265,23 @@
         @input="OmicschangeArr"
         allow-overflow
       ></v-combobox> -->
-    </div>
+    <!-- </div> -->
   </div>  
  
 </div>
 </template>
 <script>
-import {Agettable_input,Agettable_search,AgetMutation_table,AgetFusion_table_search,AgetFusion_table,AgetExpression_table_search,AgetExpression_table,AgetFusionbar,AgetExpressionbar,AgetCard} from '../api/model'
+import {Agetsearch_list_id,Agettable_search,AgetMutation_table,AgetFusion_table_search,AgetFusion_table,AgetExpression_table_search,AgetExpression_table,AgetFusionbar,AgetExpressionbar,AgetCard} from '../api/model'
 import {AgetTable,AgetGeneCard,AgetGeneHeatmap,AgetGeneFusionTable,AgetGeneFusionBar,AgetGeneExpressionTable,AgetGeneFusionHeatmap,AgetGeneExpressionBar} from '../api/model'
 import {AselectPathwayHeatmap} from '../api/model'
 import {mapGetters} from 'vuex'
 import Lollipop from '../components/lollipop.vue'
 import Sequence from '../components/sequence.vue'
 import Card from '../components/card.vue'
-import TableGroup from '../components/tableGroup.vue'
-import TableEl from '../components/tableEl.vue'
+// import TableGroup from '../components/tableGroup.vue'
+import TableEl1 from '../components/tableEl.vue'
+import TableEl2 from '../components/tableEl.vue'
+import TableEl3 from '../components/tableEl.vue'
 // import Bar from '../components/bar.vue'
 import BarGroupV from '../components/barGroupV.vue'
 // import Table from '../components/table.vue'
@@ -275,8 +294,10 @@ components:{
   Lollipop,
   Sequence,
   Card,
-  TableGroup,
-  TableEl,
+  // TableGroup,
+  TableEl1,
+  TableEl2,
+  TableEl3,
   // Bar,
   BarGroupV,
   // Table,
@@ -302,7 +323,7 @@ data() {
       },
       {
         name:'3',
-        label:'gene expression'
+        label:'Gene Expression'
       }
     ],
     activeName: '1',
@@ -318,9 +339,10 @@ data() {
       value2:'',
       disabled2:false,
       select3: 'Mutation',
-      items3: ['Mutation', 'Fusion', 'gene expression'], 
+      items3: ['Mutation', 'Fusion', 'Gene Expression'], 
     },
-    seq:{},
+    // seq:{},
+    seq:'',
     neoepitope:[],
     cov:[],
     l:0,
@@ -334,44 +356,69 @@ data() {
     searchKey:{},
     searchData:{},
     selectData:{},
-    currents:{},
     s:undefined,
     selectFusionKey:{},
     searchFusionKey:{},
     searchFusionData:{},
     selectFusionData:{},
-    currentFusions:{},
     selectExpressionKey:{},
     searchExpressionKey:{},
     searchExpressionData:{},
     selectExpressionData:{},
-    currentExpressions:{},
     itemsPerPage:100,
     pageNumber:1,
     pageFusionNumber:1,
     pageExpressionNumber:1,
+    // mutationKey:[],
+    valuekey:'Gene Symbol',
+    // fusionKey:[],
+    fusionvaluekey:'Gene Symbol',
+    // expressionKey:[],
+    expressionvaluekey:'Gene Symbol',
     omicsCardData:[],
     omicsBarDataLeft:[],
     omicsBarDataRight:[],
     omicsBarExpressionDataLeft:[],
     omicsBarExpressionDataRight:[],
     heatmapData:[],
-    bubbleData:[]
+    bubbleData:[],
+    listItems:[
+      { text: 'Real-Time', icon: 'mdi-clock' },
+      { text: 'Audience', icon: 'mdi-account' },
+      { text: 'Conversions', icon: 'mdi-flag' },
+    ],
+    modelId:[],
   }
 },
 created() {
+  // console.log('create')
+  // this.$EventBus.$on('modeltable',(msg)=>{
+  //   console.log(msg)
+  // })
   // this.onSelectOmicsTableSearch()
 
   // this.onSelectOmicsTableFusionSearch()
   // this.onSelectOmicsTableExpressionSearch()
-  this.OmicschangeArr()
-},
-mounted() {
   
 },
+mounted() {
+  console.log('mount')
+  this.load()
+  // this.OmicschangeArr()
+},
 methods:{
-  handleClick(tab, event) {
-    console.log(tab, event);
+  async load(){
+    await Agetsearch_list_id(this.$route.query.modelType,this.$route.query.modelValue).then(res=>{
+        console.log(res)
+        this.modelId = res.data.data_info
+        console.log(this.modelId)
+    })
+    this.OmicschangeArr()
+    // this.onSelectOmicsTableSearch()
+    // this.onSelectOmicsTableFusionSearch()
+    // this.onSelectOmicsTableExpressionSearch()
+  },
+  handleClick() {
     this.OmicschangeArr()
   },
   loadSpecies(){
@@ -391,29 +438,30 @@ methods:{
     loading.close()
   },
   //
-  async onSelectOmicsTableInput(v,k){
-    // this.$forceUpdate()
-    console.log(this.searchData,this.searchKey)
-    const data =await new Promise((resolve)=>{Agettable_input(v).then(res=>{
-          resolve(res.data.data_info) 
-        })
-    })
-    console.log(data)
-    // this.$set(this.searchData,k,data[k])
-    this.searchData[k] = data[k]
-    console.log(this.searchData,this.searchKey)
-    console.log(this.searchData[k])
-    // this.searchData = obj;
-    // console.log(this.searchKey,this.searchData)
-  },
+  // async onSelectOmicsTableInput(v,k){
+  //   // this.$forceUpdate()
+  //   console.log(this.searchData,this.searchKey)
+  //   const data =await new Promise((resolve)=>{Agettable_input(v).then(res=>{
+  //         resolve(res.data.data_info) 
+  //       })
+  //   })
+  //   console.log(data)
+  //   // this.$set(this.searchData,k,data[k])
+  //   this.searchData[k] = data[k]
+  //   console.log(this.searchData,this.searchKey)
+  //   console.log(this.searchData[k])
+  //   // this.searchData = obj;
+  //   // console.log(this.searchKey,this.searchData)
+  // },
   //
   async onSelectOmicsTableSearch(){
-    
-    return   Agettable_search().then(res=>{
+    console.log(this.modelId)
+    return   Agettable_search(this.modelId.join(',')).then(res=>{
         let data = res.data.data_info;
         let searchData = data.search_data;
         let selectData = data.select_data;
         searchData.forEach(item=>{
+          // this.mutationKey.push(item)
           this.searchKey[item]=[]
           this.searchData[item]=[]
         })
@@ -421,23 +469,55 @@ methods:{
         this.selectData = selectData;
         Object.keys(selectData).forEach(item=>{
           this.selectKey[item]=[]
+          let arr = []
+          this.selectData[item].forEach(item=>{
+            let o = {
+              text:item,
+              value:item
+            }
+            arr.push(o)
+          })
+          this.selectData[item]=arr
         })
+        // for(var k in this.selectKey){
+        //     console.log(k)
+        //     let arr = []
+        //     this.selectData[k].forEach(item=>{
+        //       let o = {
+        //         text:item,
+        //         value:item
+        //       }
+        //       arr.push(o)
+        //     })
+        //     this.selectData[k]=arr
+        //   }
+        // }
         console.log(this.selectKey,this.selectData)
       })
     
     
   },
   //model group table
-  onSelectOmicsTable(p,n,s,k){
-    console.log(p,n,s,k)
+  onSelectOmicsTable(p,n,s,k,o,d){
+    console.log(p,n,s,k,o,d)
     let options={
       species:this.Omics.select1,
+      model_id:this.modelId.join(',')||'',
       gene_symbol:this.Omics.value2||'',
+      // gene_symbol:this.$route.query.value||'',
       page:p||1,
       page_num:n||this.itemsPerPage,
-      search_data:s||''
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+      order_by_field:o||'',
+      desc:d!==undefined?d:''
     }
-    let loading = this.$loading()
+    console.log(options)
+    let loading = this.$loading({
+      lock: true,
+      text: '获取数据中',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
     AgetMutation_table(options).then(res=>{
       let data = res.data.data_info;
       this.omicsTableData = data.data;
@@ -472,7 +552,7 @@ methods:{
   },
   //
   async onSelectOmicsTableFusionSearch(){
-    return AgetFusion_table_search().then(res=>{
+    return AgetFusion_table_search(this.modelId.join(',')).then(res=>{
       let data = res.data.data_info;
       let searchData = data.search_data;
       let selectData = data.select_data;
@@ -484,23 +564,41 @@ methods:{
        this.selectFusionData = selectData;
         Object.keys(selectData).forEach(item=>{
           this.selectFusionKey[item]=[]
+          let arr = []
+          this.selectFusionData[item].forEach(item=>{
+            let o = {
+              text:item,
+              value:item
+            }
+            arr.push(o)
+          })
+          this.selectFusionData[item]=arr
         })
       
       console.log(this.selectFusionKey,this.selectFusionData)
     })
   },
   //model fusion table
-  onSelectOmicsTableFusion(p,n,s,k){
-    console.log(p,n,s,k)
+  onSelectOmicsTableFusion(p,n,s,k,o,d){
+    console.log(p,n,s,k,o,d)
     let options={
       species:this.Omics.select1,
+      model_id:this.modelId.join(',')||'',
       gene_symbol:this.Omics.value2||'',
       page:p||1,
       page_num:n||this.itemsPerPage,
-      search_data:s||''
+      // search_data:s||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+      order_by_field:o||'',
+      desc:d!==undefined?d:''
     }
     console.log(options)
-    let loading = this.$loading()
+    let loading = this.$loading({
+      lock: true,
+      text: '获取数据中',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
     AgetFusion_table(options).then(res=>{
       let data = res.data.data_info;
       this.omicsTableFusionData = data.data;
@@ -533,7 +631,7 @@ methods:{
   //
   //
   async onSelectOmicsTableExpressionSearch(){
-    return AgetExpression_table_search().then(res=>{
+    return AgetExpression_table_search(this.modelId.join(',')).then(res=>{
       let data = res.data.data_info;
       let searchData = data.search_data;
       let selectData = data.select_data;
@@ -545,21 +643,39 @@ methods:{
       this.selectExpressionData = selectData;
       Object.keys(selectData).forEach(item=>{
         this.selectExpressionKey[item]=[]
+        let arr = []
+        this.selectExpressionData[item].forEach(item=>{
+          let o = {
+            text:item,
+            value:item
+          }
+          arr.push(o)
+        })
+        this.selectExpressionData[item]=arr
       })
       console.log(this.selectExpressionKey,this.selectExpressionData)
     })
   },
   //model expression table
-  onSelectOmicsTableExpression(p,n,s,k){
-    console.log(p,n,s,k)
+  onSelectOmicsTableExpression(p,n,s,k,o,d){
+    console.log(p,n,s,k,o,d)
     let options={
       species:this.Omics.select1,
+      model_id:this.modelId.join(',')||'',
       gene_symbol:this.Omics.value2||'',
       page:p||1,
       page_num:n||this.itemsPerPage,
-      search_data:s||''
+      // search_data:s||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+      order_by_field:o||'',
+      desc:d!==undefined?d:''
     }
-    let loading = this.$loading()
+    let loading = this.$loading({
+      lock: true,
+      text: '获取数据中',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
     AgetExpression_table(options).then(res=>{
       let data = res.data.data_info;
       this.omicsTableExpressionData = data.data;
@@ -705,10 +821,24 @@ methods:{
     this.selectCol = true
   },
   async OmicschangeArr(){
+    
     if(this.activeName=='1'){
       if(this.$route.query.type=='Model'){
         await this.onSelectOmicsTableSearch()
         this.onSelectOmicsTable()
+        // let query = Object.assign(this.$route.query,{table:'mutation'})
+        // let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: query});
+        // console.log(query)
+        // console.log(routeUrl)
+        // let index = window.location.href.indexOf('#')
+        // console.log(index)
+        // let href=index<0?window.location.href+'#mutation':window.location.href.slice(0,index)+'#mutation'
+        // let href = window.location.href+'#mutation'
+        // console.log(href)
+        // window.location.href = href;
+        this.$router.push({query:{...this.$route.query,table:'mutation'}})
+        
+        // window.open(routeUrl.href);
         // this.onSelectOmicsCard()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTable()
@@ -722,6 +852,16 @@ methods:{
       if(this.$route.query.type=='Model'){
         await this.onSelectOmicsTableFusionSearch()
         this.onSelectOmicsTableFusion()
+        // let query = Object.assign(this.$route.query,{table:'fusion'})
+        // console.log(query)
+        // this.$router.push(query)
+        // let index = window.location.href.indexOf('#')
+        // console.log(index)
+        // let href=index<0?window.location.href+'#fusion':window.location.href.slice(0,index)+'#fusion'
+        // let href = window.location.href+'#fusion'
+        // console.log(href)
+        // window.location.href = href;
+        this.$router.push({query:{...this.$route.query,table:'fusion'}})
         // this.onSelectOmicsBar()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTableFusion()
@@ -733,6 +873,16 @@ methods:{
       if(this.$route.query.type=='Model'){
         await this.onSelectOmicsTableExpressionSearch()
         this.onSelectOmicsTableExpression()
+        // let query = Object.assign(this.$route.query,{table:'expression'})
+        // console.log(query)
+        // this.$router.push(query)
+        // let index = window.location.href.indexOf('#')
+        // console.log(index)
+        // let href=index<0?window.location.href+'#expression':window.location.href.slice(0,index)+'#expression'
+        // let href = window.location.href+'#expression'
+        // console.log(href)
+        // window.location.href = href;
+        this.$router.push({query:{...this.$route.query,table:'expression'}})
         // this.onSelectOmicsBarExpression()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTableExpression()

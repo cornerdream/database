@@ -2,80 +2,73 @@
 <template>
 <div class="tableGroup">
   <el-table
+  empty-text="空数据"
   id="elTable"
   ref="multipleTable"
   :data="infoData"
   tooltip-effect="dark"
   style="width: 100%"
-  max-height="500"
+  max-height="1000"
   highlight-current-row
   @filter-change="filterHandlerChange"
+  @sort-change="sortHandlerChange"
   :header-cell-style="{}">
     <el-table-column
-      sortable
+      sortable="custom"
       v-for="(v,s) in selectKey"
       :key="s"
       :prop="s"
       :label="s"
-      width="180"
+      align="center"
       :column-key="s"
       :filters="selectData[s]"
       :filtered-value="currentSelect[s]">
       </el-table-column>
     <el-table-column
-      sortable
-        width="200"
-        v-for="(v,k) in searchKey"
-        :key="k"
-        :prop="k">
+      sortable="custom"
+      width="400"
+      v-for="(v,k) in searchKey"
+      :key="k"
+      :prop="k"
+      align="center">
       <template slot="header" slot-scope="scope">
         <el-select
-            v-model="currentSearch[k]"
-            multiple
-            filterable
-            :placeholder="k"
-            @keyup.enter.native="filterOption($event,k,scope)"
-            @change="remoteMethod(searchKey[k],k)">
+          class="searchInput"
+          v-model="currentSearch[k]"
+          multiple
+          filterable
+          remote
+          :placeholder="k"
+          :remote-method="(query)=>{remoteMethod(query,k,table)}"
+          @change="filterChange($event,k)"
+          @remove-tag="remoteMethod2(currentSearch[k],k,scope)">
+          <!-- @keydown.enter.native.prevent="remoteMethod2(currentSearch[k],k,scope)" -->
+          <!-- @keyup.enter.native="filterOption($event,k,scope)" -->
+          <!-- @change="remoteMethod2(searchKey[k],k)" -->
+          
+            <div class="searchBox" @click="remoteMethod2(currentSearch[k],k,scope)">
+              <i class="el-icon-search" ></i><span class='prefixSlot'>搜索</span>
+            </div>
             <el-option
             v-for="item in searchval[k]"
             :key="item"
             :label="item"
             :value="item">
             </el-option>
+          
         </el-select>
-        <!-- <el-input v-model="mulsearch[k]" placeholder="请输入内容" @input="remoteMethod(mulsearch[k],k)">
-          <div class="tagBox">
-            <el-tag v-for="tag in tags" :key="tag" closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
-          </div>
-        </el-input>
-        <div class="scrollable-page" v-show="searchList">
-            <ul class="item-page">
-                <li class="li-page" v-for="l in searchData[k]" :key="l" @click="liClick(i)">{{l }}</li>
-            </ul>
-        </div> -->
-        </template>
+      </template>
     </el-table-column>
     <el-table-column
-      sortable
+      sortable="custom"
       v-for="(item,i) in items" 
       :key="i"
-      :label="item.text"
       :prop="item.text"
       align="center">
-    </el-table-column>  
-    <!-- <el-table-column
-      prop="Start_Position"
-      label="Start_Position"
-      width="100"
-      :filters="[{ text: '1', value: 5000000 }, { text: '2', value: 1000000 },{ text: '3', value: 2000000 }]"
-      :filter-method="filterTag"
-      filter-placement="bottom-end">
-      <template slot-scope="scope">
-        <div class="color" :style="{'background':getColor(scope.row[tag])}" >
-          {{scope.row[tag]}}
-        </div> 
+      <template slot="header">
+      <span class="searchInput">{{item.text}}</span>
       </template>
-    </el-table-column> -->
+    </el-table-column>  
   </el-table>
   <v-row>
     <!-- <v-col class="legend-group">
@@ -110,12 +103,12 @@
 
 </template>
 <script>
-import {AgetSequence,AgetGeneSequence} from '../api/model'
+// import {AgetSequence,AgetGeneSequence} from '../api/model'
 import {Agettable_input} from '../api/model'
 export default {
 name: '',
 components:{},
-props:['infoData','total','selectKey','selectData','searchKey','searchData'],
+props:['infoData','total','selectKey','selectData','searchKey','searchData','valuekey','table'],
 computed: {
   items: function() {
     let _this = this;
@@ -125,40 +118,13 @@ computed: {
     return item.text!=='id'&&Object.keys(_this.selectKey).findIndex(el=>el==item.text)<0&&Object.keys(_this.searchKey).findIndex(el=>el==item.text)<0
    })
   },
-  // searchData:function(newv){
-  //   console.log(newv)
-  //   return this.searchval = newv
-  // }
-
-  
 },
 data() {
 return {
-    // options: [{
-    //     value: 'HSPG2',
-    //     label: 'HSPG2'
-    // }, {
-    //     value: 'ZBTB40',
-    //     label: 'ZBTB40'
-    // }, {
-    //     value: 'LUZP1',
-    //     label: 'LUZP1'
-    // }],
-    // searchData:{},
-    reflush:true,
     currentSearch:{},
-    searchk:{},
-    selectK:{},
     params:{},
-    optionShow:false,
     currentSelect:{}, 
-    // searchval:JSON.parse(JSON.stringify(this.searchData)),
-    // searchval:{
-    //   'Gene Symbol': []
-    // },
     searchval:{},
-    mulsearch:{},
-    mulselect:{},
     tagItems: [
       { label: 'Frame Shift' ,color:'#aae0da'},
       { label: 'In Frame' ,color:'#e0c3aa'},
@@ -167,44 +133,32 @@ return {
       { label: 'silent' ,color:'#96a7f3'}
     ],
     tag:'Start_Position',
-    tags:[],
-    searchby:'',
     itemsPerPageArray: [100,200,500],
-    search: '',
-    filter: {},
     page: 1,
     itemsPerPage: 100,    
-    tableData: [],
     colData:[],
-    restaurants: [],
-    state: '',
-    // s:{}
+    sortBy:'',
+    desc:0,
 }
 },
 watch:{
     infoData(){
-      console.log('监听')
+      // console.log('监听')
       this.load()
-
       // this.itemClick(this.tableData[0]);
       // this.searchTable(this.searchby)
     },
-    // searchData(newv){
-    //   console.log(newv)
-    //   let newo = JSON.parse(JSON.stringify(newv))
-    //   console.log(newo);
-    //   this.searchval = newo
-    //   this.load()
-    // }
 },
 created() {
-  // this.load()
+  this.remoteMethod(this.$route.query.value,this.valuekey,this.table)
 },
 mounted() {
-    
+  
 },
 methods:{
-  
+  filterChange(){
+    this.$forceUpdate()
+  },
     async filterOption(e,k){
       console.log(e,k)
 
@@ -240,204 +194,114 @@ methods:{
 
      
     },
-    async keyupSubmit(query){
-      if(query.length>=4){
-        const data =await new Promise((resolve)=>{Agettable_input(query).then(res=>{
-          // let data = res.data.data_info
-          resolve(res.data.data_info) 
-          // this.$forceUpdate()
-
-          // this.$set(this.searchval,k,data[k])
-          // this.searchval[k] = data[k]
-         
-          
-          // console.log(this.searchval,this.searchKey)
-          
+    remoteMethod(query,k,t){
+      console.log(query,k,t)
+      if(!query){return}
+      if(query.length>=2){
+        
+        Agettable_input(query,k,t).then(res=>{
+          let data = res.data.data_info
+          let newData = [...new Set(data[k])]
+          let arr =[];
+          newData.forEach(item => {
+            if(item.toLowerCase()==query.toLowerCase()){
+              arr = newData;
+            }else{
+              arr =[query,...newData]
+            }
+          });
+          this.$set(this.searchval,k,[...new Set(arr)])
         })
-        })
-        // const data={
-        //   'Gene Symbol': ["ZNF90", "ZNF91", "ZNF92", "ZNF93", "ZNF98", "ZNF99"]
-        // }
-        console.log(data)
-        // this.searchval[k] = data[k]
-        // this.searchval=Object.assign(this.searchval,data)
-        this.searchval=Object.assign(this.searchval,data)
-        // this.$set(this.searchval,k,data[k])
-        console.log(this.searchval)
-        // this.$emit('loadSearch',e.target.value,k)
+        
       }
-    },
-    querySearch(queryString, cb) {
-      this.searchKey.forEach(k=>{
-        this.searchData[k].forEach(item=>{
-          let o={
-            value:item
-          }
-          this.restaurants.push(o)
-        })
-      })
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    handleSelect(item) {
-        console.log(item);
-    },
-    handleClose(tag){
-      this.tags.splice(this.tags.indexOf(tag), 1);
-    },
-    remoteMethod(query,key) {
-      // this.$forceUpdate()
+      
+      console.log(this.searchval)
+        
+        
+    },   
+    remoteMethod2(query,key) {
       console.log(query,key)
 
-      console.log(this.searchKey,this.selectKey,this.currentSelect,this.searchK,this.currentSearch)
+      console.log(this.searchKey,this.selectKey,this.currentSelect,this.currentSearch)
      
-        // let search_data=[...query]
-        // console.log(search_data)
-        // console.log({[key]:search_data})
-        // let search = JSON.stringify({[key]:search_data})
-        // console.log(search)
-        // if (query !== null) {
-        //     let loading = this.$loading()
-        //     let s = search_data.length==0?'':search;
-        //     this.$emit('loadTable',this.page,this.itemsPerPage,s)
-        //     loading.close()
-        // } else {
-        //   this.options = [];
-        // }
-        // let search_data=[...query]
-        // console.log(search_data)
-        // console.log({[key]:search_data})
-        // let search = JSON.stringify({[key]:search_data})
-      // let mulS = {}
-      // for(let i in this.searchKey[key]){
-      //   if(this.searchKey[key][i]!==''&&this.searchKey[key][i].length!==0){
-      //     mulS[key] = this.searchKey[key]
-      //   }
-      // }
-      // for(let i in this.searchK[key]){
-      //   if(this.searchK[key][i]!==''&&this.searchK[key][i].length!==0){
-      //     mulS[key] = this.searchK[key]
-      //   }
-      // }
-      // for(let i in this.currentSearch[key]){
-      //   if(this.currentSearch[key][i]!==''&&this.currentSearch[key][i].length!==0){
-      //     mulS[key] = this.currentSearch[key]
-      //   }
-      // }
-      let mulS = {
-        ...this.currentSearch
+      this.s = {
+        ...this.currentSearch,
+        ...this.selectKey
       }
-      // console.log(this.selectKey)
-        // let mul = JSON.stringify(mulS)
-        // console.log(search)
-        // console.log(mul)
-        // this.s = {
-        //   ...this.selectKey,
-        //   ...this.searchKey
-        // }
-        // this.s = {
-        //   ...this.selectKey,
-        //   ...this.searchK
-        // }
-        this.s = {
-          ...mulS,
-          ...this.selectKey
-        }
-        this.params = {
-        ...this.s
-        }
-        console.log(this.params)
-        let s = JSON.stringify(this.s)
-        console.log(s)
-        if (query !== null) {
-            let loading = this.$loading()
-            this.s = s=="{}"?"":s;
-            // this.$refs.multipleTable.clearFilter()
-            // this.$emit('loadTable',this.page,this.itemsPerPage,s,this.s)
-            this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params)
-            loading.close()
-            
-        }
+      console.log(this.s)
+      this.params = {
+      ...this.s
+      }
+      console.log(this.params)
+      let s = JSON.stringify(this.s)
+      console.log(s)
+      if (query !== null) {
+          let loading = this.$loading()
+          this.page = 1;
+          this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params)
+          loading.close()
+          
+      }
     },
+    
     filterHandlerChange(filters){
-      // this.$forceUpdate()
       console.log(filters)
-      console.log(this.searchKey,this.selectKey,this.currentSelect,this.searchK,this.currentSearch)
-      // let mulS = {
-      //   ...this.currentSelect
-      // }
+      console.log(this.searchKey,this.selectKey,this.currentSelect,this.currentSearch)
       for(var k in filters){
         console.log(k)
         this.selectKey[k] = filters[k]
-        // mulS[k] = filters[k]
       }
       console.log(this.selectKey,this.currentSelect)
       
-      // this.s = {
-      //   ...this.selectKey,
-      //   ...this.searchKey
-      // }
-      // this.s = {
-      //   ...mulS,
-      //   ...this.currentSearch
-      // }
       this.s = {
         ...this.selectKey,
         ...this.currentSearch
       }
+      console.log(this.s)
       this.params = {
         ...this.s
       }
       console.log(this.params)
-      // this.s = {
-      //   ...filters,
-      //   ...this.currentSearch
-      // }
       let s = JSON.stringify(this.s)
       console.log(s)
-      // let s = JSON.stringify(this.selectKey)
-      // console.log(s)
       let loading = this.$loading()
-      this.s = s=="{}"?"":s;
-      // this.$emit('loadTable',this.page,this.itemsPerPage,s,this.selectKey)
       this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params)
       loading.close()
     },
-    filterHandler(value, row, column) {
-      console.log(value, row, column)
-      const property = column['property'];
-      console.log(property)
-      console.log(this.searchKey)
-      console.log(this.selectKey)
-      console.log(this.selectKey[property])
-      this.selectKey[property]=[value]
-      // return row[property] === value;
+    sortHandlerChange({prop,order}){
+      console.log(prop,order)
+      this.sortBy=prop;
+      if(order=='descending'){
+        this.desc=1
+      }else{
+        this.desc =0
+      }
+      console.log(this.desc)
+      let s = JSON.stringify(this.s)
+      console.log(s)
       let loading = this.$loading()
-      // this.s = mul=="{}"?"":mul;
-      // this.$emit('loadTable',this.page,this.itemsPerPage,this.s,mulS)
+      this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params,this.sortBy,this.desc)
       loading.close()
-    },
-    filterTag(value, row) {
-      console.log(value)
-      console.log(row)
-      return row.Start_Position >= value;
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.itemsPerPage = val;
-      this.$emit('loadTable',this.page,this.itemsPerPage)
+      this.$refs.multipleTable.clearSort()
+      let s = JSON.stringify(this.s)
+      console.log(s)
+      let loading = this.$loading()
+      this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params)
+      loading.close()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.page = val;
-      this.$emit('loadTable',this.page,this.itemsPerPage)
+      this.$refs.multipleTable.clearSort()
+      let s = JSON.stringify(this.s)
+      console.log(s)
+      let loading = this.$loading()
+      this.$emit('loadTable',this.page,this.itemsPerPage,s,this.params)
+      loading.close()
     },
     load(){
       let _this = this;
@@ -450,14 +314,27 @@ methods:{
       console.log(this.selectKey,this.selectData)
       // console.log(this.infoData,this.total)
       console.log(this.searchval)
-      this.searchval = flag?JSON.parse(JSON.stringify(this.searchData)):this.searchval;
+      // this.searchval = flag?JSON.parse(JSON.stringify(this.searchData)):this.searchval;
+      // this.searchval = flag?JSON.parse(JSON.stringify(this.searchKey)):this.searchval;
       console.log(this.searchval)
+      Object.keys(this.selectKey).forEach(k => {
+         this.currentSelect[k]=flag?[]:this.selectKey[k]
+      });
+      // Object.keys(this.searchKey).forEach(k => {
+      //    this.currentSearch[k]=flag?[]:this.searchKey[k]
+      // });
+      Object.keys(this.searchKey).forEach(k => {
+        this.currentSearch[k]=!this.s?(k=='Gene Symbol'?(this.$route.query.value?this.$route.query.value.split(','):[]):[]):this.searchKey[k]
+        //  this.currentSearch[k]=flag?(this.$route.query.value?this.$route.query.value.split(','):[]):this.searchKey[k]
+      });
+      console.log(this.currentSearch)
       // console.log(this.searchk)
       // this.searchK = JSON.parse(JSON.stringify(this.searchKey))
       // console.log(this.searchk)
       let data = this.infoData;
       if(data.length==0){return}
       // this.tableData = data
+      this.colData=[];
       let key = Object.keys(data[0])
       console.log(key)
       key.forEach(item=>{
@@ -478,31 +355,27 @@ methods:{
       //   _this.mulselect[k]=[]
       // });
       // console.log(this.mulselect)
-      Object.keys(this.selectKey).forEach(k => {
-         this.currentSelect[k]=flag?[]:this.selectKey[k]
-      });
-      Object.keys(this.searchKey).forEach(k => {
-         this.currentSearch[k]=flag?[]:this.searchKey[k]
-      });
-      if(flag){
+      
+      // if(flag){
         
-        // console.log(this.currentSelect)
-        for(var k in this.selectKey){
-          console.log(k)
-          let arr = []
-          this.selectData[k].forEach(item=>{
-            let o = {
-              text:item,
-              value:item
-            }
-            arr.push(o)
-          })
-          this.selectData[k]=arr
-        }
-      }
+      //   console.log('空')
+      //   console.log(this.selectKey,this.selectData)
+      //   for(var k in this.selectKey){
+      //     console.log(k)
+      //     let arr = []
+      //     this.selectData[k].forEach(item=>{
+      //       let o = {
+      //         text:item,
+      //         value:item
+      //       }
+      //       arr.push(o)
+      //     })
+      //     this.selectData[k]=arr
+      //   }
+      // }
       
-      console.log(this.selectData)
-      
+      // console.log(this.selectData)
+      // this.s = undefined;
       
         
           
@@ -514,17 +387,17 @@ methods:{
     itemClick(o){
       console.log(o)
       this.$refs.multipleTable.setCurrentRow(o)
-      if(this.$route.query.type=='Model'){
-        AgetSequence(o.id).then(res=>{
-          let d = res.data.data_info
-          this.$emit('loadSeque',d)
-        })
-      }else{
-        AgetGeneSequence(o.id).then(res=>{
-          let d = res.data.data_info
-          this.$emit('loadSeque',d)
-        })
-      }
+      // if(this.$route.query.type=='Model'){
+      //   AgetSequence(o.id).then(res=>{
+      //     let d = res.data.data_info
+      //     this.$emit('loadSeque',d)
+      //   })
+      // }else{
+      //   AgetGeneSequence(o.id).then(res=>{
+      //     let d = res.data.data_info
+      //     this.$emit('loadSeque',d)
+      //   })
+      // }
       
     },
     
@@ -540,7 +413,7 @@ methods:{
     background-color:cornflowerblue;
 }
 .tablePage{
-  text-align: right;
+  text-align: left;
   margin: 10px 0;
 }
 #tableTop{
@@ -597,4 +470,20 @@ body[theme-mode='dark'] .tableGroup{
     margin: 1px;
     padding: 4px;
 }
+.searchInput{
+  width: 300px;
+  /* position: relative; */
+}
+.searchBox{
+  /* position: absolute;
+  top: 0; */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  line-height: 32px;
+  border-bottom: 1px solid #000;
+  cursor: pointer;
+}
+
+
 </style>
