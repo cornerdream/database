@@ -267,8 +267,6 @@ export default {
           }
         });
         this.listItems=[...new Set(arr)]
-        // let arr =[query,...res.data.data_info]
-        // this.listItems = [...new Set(arr)]
         console.log(this.listItems,this.listItems2)
       }) 
     },   
@@ -286,8 +284,6 @@ export default {
           }
         });
         this.listItems2=[...new Set(arr)]
-        // let arr = [query,...res.data.data_info]
-        // this.listItems2 = [...new Set(arr)]
         console.log(this.listItems,this.listItems2)
       })
 
@@ -322,8 +318,8 @@ export default {
           value2:this.selectList2
         }
         console.log(this.selectList2)
-        routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:this.selectType,modelValue:this.selectList.join(','),value:this.selectList2.join(','),table:'mutation'}});
-        // routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:this.selectType,modelValue:this.selectList.join(','),value:this.selectList2.join(',')}});
+        // routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:this.selectType,modelValue:this.selectList.join(','),value:this.selectList2.join(','),table:'mutation'}});
+        routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:this.selectType,modelValue:this.selectList.join(','),value:this.selectList2.join(',')}});
       }
       console.log(queryO)
       // let routeUrl = this.$router.resolve({path: '/ModelResult',query: queryO});

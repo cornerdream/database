@@ -202,8 +202,8 @@ methods:{
     if(tab=='TME RNA-seq'){
       // let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model'}});
       let query = this.$route.query;
-      // let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:query.type,modelValue:query.value}});
-      let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:query.type,modelValue:query.value,table:'mutation'}});
+      let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:query.type,modelValue:query.value}});
+      // let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: {view:'Omics',type:'Model',modelType:query.type,modelValue:query.value,table:'mutation'}});
       window.open(routeUrl.href, '_blank');
     }
   //   this.$router.replace({query:{view:tab}})

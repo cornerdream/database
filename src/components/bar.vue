@@ -7,6 +7,7 @@
 <script>
 import $ from 'jquery'
 import { Column } from '@antv/g2plot';
+import * as d3 from 'd3'
 export default {
 name: 'bar',
 props:{
@@ -73,9 +74,70 @@ created() {
   
 },
 mounted() { 
-    this.antv2()
+    // this.antv2()
+    this.load()
 },
 methods:{
+  load(){
+    const maxHeight = 400;
+    const maxWidth = 600;
+    const margin = {
+      top: 20,
+      right: 60,
+      bottom: 20,
+      left: 60,
+    };
+    const colorArray = ['#38CCCB', '#0074D9', '#2FCC40', '#FEDC00', '#FF4036', 'lightgrey'];
+    const data = [
+      {
+        label: 'apple',
+        value: 10,
+      },
+      {
+        label: 'banana',
+        value: 15,
+      },
+      {
+        label: 'orange',
+        value: 25,
+      }
+    ];
+    const barWidth = 20;
+    const xTicks = new Array(data.length + 1);
+    for ( let i = 0; i <= data.length; i++ ) {
+      xTicks[i] = i;
+    }
+    const getX = (d) => d.label;
+    const getY = (d) => d.value; 
+    const scaleX = d3.scalePoint()
+      .domain(data.map(getX))
+      .range([0, maxWidth - margin.left - margin.right])
+      .padding(0.2)
+    const scaleY = d3.scaleLinear()
+      .domain([0, d3.max(data, getY)])
+      .range([maxHeight - margin.top - margin.bottom, 0])
+    const svg = d3.select('body')
+      .append('svg')
+      .attr('width', maxWidth)
+      .attr('height', maxHeight)
+    svg.selectAll('rect')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('x', (d) => scaleX(getX(d)) + margin.left - barWidth / 2)
+      .attr('y', (d) => scaleY(getY(d)) + margin.top)
+      .attr('width', barWidth - 1)
+      .attr('height', (d) => maxHeight - margin.bottom - margin.top - scaleY(getY(d)))
+      .attr('fill', (d, i) => colorArray[i % colorArray.length])
+    const axisLeft = d3.axisLeft(scaleY);
+    svg.append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .call(axisLeft);
+    const axisBottom = d3.axisBottom(scaleX);
+    svg.append('g')
+      .attr('transform', `translate(${margin.left}, ${maxHeight - margin.bottom})`)
+      .call(axisBottom);
+  },
     antv2(){
       $('#'+this.id).html('');
       let data = []

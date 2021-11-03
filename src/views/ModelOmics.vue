@@ -49,150 +49,107 @@
       </el-tab-pane>
       
     </el-tabs> 
+
     <div class="component">
       
       <div class="componentBox" v-if="$route.query.type!=='Pathway'">
         <!-- tablegroup @loadSeque="onSelectOmicsSequence"  -->
         <!-- <TableGroup  v-if="activeName=='1'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" :valuekey="valuekey" table="mutation" ></TableGroup> -->
-        <TableEl1  v-if="activeName=='1'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" :valuekey="valuekey" table="mutation" ></TableEl1>
-        <TableEl2 v-else-if="activeName=='2'" :infoData="omicsTableFusionData" :total="pageFusionNumber" @loadTable="onSelectOmicsTableFusion" :selectKey="selectFusionKey" :selectData="selectFusionData" :searchKey="searchFusionKey" :searchData="searchFusionData" :s="s" :valuekey="fusionvaluekey" table="fusion" @loadDraw="tableElClick"></TableEl2>
-        <TableEl3 v-else-if="$route.query.type!=='Pathway'" :infoData="omicsTableExpressionData" :total="pageExpressionNumber" @loadTable="onSelectOmicsTableExpression" :selectKey="selectExpressionKey" :selectData="selectExpressionData" :searchKey="searchExpressionKey" :searchData="searchExpressionData" :s="s" :valuekey="expressionvaluekey" table="expression"  @loadDraw="tableElClick"></TableEl3>
-        <v-row class="componentContent">
-          <v-col cols="12" xs="12" sm="6" md="6" :lg="activeName=='1'?9:5" :xl="activeName=='1'?9:5" class="animate__animated animate__bounceInDown">  
-            <!-- <component :is="Omics.select4=='Mutation'?'Lollipop':'Bar1'"></component> -->
-            <!-- <Lollipop v-if="Omics.select3=='Mutation'" :data="scatterData" :width="l" :circle="circleData"></Lollipop>
-            <Sequence v-if="Omics.select3=='Mutation'" :seq="seq" :cov="cov" :neoepitope="neoepitope" ></Sequence>
-            <Bar v-else-if="Omics.select3=='Fusion'" id="omicsbar1" :data="omicsBarDataLeft" x="gene" y="FFPM"></Bar> -->
-            <Lollipop v-if="activeName=='1'" :data="scatterData" :width="l" :circle="circleData"></Lollipop>
-            <Sequence v-if="activeName=='1'" :seq="seq" :cov="cov" :neoepitope="neoepitope" ></Sequence>
-            
-            <!-- <Bar v-if="activeName=='2'" id="omicsbar1" :data="omicsBarDataLeft" x="gene" y="FFPM"></Bar> -->
-            <!-- <Bar v-if="$route.query.type!=='Pathway'" id="omicsbar2" :data="omicsBarExpressionDataLeft" x="x_axis" y="log2tpm"></Bar> -->
-                
-            
-          </v-col>
-          <!-- <v-col cols="12" xs="12" sm="6" md="6" :lg="Omics.select3=='Mutation'?3:6" :xl="Omics.select3=='Mutation'?3:6" class="animate__animated animate__bounceInUp"> -->
-          <v-col cols="12" xs="12" sm="6" md="6" :lg="activeName=='1'?3:5" :xl="activeName=='1'?3:5" class="animate__animated animate__bounceInUp">  
-            <!-- <component :is="Omics.select4=='Mutation'?'Card':'Bar2'"></component> -->
-            <!-- <Card v-if="Omics.select3=='Mutation'" :infoData="omicsCardData"></Card>
-            <Bar v-else-if="Omics.select3=='Fusion'" id="omicsbar3" :data="omicsBarDataRight" x="gene" y="count"></Bar> -->
-            <Card v-if="activeName=='1'" :infoData="omicsCardData"></Card>
-            <!-- <Bar v-if="activeName=='2'" id="omicsbar3" :data="omicsBarDataRight" x="gene" y="count"></Bar> -->
-            <!-- <Bar v-if="$route.query.type!=='Pathway'" id="omicsbar4" :data="omicsBarExpressionDataRight" x="x_axis" y="median_normalized_log2tpm"></Bar> -->
-          </v-col>
-          <!-- <v-col cols="12" xs="12" sm="6" md="6" lg="2" xl="2" v-if="activeName!=='1'&&selectCol">
-            <div>
-              <v-combobox
-              v-model="Omics.select1"
-              :items="Omics.items1"
-              label="Model"
-              outlined
-              dense
-              solo
-              @input="OmicschangeArr"
-              :disabled="Omics.disabled1"
-              ></v-combobox>
-              <v-combobox
-              v-model="Omics.select1"
-              :items="Omics.items1"
-              label="Gene"
-              outlined
-              dense
-              solo
-              @input="OmicschangeArr"
-              :disabled="Omics.disabled1"
-              ></v-combobox>
-            </div>
-          </v-col> -->
-        </v-row>
-        <div v-if="activeName!=='1'&&selectCol" class="chartBox">  
-          <div class="chartTab">
-            <v-card
-              class="mx-auto"
-              max-width="300"
-              tile
-            >
-              <v-list dense>
-                <v-subheader>REPORTS</v-subheader>
-                <v-list-item-group
-                  v-model="selectedItem"
-                  color="primary"
-                >
-                  <v-list-item
-                    v-for="(item, i) in listItems"
-                    :key="i"
-                  >
-                    <v-list-item-icon>
-                      <v-icon v-text="item.icon"></v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.text"></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-card>
-          </div> 
-          <div class="chart">
-            <!-- <v-row >
-              <v-col cols="12" xs="12" sm="5" md="5" lg="5" xl="5">
-                
-                <Bar v-if="activeName=='2'" id="omicsbar1" :data="omicsBarDataLeft" x="gene" y="FFPM"></Bar>
-                <Bar v-if="$route.query.type!=='Pathway'" id="omicsbar2" :data="omicsBarExpressionDataLeft" x="x_axis" y="log2tpm"></Bar>
+        <div class="tablebox" v-show="activeName=='1'">
+          <TableEl1  :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" :modelId="modelId" :selectKey="selectKey" :selectData="selectData" :searchKey="searchKey" :searchData="searchData" :s="s" :valuekey="valuekey" table="mutation" @loadDraw="loadchart"></TableEl1>
+          <div class="chart" v-if="barshow">
+            <v-row >
+              <v-col cols="12" xs="12" sm="3" md="3" lg="3" xl="3">
+                <div class="chartSelect">
+                  <el-select
+                  v-for="(item,i) in chartselectkey"
+                  :key="i"
+                  class="chartselectbox"
+                  v-model="chartselect[item]"
+                  multiple
+                  :placeholder="item"
+                  @change="chartchangeArr(chartselect)">
+                  <el-option
+                  v-for="o in chartselectData[i][item]"
+                  :key="o"
+                  :label="o"
+                  :value="o">
+                  </el-option>
+                  </el-select>
+                </div>
               </v-col>
-              <v-col cols="12" xs="12" sm="5" md="5" lg="5" xl="5">
-                <Bar v-if="activeName=='2'" id="omicsbar3" :data="omicsBarDataRight" x="gene" y="count"></Bar>
-                <Bar v-if="$route.query.type!=='Pathway'" id="omicsbar4" :data="omicsBarExpressionDataRight" x="x_axis" y="median_normalized_log2tpm"></Bar>
+              <v-col cols="12" xs="12" sm="9" md="9" lg="9" xl="9" id="barbox">
+                <BarGroupV id="Mutationbar" :data="d3Data" :columns="columns"></BarGroupV>
               </v-col>
-              
             </v-row>
-            <v-row>  
-              <v-col cols="12" xs="12" sm="10" md="10" lg="10" xl="10">
-                <HeatmapShape v-if="activeName=='2'" id="fusionheatmap" :data="heatmapData" x="model_id" y="gene" z="FFPM"></HeatmapShape>
-                <HeatmapShape v-else id="omicsheatmap" :data="heatmapData" x="x_axis" y="y_axis" z="value"></HeatmapShape>
-              </v-col>
-            </v-row> -->
-            <BarGroupV></BarGroupV>
-            <HeatmapShape v-if="activeName=='2'" id="fusionheatmap" :data="heatmapData" x="model_id" y="gene" z="FFPM"></HeatmapShape>
-            <HeatmapShape v-else id="omicsheatmap" :data="heatmapData" x="x_axis" y="y_axis" z="value"></HeatmapShape>
           </div>
-          
-          <!-- <div class="chartSelect">
-            <v-combobox
-            v-model="Omics.select1"
-            :items="Omics.items1"
-            label="Model"
-            outlined
-            dense
-            solo
-            @input="OmicschangeArr"
-            :disabled="Omics.disabled1"
-            ></v-combobox>
-            <v-combobox
-            v-model="Omics.select1"
-            :items="Omics.items1"
-            label="Gene"
-            outlined
-            dense
-            solo
-            @input="OmicschangeArr"
-            :disabled="Omics.disabled1"
-            ></v-combobox>
-          </div> -->
-          
+        </div>
+        <div class="tablebox" v-show="activeName=='2'">
+          <TableEl2  :infoData="omicsTableFusionData" :total="pageFusionNumber" @loadTable="onSelectOmicsTableFusion" :modelId="modelId" :selectKey="selectFusionKey" :selectData="selectFusionData" :searchKey="searchFusionKey" :searchData="searchFusionData" :s="s" :valuekey="fusionvaluekey" table="fusion" @loadDraw="loadchart"></TableEl2>
+          <div class="chart" v-if="Fusionbarshow">
+            <v-row >
+              <v-col cols="12" xs="12" sm="3" md="3" lg="3" xl="3">
+                <div class="chartSelect">
+                  <el-select
+                  v-for="(item,i) in Fusionchartselectkey"
+                  :key="i"
+                  class="chartselectbox"
+                  v-model="Fusionchartselect[item]"
+                  multiple
+                  :placeholder="item"
+                  @change="chartchangeArr(Fusionchartselect)">
+                  <el-option
+                  v-for="o in FusionchartselectData[i][item]"
+                  :key="o"
+                  :label="o"
+                  :value="o">
+                  </el-option>
+                  </el-select>
+                </div>
+              </v-col>
+              <v-col cols="12" xs="12" sm="9" md="9" lg="9" xl="9" id="barbox">
+                <BarGroupV id="Fusionbar" :data="Fusiond3Data" :columns="Fusioncolumns"></BarGroupV>
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+        <div class="tablebox" v-show="activeName=='3'">
+          <TableEl3  :infoData="omicsTableExpressionData" :total="pageExpressionNumber" @loadTable="onSelectOmicsTableExpression" :modelId="modelId" :selectKey="selectExpressionKey" :selectData="selectExpressionData" :searchKey="searchExpressionKey" :searchData="searchExpressionData" :s="s" :valuekey="expressionvaluekey" table="expression"  @loadDraw="loadchart"></TableEl3>
+          <div class="chart" v-if="Expressionbarshow">
+            <v-row >
+              <v-col cols="12" xs="12" sm="3" md="3" lg="3" xl="3">
+                <div class="chartSelect">
+                  <el-select
+                  v-for="(item,i) in Expressionchartselectkey"
+                  :key="i"
+                  class="chartselectbox"
+                  v-model="Expressionchartselect[item]"
+                  multiple
+                  :placeholder="item"
+                  @change="chartchangeArr(Expressionchartselect)">
+                  <el-option
+                  v-for="o in ExpressionchartselectData[i][item]"
+                  :key="o"
+                  :label="o"
+                  :value="o">
+                  </el-option>
+                  </el-select>
+                </div>
+              </v-col>
+              <v-col cols="12" xs="12" sm="9" md="9" lg="9" xl="9" id="barbox">
+                <BarGroupV id="Expressionbar" :data="Expressiond3Data" :columns="Expressioncolumns"></BarGroupV>
+              </v-col>
+            </v-row>
+          </div>
         </div>
         
-
-    
-        
-        <!-- <component :is="Omics.select4=='Mutation'?'TableGroup':'Table'"></component> -->
-        
-        <!-- <TableGroup v-if="Omics.select3=='Mutation'" :infoData="omicsTableData" :total="pageNumber" @loadTable="onSelectOmicsTable" @loadSeque="onSelectOmicsSequence"></TableGroup>
-        <Table v-else-if="Omics.select3=='Fusion'" id="omicstable1" :data="omicsTableFusionData" :total="pageFusionNumber" @loadTableFusion="onSelectOmicsTableFusion"></Table>
-        <Table v-else-if="$route.query.type!=='Pathway'" id="omicstable2" :data="omicsTableExpressionData" :total="pageExpressionNumber" @loadTableExpression="onSelectOmicsTableExpression"></Table> -->
+        <!-- <Bar id="omicsbar1" :data="omicsBarDataLeft" x="gene" y="FFPM"></Bar> -->
+        <!-- <Lollipop v-if="activeName=='1'" :data="scatterData" :width="seql" :circle="circleData"></Lollipop> -->
+        <!-- <Sequence v-if="activeName=='1'" :seq="seq" :cov="cov" :neoepitope="neoepitope" ></Sequence> -->
+        <!-- <Card v-if="activeName=='1'" :infoData="omicsCardData"></Card> -->
       </div>
       
-      <!-- <div class="componentBox" v-if="$route.query.type=='Gene'&&Omics.select3!=='gene expression'"> -->
+      
       
       <div class="componentBox" v-if="$route.query.type=='Gene'&&activeName!=='3'">
         <!-- <div class="nav">
@@ -230,42 +187,6 @@
       </div>
       
     </div>
-   
-    <!-- <div class="select" v-if="activeName=='1'"> -->
-      <!-- <v-combobox
-      v-model="Omics.select1"
-      :items="Omics.items1"
-      label="Species human/mouse"
-      outlined
-      dense
-      solo
-      @input="OmicschangeArr"
-      :disabled="Omics.disabled1"
-      ></v-combobox>
-      <v-text-field 
-      placeholder="Gene list"
-      v-model="Omics.value2"
-      @keyup.enter="OmicschangeArr"
-      :disabled="Omics.disabled2"
-      >
-        <v-icon
-          slot="append"
-          color="#429fd5"
-        >
-        mdi-pencil
-        </v-icon>
-      </v-text-field> -->
-      <!-- <v-combobox
-        v-model="Omics.select3"
-        :items="Omics.items3"
-        label="Gene set"
-        outlined
-        dense
-        solo
-        @input="OmicschangeArr"
-        allow-overflow
-      ></v-combobox> -->
-    <!-- </div> -->
   </div>  
  
 </div>
@@ -273,11 +194,12 @@
 <script>
 import {Agetsearch_list_id,Agettable_search,AgetMutation_table,AgetFusion_table_search,AgetFusion_table,AgetExpression_table_search,AgetExpression_table,AgetFusionbar,AgetExpressionbar,AgetCard} from '../api/model'
 import {AgetTable,AgetGeneCard,AgetGeneHeatmap,AgetGeneFusionTable,AgetGeneFusionBar,AgetGeneExpressionTable,AgetGeneFusionHeatmap,AgetGeneExpressionBar} from '../api/model'
+import {AgetMutation_select,AgetMutation_bar,AgetFusion_select,AgetFusion_bar,AgetExpression_select,AgetExpression_bar} from '../api/model'
 import {AselectPathwayHeatmap} from '../api/model'
 import {mapGetters} from 'vuex'
-import Lollipop from '../components/lollipop.vue'
-import Sequence from '../components/sequence.vue'
-import Card from '../components/card.vue'
+// import Lollipop from '../components/lollipop.vue'
+// import Sequence from '../components/sequence.vue'
+// import Card from '../components/card.vue'
 // import TableGroup from '../components/tableGroup.vue'
 import TableEl1 from '../components/tableEl.vue'
 import TableEl2 from '../components/tableEl.vue'
@@ -286,14 +208,14 @@ import TableEl3 from '../components/tableEl.vue'
 import BarGroupV from '../components/barGroupV.vue'
 // import Table from '../components/table.vue'
 import Heatmap from '../components/heatmap.vue'
-import HeatmapShape from '../components/heatmap-shape.vue'
+// import HeatmapShape from '../components/heatmap-shape.vue'
 import Bubble from '../components/bubble.vue'
 export default {
 name: 'ModelOmics',
 components:{
-  Lollipop,
-  Sequence,
-  Card,
+  // Lollipop,
+  // Sequence,
+  // Card,
   // TableGroup,
   TableEl1,
   TableEl2,
@@ -302,7 +224,7 @@ components:{
   BarGroupV,
   // Table,
   Heatmap,
-  HeatmapShape,
+  // HeatmapShape,
   Bubble
 },
 computed: {
@@ -310,8 +232,6 @@ computed: {
 },
 data() {
   return {
-    
-    selectCol:false,
     tabItems:[
       {
         name:'1',
@@ -345,10 +265,9 @@ data() {
     seq:'',
     neoepitope:[],
     cov:[],
-    l:0,
+    seql:0,
     scatterData:[],
     circleData:[],
-    options:[]  ,
     omicsTableData:[],
     omicsTableFusionData:[],
     omicsTableExpressionData:[],
@@ -388,23 +307,54 @@ data() {
       { text: 'Conversions', icon: 'mdi-flag' },
     ],
     modelId:[],
+    barshow:false,
+    chartselectData:[],
+    chartselect:{
+      // select0:[],
+      // select1:[],
+      // select2:[],
+      // select3:[],
+      // select4:[],
+      // select5:[],
+    },
+    chartselectkey:[],
+    d3Data:[],
+    columns:[],
+    Fusionbarshow:false,
+    FusionchartselectData:[],
+    Fusionchartselect:{
+      // select0:[],
+      // select1:[],
+      // select2:[],
+      // select3:[],
+      // select4:[],
+      // select5:[],
+    },
+    Fusionchartselectkey:[],
+    Fusiond3Data:[],
+    Fusioncolumns:[],
+    Expressionbarshow:false,
+    ExpressionchartselectData:[],
+    Expressionchartselect:{
+      // select0:[],
+      // select1:[],
+      // select2:[],
+      // select3:[],
+      // select4:[],
+      // select5:[],
+    },
+    Expressionchartselectkey:[],
+    Expressiond3Data:[],
+    Expressioncolumns:[],
   }
 },
 created() {
-  // console.log('create')
-  // this.$EventBus.$on('modeltable',(msg)=>{
-  //   console.log(msg)
-  // })
-  // this.onSelectOmicsTableSearch()
-
-  // this.onSelectOmicsTableFusionSearch()
-  // this.onSelectOmicsTableExpressionSearch()
+  
   
 },
 mounted() {
   console.log('mount')
   this.load()
-  // this.OmicschangeArr()
 },
 methods:{
   async load(){
@@ -413,15 +363,201 @@ methods:{
         this.modelId = res.data.data_info
         console.log(this.modelId)
     })
+    await this.onSelectOmicsTableSearch()
+    await this.onSelectOmicsTableFusionSearch()
+    await this.onSelectOmicsTableExpressionSearch()
     this.OmicschangeArr()
-    // this.onSelectOmicsTableSearch()
-    // this.onSelectOmicsTableFusionSearch()
-    // this.onSelectOmicsTableExpressionSearch()
+  },
+  onsearch(){
+
   },
   handleClick() {
     this.OmicschangeArr()
   },
-  loadSpecies(){
+  chartchangeArr(s){
+    console.log(s)
+    let l = s['Gene Symbol'].length
+    if(l==0){
+      this.$msgbox.alert('请选择gene','注意')
+    }else if(l>5){
+      this.$msgbox.alert('请选择少于5个的gene数','注意')
+    }else{
+      let chartselect= JSON.stringify(s)
+      console.log(chartselect)
+      if(this.activeName=='1'){
+        this.loadBar(chartselect)
+      }else if(this.activeName=='2'){
+        this.loadFusionBar(chartselect)
+      }else{
+        this.loadExpressionBar(chartselect)
+      }
+    }
+    
+  },
+  loadchart(s){
+    if(this.activeName=='1'){
+      this.loadSelect(s)
+      this.loadBar(s)
+    }else if(this.activeName=='2'){
+      this.loadFusionSelect(s)
+      this.loadFusionBar(s)
+    }else{
+      this.loadExpressionSelect(s)
+      this.loadExpressionBar(s)
+    }
+  },
+  loadSelect(s){
+    this.barshow = true
+    console.log(s)
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetMutation_select(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.chartselectkey = [...new Set(keys)]
+      console.log(this.chartselectkey)
+      this.chartselectkey.forEach(item=>{
+        this.chartselect[item]=[]
+      })
+      console.log(this.chartselect)
+      this.chartselectData = data
+    })
+    
+    // this.loadBar(s)
+  },
+  loadBar(s){
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetMutation_bar(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.columns = [...new Set(keys)]
+      console.log(this.columns)
+      this.d3Data = data
+      console.log(this.d3Data)
+    })
+  },
+  loadFusionSelect(s){
+    this.Fusionbarshow = true
+    console.log(s)
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetFusion_select(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.Fusionchartselectkey = [...new Set(keys)]
+      console.log(this.Fusionchartselectkey)
+      this.Fusionchartselectkey.forEach(item=>{
+        this.Fusionchartselect[item]=[]
+      })
+      console.log(this.Fusionchartselect)
+      this.FusionchartselectData = data
+    })
+    
+    // this.loadFusionBar(s)
+  },
+  loadFusionBar(s){
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetFusion_bar(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.Fusioncolumns = [...new Set(keys)]
+      console.log(this.Fusioncolumns)
+      this.Fusiond3Data = data
+      console.log(this.Fusiond3Data)
+    })
+  },
+  loadExpressionSelect(s){
+    this.Expressionbarshow = true
+    console.log(s)
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetExpression_select(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.Expressionchartselectkey = [...new Set(keys)]
+      console.log(this.Expressionchartselectkey)
+      this.Expressionchartselectkey.forEach(item=>{
+        this.Expressionchartselect[item]=[]
+      })
+      console.log(this.Expressionchartselect)
+      this.ExpressionchartselectData = data
+    })
+    
+    // this.loadExpressionBar(s)
+  },
+  loadExpressionBar(s){
+    let options={
+      model_id:this.modelId.join(',')||'',
+      search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
+    }
+    AgetExpression_bar(options).then(res=>{
+      console.log(res)
+      let data = res.data.data_info;
+      console.log(data)
+      let keys=[]
+      data.forEach(item=>{
+        var k = Object.keys(item)
+        console.log(k)
+        keys.push(...k)
+      })
+      console.log(keys)
+      this.Expressioncolumns = [...new Set(keys)]
+      console.log(this.Expressioncolumns)
+      this.Expressiond3Data = data
+      console.log(this.Expressiond3Data)
+    })
   },
   //gene group table
   onSelectGeneTable(p,n){
@@ -437,23 +573,6 @@ methods:{
     })
     loading.close()
   },
-  //
-  // async onSelectOmicsTableInput(v,k){
-  //   // this.$forceUpdate()
-  //   console.log(this.searchData,this.searchKey)
-  //   const data =await new Promise((resolve)=>{Agettable_input(v).then(res=>{
-  //         resolve(res.data.data_info) 
-  //       })
-  //   })
-  //   console.log(data)
-  //   // this.$set(this.searchData,k,data[k])
-  //   this.searchData[k] = data[k]
-  //   console.log(this.searchData,this.searchKey)
-  //   console.log(this.searchData[k])
-  //   // this.searchData = obj;
-  //   // console.log(this.searchKey,this.searchData)
-  // },
-  //
   async onSelectOmicsTableSearch(){
     console.log(this.modelId)
     return   Agettable_search(this.modelId.join(',')).then(res=>{
@@ -461,7 +580,6 @@ methods:{
         let searchData = data.search_data;
         let selectData = data.select_data;
         searchData.forEach(item=>{
-          // this.mutationKey.push(item)
           this.searchKey[item]=[]
           this.searchData[item]=[]
         })
@@ -479,19 +597,6 @@ methods:{
           })
           this.selectData[item]=arr
         })
-        // for(var k in this.selectKey){
-        //     console.log(k)
-        //     let arr = []
-        //     this.selectData[k].forEach(item=>{
-        //       let o = {
-        //         text:item,
-        //         value:item
-        //       }
-        //       arr.push(o)
-        //     })
-        //     this.selectData[k]=arr
-        //   }
-        // }
         console.log(this.selectKey,this.selectData)
       })
     
@@ -524,11 +629,9 @@ methods:{
       this.pageNumber = data.total;
       Object.keys(this.searchData).forEach(item=>{
         this.searchKey[item]=!s?[]:k[item]
-        // this.searchKey[item]=[]
       })
       Object.keys(this.selectData).forEach(item=>{
         this.selectKey[item]=!s?[]:k[item]
-        // this.selectKey[item]=[]
       })
       console.log(this.searchKey,this.searchData)
       console.log(this.selectKey,this.selectData)
@@ -587,7 +690,6 @@ methods:{
       gene_symbol:this.Omics.value2||'',
       page:p||1,
       page_num:n||this.itemsPerPage,
-      // search_data:s||'',
       search_data:s||(this.$route.query.value?JSON.stringify({'Gene Symbol':this.$route.query.value.split(',')}):''),
       order_by_field:o||'',
       desc:d!==undefined?d:''
@@ -801,44 +903,16 @@ methods:{
   //model sequence
   onSelectOmicsSequence(d){
     this.seq = d.aa_sequence.aa_sequence;
-    this.l = d.aa_sequence.aa_sequence.length
+    this.seql = d.aa_sequence.aa_sequence.length
     this.cov = d.protein_domain_mapping;
     this.scatterData = d.protein_domain_mapping;
     this.circleData=d.HGVSp_Short
-  },
-  onsearch(){
-    
-  },
-  tableElClick(){
-    if(this.activeName == '2'){
-      this.onSelectOmicsBar()
-      this.onSelectGeneFusionHeatmap()
-      
-    }else{
-      this.onSelectOmicsBarExpression()
-      this.onSelectGeneHeatmap()
-    }
-    this.selectCol = true
   },
   async OmicschangeArr(){
     
     if(this.activeName=='1'){
       if(this.$route.query.type=='Model'){
-        await this.onSelectOmicsTableSearch()
         this.onSelectOmicsTable()
-        // let query = Object.assign(this.$route.query,{table:'mutation'})
-        // let routeUrl = this.$router.resolve({path: '/ModelAtlas',query: query});
-        // console.log(query)
-        // console.log(routeUrl)
-        // let index = window.location.href.indexOf('#')
-        // console.log(index)
-        // let href=index<0?window.location.href+'#mutation':window.location.href.slice(0,index)+'#mutation'
-        // let href = window.location.href+'#mutation'
-        // console.log(href)
-        // window.location.href = href;
-        this.$router.push({query:{...this.$route.query,table:'mutation'}})
-        
-        // window.open(routeUrl.href);
         // this.onSelectOmicsCard()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTable()
@@ -850,18 +924,7 @@ methods:{
       
     }else if(this.activeName=='2'){
       if(this.$route.query.type=='Model'){
-        await this.onSelectOmicsTableFusionSearch()
         this.onSelectOmicsTableFusion()
-        // let query = Object.assign(this.$route.query,{table:'fusion'})
-        // console.log(query)
-        // this.$router.push(query)
-        // let index = window.location.href.indexOf('#')
-        // console.log(index)
-        // let href=index<0?window.location.href+'#fusion':window.location.href.slice(0,index)+'#fusion'
-        // let href = window.location.href+'#fusion'
-        // console.log(href)
-        // window.location.href = href;
-        this.$router.push({query:{...this.$route.query,table:'fusion'}})
         // this.onSelectOmicsBar()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTableFusion()
@@ -871,18 +934,7 @@ methods:{
       
     }else{
       if(this.$route.query.type=='Model'){
-        await this.onSelectOmicsTableExpressionSearch()
         this.onSelectOmicsTableExpression()
-        // let query = Object.assign(this.$route.query,{table:'expression'})
-        // console.log(query)
-        // this.$router.push(query)
-        // let index = window.location.href.indexOf('#')
-        // console.log(index)
-        // let href=index<0?window.location.href+'#expression':window.location.href.slice(0,index)+'#expression'
-        // let href = window.location.href+'#expression'
-        // console.log(href)
-        // window.location.href = href;
-        this.$router.push({query:{...this.$route.query,table:'expression'}})
         // this.onSelectOmicsBarExpression()
       }else if(this.$route.query.type=='Gene'){
         this.onSelectGeneTableExpression()
@@ -891,32 +943,8 @@ methods:{
       
       
     }
-    // this.onSelectOmicsTable()
-    // this.onSelectOmicsCard()
-    // this.onSelectOmicsSequence()
   },
-  OmicschangeArr2(){
-
-  },
-  OmicschangeArr3(){
-    
-    if(this.Omics.select3=='Mutation'){
-      if(this.$route.query.type=='Model'){
-        this.onSelectOmicsTable()
-      }else{
-        this.onSelectGeneTable()
-      }
-      
-      this.onSelectOmicsCard()
-    }else if(this.Omics.select3=='Fusion'){
-      this.onSelectOmicsTableFusion()
-      this.onSelectOmicsBar()
-    }else{
-      this.onSelectOmicsTableExpression()
-      this.onSelectOmicsBarExpression()
-    }
-    
-  },
+  
 }
 }
 </script>
@@ -970,5 +998,13 @@ body[theme-mode=dark] .nav{
 }
 .chart{
   flex: 1;
+}
+.chartSelect{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.chartselectbox{
+  margin-bottom: 20px;
 }
 </style>
